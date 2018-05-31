@@ -8,7 +8,7 @@
  * Licensed under the BSD License.
  *
  */
-module app.controller.index;
+module app.controller.IndexController;
 
 import kiss.logger;
 import hunt.application;
@@ -121,9 +121,22 @@ class IndexController : Controller
 
 	@Action int showInt()
 	{
-		logDebug("---show bool----");
+		logDebug("---show int----", this.request.get("id"));
 		return 2018;
 	}
+
+	@Action string showInt2()
+	{
+		logDebug("---show int----", this.request.get("id"));
+		return this.request.get("id");
+	}
+
+
+	// @Action int showInt(int id)
+	// {
+	// 	logDebug("---show int----");
+	// 	return 2018;
+	// }
 
 	@Action JSONValue testJson1()
 	{

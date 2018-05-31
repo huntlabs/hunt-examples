@@ -83,6 +83,9 @@
                         <a href="/showInt">show int</a>
                     </li>
                     <li>
+                        <a href="/showInt/2018router">test router</a>
+                    </li>
+                    <li>
                         <a href="/testView">test View</a>
                     </li>
                     <li>
