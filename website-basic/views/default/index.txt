@@ -2,7 +2,7 @@
 
 
 <label>Users</label>
-{% for key, value in users %}
+{% for key, value in model.users %}
     <p><strong>{{ key }}</strong>: {{ value }}</p>
 {% endfor %}
 

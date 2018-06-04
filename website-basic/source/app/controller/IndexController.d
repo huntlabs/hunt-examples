@@ -69,7 +69,8 @@ class IndexController : Controller
 		model["title"] = "Hunt demo";
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
-		return view.render("home", model);
+		view.assign("model", model);
+		return view.render("home");
 	}
 
 	Response showAction()
@@ -78,7 +79,6 @@ class IndexController : Controller
 		// dfmt off
 		Response response = new Response("Show message(No @Action defined): Hello world<br/>"); 
 		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8")
-		// response.setContent("Show message(No @Action defined): Hello world<br/>")
 		.setCookie("name", "value", 10000)
 		.setCookie("name1", "value", 10000, "/path")
 		.cookie("name2", "value", 10000)
@@ -132,12 +132,6 @@ class IndexController : Controller
 	}
 
 
-	// @Action int showInt(int id)
-	// {
-	// 	logDebug("---show int----");
-	// 	return 2018;
-	// }
-
 	@Action JSONValue testJson1()
 	{
 		logDebug("---test Json1----");
@@ -171,7 +165,10 @@ class IndexController : Controller
 		data["users"] = ["name" : "jeck", "age" : "18"];
 		data["nums"] = [3, 5, 2, 1];
 
-		return view.setTemplateExt(".txt").render("index", data);
+		view.setTemplateExt(".txt");
+		view.assign("model", data);
+
+		return view.render("index");
 	}
 
 	@Action DownloadResponse testDownload()
