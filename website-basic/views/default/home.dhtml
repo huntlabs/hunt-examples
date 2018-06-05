@@ -65,7 +65,7 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <h1 class="mt-5">Hunt demo</h1>
-                <p class="lead">The time now is {{ now }}</p>
+                <p class="lead">The time now is {{ model.now }}</p>
                 <ul class="list-unstyled text-left">
                     <li>
                         <a href="/show">show Response</a>
