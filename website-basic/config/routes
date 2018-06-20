@@ -20,7 +20,7 @@ GET		/redirect2					index.testRedirect2
 GET		/testView					index.showView
 GET		/get						index.getCache
 GET		/set						index.setCache
-
+GET		/create						index.createTask
 
 # GET		/						staticDir:wwwroot
 # access: http://127.0.0.1:8080/index.html

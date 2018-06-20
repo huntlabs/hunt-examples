@@ -21,8 +21,28 @@ import std.array;
 import std.stdio;
 import std.datetime;
 import std.json;
+import hunt.task;
+import hunt;
 
 version (USE_ENTITY) import app.model.index;
+
+
+class Task1 : Task
+{
+	this(int a,int b)
+	{
+		_a = a;
+		_b = b;
+	}
+	override void exec()
+	{
+		logDebug("taskid : ",this.tid,", do job ",_a," + ",_b ," = ",_a+_b);
+	}
+
+	private : 
+		int _a;
+		int _b;
+}
 
 class IpFilterMiddleware : MiddlewareInterface
 {
@@ -235,6 +255,26 @@ class IndexController : Controller
 		response.setContent(stringBuilder.data)
 			.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
 
+		return response;
+	}
+
+	@Action Response createTask()
+	{
+		string interval = request.get("interval");
+		string value1 = request.get("value1");
+		string value2 = request.get("value2");
+
+		auto t1 = new Task1(to!int(value1),to!int(value2));
+		t1.setFinish((Task t){
+			try{
+				logDebug("the task is finish : ",t.tid);
+			}catch(Exception e){}
+		});
+		auto taskid = Application.getInstance().task().put(t1,dur!"seconds"(to!int(interval)));
+
+		Response response = this.request.createResponse();
+		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
+		response.setContent(to!string(taskid));
 		return response;
 	}
 }

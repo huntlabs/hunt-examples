@@ -110,6 +110,10 @@
                     <li>
                         <a href="/get?key=company">get Cache (Use Postman with cookie set)</a>
                     </li>
+
+                    <li>
+                        <a href="/create?value1=1&value2=2&interval=2">Create Timer Task</a>
+                    </li>
                 </ul>
             </div>
         </div>
