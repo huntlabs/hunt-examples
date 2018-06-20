@@ -270,11 +270,24 @@ class IndexController : Controller
 				logDebug("the task is finish : ",t.tid);
 			}catch(Exception e){}
 		});
+		
 		auto taskid = Application.getInstance().task().put(t1,dur!"seconds"(to!int(interval)));
 
 		Response response = this.request.createResponse();
 		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
-		response.setContent(to!string(taskid));
+		response.setContent("the task id : " ~ to!string(taskid));
+		return response;
+	}
+
+	@Action Response stopTask()
+	{
+		string taskid = request.get("taskid");
+
+		auto ok = Application.getInstance().task.del(to!size_t(taskid));
+
+		Response response = this.request.createResponse();
+		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
+		response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
 		return response;
 	}
 }

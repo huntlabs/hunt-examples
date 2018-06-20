@@ -114,6 +114,14 @@
                     <li>
                         <a href="/create?value1=1&value2=2&interval=2">Create Timer Task</a>
                     </li>
+
+                    <li>
+                            <form action="/stop">
+                                Input Task id :
+                                <input type="text" name="taskid" value="">
+                                <input type="submit" value="Stop Task">
+                            </form> 
+                    </li>
                 </ul>
             </div>
         </div>
