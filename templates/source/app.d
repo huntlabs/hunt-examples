@@ -5,7 +5,7 @@ import hunt.view;
 
 void main()
 {
-	auto Env = GetViewInstance().env();
+	auto Env = GetViewObject().env();
 	JSONValue data;
 	data["name"] = "Cree";
 	data["alias"] = "Cree";
@@ -17,6 +17,7 @@ void main()
 	data["allow"] = false;
 	data["users"] = ["name" : "jeck", "age" : "18"];
 	data["nums"] = [3,5,2,1];
+	data["time"] = 1529568495;
 	
 	JSONValue user1;
 	user1["name"] = "cree";
@@ -119,5 +120,9 @@ void main()
 
 	writeln("------------------FUNCTION range-------------------------");
 	input = "{% for id in range(1,4) %}{{id}} {% endfor %}";
+	writeln("result : ",Env.render(input, data));
+
+	writeln("------------------FUNCTION date-------------------------");
+	input = "{{ date('Y-m-d H:i:s',time) }}";
 	writeln("result : ",Env.render(input, data));
 }
