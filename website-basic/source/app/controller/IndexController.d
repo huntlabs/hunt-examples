@@ -17,10 +17,13 @@ import hunt.view;
 
 import core.time;
 
+import std.conv;
 import std.array;
 import std.stdio;
 import std.datetime;
 import std.json;
+import std.string;
+
 import hunt.task;
 import hunt;
 
@@ -53,7 +56,7 @@ class IpFilterMiddleware : MiddlewareInterface
 
 	override Response onProcess(Request req, Response res)
 	{
-		writeln(req.session());
+		// writeln(req.session());
 		return null;
 	}
 }
@@ -72,7 +75,7 @@ class IndexController : Controller
 	{
 		logDebug("---running before----");
 
-		if (cmp(toUpper(request.method), HttpMethod.Options) == 0)
+		if (toUpper(request.method) == HttpMethod.Options)
 			return false;
 		return true;
 	}
@@ -99,9 +102,9 @@ class IndexController : Controller
 		// dfmt off
 		Response response = new Response("Show message(No @Action defined): Hello world<br/>"); 
 		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8")
-		.setCookie("name", "value", 10000)
-		.setCookie("name1", "value", 10000, "/path")
-		.cookie("name2", "value", 10000)
+		// .setCookie("name", "value", 10000)
+		// .setCookie("name1", "value", 10000, "/path")
+		// .cookie("name2", "value", 10000)
 		.header("X-Header-One", "Header Value")
 		.withHeaders(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"]);
 		// dfmt on
@@ -113,19 +116,19 @@ class IndexController : Controller
 		logDebug("---test_action----");
 		// dfmt off
 		response.setContent("Show message: Hello world<br/>")
-		.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8")
-		.setCookie("name", "value", 10000)
-		.setCookie("name1", "value", 10000, "/path")
-		.setCookie("name2", "value", 10000);
+		.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
+		// .setCookie("name", "value", 10000)
+		// .setCookie("name1", "value", 10000, "/path")
+		// .setCookie("name2", "value", 10000);
 		// dfmt on
 
 		return response;
 	}
 
-	@Action void showVoid()
-	{
-		logDebug("---show void----");
-	}
+	// @Action void showVoid()
+	// {
+	// 	logDebug("---show void----");
+	// }
 
 	@Action string showString()
 	{
@@ -271,11 +274,11 @@ class IndexController : Controller
 			}catch(Exception e){}
 		});
 		
-		auto taskid = Application.getInstance().task().put(t1,dur!"seconds"(to!int(interval)));
+		// auto taskid = Application.getInstance().task().put(t1,dur!"seconds"(to!int(interval)));
 
 		Response response = this.request.createResponse();
 		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
-		response.setContent("the task id : " ~ to!string(taskid));
+		// response.setContent("the task id : " ~ to!string(taskid));
 		return response;
 	}
 
@@ -283,11 +286,11 @@ class IndexController : Controller
 	{
 		string taskid = request.get("taskid");
 
-		auto ok = Application.getInstance().task.del(to!size_t(taskid));
+		// auto ok = Application.getInstance().task.del(to!size_t(taskid));
 
 		Response response = this.request.createResponse();
 		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
-		response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
+		// response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
 		return response;
 	}
 }

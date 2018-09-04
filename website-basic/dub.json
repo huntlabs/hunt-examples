@@ -5,10 +5,13 @@
 	"copyright": "Copyright (C) 2015-2018, Shanghai Putao Technology Co., Ltd",
 	"targetType": "executable",
 	"dependencies": {
-		"hunt": "~master"
+		"hunt-framework": "~master"
 	},
 	"subConfigurations": {
-		"kiss" : "debug",
-		"hunt" : "debug"
-	}
+		"hunt-framework" : "no-database"
+	},
+	"versions": [
+		"CollieDebugMode",
+		"KissDebugMode"
+	]
 }

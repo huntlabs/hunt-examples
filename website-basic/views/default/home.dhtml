@@ -70,9 +70,7 @@
                     <li>
                         <a href="/show">show Response</a>
                     </li>
-                    <li>
-                        <a href="/showvoid">show void</a>
-                    </li>
+
                     <li>
                         <a href="/showString">show string</a>
                     </li>
