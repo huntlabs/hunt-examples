@@ -11,9 +11,9 @@
 module app.controller.IndexController;
 
 import kiss.logger;
-import hunt.application;
-import hunt.http;
-import hunt.view;
+import hunt.framework.application;
+import hunt.framework.http;
+import hunt.framework.view;
 
 import core.time;
 
@@ -24,8 +24,7 @@ import std.datetime;
 import std.json;
 import std.string;
 
-import hunt.task;
-import hunt;
+import hunt.framework.task;
 
 version (USE_ENTITY) import app.model.index;
 

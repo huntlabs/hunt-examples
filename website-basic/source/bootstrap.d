@@ -12,7 +12,7 @@
 import std.stdio;
 import std.functional;
 
-import hunt;
+import hunt.framework;
 
 
 void main()

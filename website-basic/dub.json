@@ -8,7 +8,7 @@
 		"hunt-framework": "~master"
 	},
 	"subConfigurations": {
-		"hunt-framework" : "no-database"
+		"hunt-framework" : "empty"
 	},
 	"versions": [
 		"CollieDebugMode",
