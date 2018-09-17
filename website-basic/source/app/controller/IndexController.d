@@ -10,7 +10,7 @@
  */
 module app.controller.IndexController;
 
-import kiss.logger;
+import hunt.logging;
 import hunt.framework.application;
 import hunt.framework.http;
 import hunt.framework.view;
@@ -25,6 +25,8 @@ import std.json;
 import std.string;
 
 import hunt.framework.task;
+import hunt.http.codec.http.model.HttpMethod;
+import hunt.http.codec.http.model.HttpHeader;
 
 version (USE_ENTITY) import app.model.index;
 
@@ -74,7 +76,7 @@ class IndexController : Controller
 	{
 		logDebug("---running before----");
 
-		if (toUpper(request.method) == HttpMethod.Options)
+		if (toUpper(request.method) == HttpMethod.OPTIONS.asString())
 			return false;
 		return true;
 	}
@@ -99,8 +101,9 @@ class IndexController : Controller
 	{
 		logDebug("---show Action----");
 		// dfmt off
-		Response response = new Response("Show message(No @Action defined): Hello world<br/>"); 
-		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8")
+		Response response = new Response(this.request);
+		response.setContent("Show message(No @Action defined): Hello world<br/>");
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
 		// .setCookie("name", "value", 10000)
 		// .setCookie("name1", "value", 10000, "/path")
 		// .cookie("name2", "value", 10000)
@@ -115,7 +118,7 @@ class IndexController : Controller
 		logDebug("---test_action----");
 		// dfmt off
 		response.setContent("Show message: Hello world<br/>")
-		.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
+		.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
 		// .setCookie("name", "value", 10000)
 		// .setCookie("name1", "value", 10000, "/path")
 		// .setCookie("name2", "value", 10000);
@@ -169,7 +172,7 @@ class IndexController : Controller
 		company["name"] = "Putao";
 		company["city"] = "Shanghai";
 
-		JsonResponse res = new JsonResponse(company);
+		JsonResponse res = new JsonResponse(this.request, company);
 		return res;
 	}
 
@@ -196,13 +199,13 @@ class IndexController : Controller
 	@Action DownloadResponse testDownload()
 	{
 		string file = request.get("file", "putao.png");
-		DownloadResponse r = new DownloadResponse(file).loadData();
+		DownloadResponse r = new DownloadResponse(this.request, file).loadData();
 		return r;
 	}
 
 	@Action RedirectResponse testRedirect1()
 	{
-		RedirectResponse r = new RedirectResponse("https://www.putao.com/");
+		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
 		return r;
 	}
 
@@ -210,7 +213,7 @@ class IndexController : Controller
 	{
 		// TODO: Tasks pending completion -@zxp at 5/24/2018, 3:09:41 PM
 		// 
-		RedirectResponse r = new RedirectResponse("https://www.putao.com/");
+		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
 		return r;
 	}
 
@@ -231,8 +234,8 @@ class IndexController : Controller
 		stringBuilder.put("<br/>SessionId: " ~ session.sessionId);
 		stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
 
-		Response response = this.request.createResponse();
-		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
+		Response response = new Response(this.request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
 		response.setContent(stringBuilder.data);
 		return response;
 	}
@@ -253,9 +256,9 @@ class IndexController : Controller
 		stringBuilder.put("<br/>  SessionId: " ~ session.sessionId);
 		stringBuilder.put("<br/>  key: test, value: " ~ sessionValue);
 
-		Response response = this.request.createResponse();
+		Response response = new Response(this.request);
 		response.setContent(stringBuilder.data)
-			.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
+			.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
 
 		return response;
 	}
@@ -275,8 +278,8 @@ class IndexController : Controller
 		
 		// auto taskid = Application.getInstance().task().put(t1,dur!"seconds"(to!int(interval)));
 
-		Response response = this.request.createResponse();
-		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
+		Response response = new Response(this.request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
 		// response.setContent("the task id : " ~ to!string(taskid));
 		return response;
 	}
@@ -287,8 +290,8 @@ class IndexController : Controller
 
 		// auto ok = Application.getInstance().task.del(to!size_t(taskid));
 
-		Response response = this.request.createResponse();
-		response.setHeader(HttpHeaderCode.CONTENT_TYPE, "text/html;charset=utf-8");
+		Response response = new Response(this.request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
 		// response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
 		return response;
 	}

@@ -1,17 +1,16 @@
 {
 	"name": "website-basic",
-	"description": "A minimal D application.",
+	"description": "A basic example for Hunt-Framework.",
 	"license": "Apache-2.0",
 	"copyright": "Copyright (C) 2015-2018, Shanghai Putao Technology Co., Ltd",
 	"targetType": "executable",
 	"dependencies": {
-		"hunt-framework": "~master"
+        "hunt-framework": "~>2.0.0-beta.1"
 	},
 	"subConfigurations": {
 		"hunt-framework" : "empty"
 	},
 	"versions": [
-		"CollieDebugMode",
-		"KissDebugMode"
+		"HuntDebugMode"
 	]
 }
