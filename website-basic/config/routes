@@ -11,7 +11,11 @@
 *		/showString					index.showString
 *		/showBool					index.showBool
 *		/showInt				    index.showInt
-*		/showInt/{id}				index.showInt2
+*		/showInt/{id}				index.showInt
+#*		/person     				index.testRouting2
+*		/person/{id}				index.testRouting2
+*		/setCookie					index.setCookie
+*		/getCookie					index.getCookie
 *		/testJson1					index.testJson1
 *		/testJson2					index.testJson2
 GET		/download					index.testDownload

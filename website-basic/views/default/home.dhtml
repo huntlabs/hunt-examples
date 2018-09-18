@@ -81,10 +81,19 @@
                         <a href="/showInt">show int</a>
                     </li>
                     <li>
-                        <a href="/showInt/2018router">test router</a>
+                        <a href="/showInt/2018router">test router1</a>
+                    </li>
+                    <li>
+                        <a href="/person/2019">test router2</a>
                     </li>
                     <li>
                         <a href="/testView">test View</a>
+                    </li>
+                    <li>
+                        <a href="/setCookie">write Cookie</a>
+                    </li>
+                    <li>
+                        <a href="/getCookie">read Cookie</a>
                     </li>
                     <li>
                         <a href="/testJson1">test json1</a>

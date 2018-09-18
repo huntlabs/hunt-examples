@@ -25,8 +25,10 @@ import std.json;
 import std.string;
 
 import hunt.framework.task;
+import hunt.http.codec.http.model.Cookie;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.http.codec.http.model.HttpHeader;
+import hunt.http.codec.http.model.MimeTypes;
 
 version (USE_ENTITY) import app.model.index;
 
@@ -104,9 +106,6 @@ class IndexController : Controller
 		Response response = new Response(this.request);
 		response.setContent("Show message(No @Action defined): Hello world<br/>");
 		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
-		// .setCookie("name", "value", 10000)
-		// .setCookie("name1", "value", 10000, "/path")
-		// .cookie("name2", "value", 10000)
 		.header("X-Header-One", "Header Value")
 		.withHeaders(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"]);
 		// dfmt on
@@ -119,9 +118,6 @@ class IndexController : Controller
 		// dfmt off
 		response.setContent("Show message: Hello world<br/>")
 		.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
-		// .setCookie("name", "value", 10000)
-		// .setCookie("name1", "value", 10000, "/path")
-		// .setCookie("name2", "value", 10000);
 		// dfmt on
 
 		return response;
@@ -146,16 +142,58 @@ class IndexController : Controller
 
 	@Action int showInt()
 	{
-		logDebug("---show int----", this.request.get("id"));
+		logDebug("---test Routing1----", this.request.get("id"));
 		return 2018;
 	}
 
-	@Action string showInt2()
+	@Action string testRouting2()
 	{
-		logDebug("---show int----", this.request.get("id"));
-		return this.request.get("id");
+		logDebug("---test Routing2----", this.request.get("id"));
+		return "The router parameter(id) is: " ~ this.request.get("id");
 	}
 
+	@Action Response setCookie()
+	{
+		logDebug("---test Cookie ----");
+		Cookie cookie1 = new Cookie("name1", "value1", 1000);
+		Cookie cookie2 = new Cookie("name2", "value2", 1200, "/path");
+		Cookie cookie3 = new Cookie("name3", "value3", 4000);
+		// dfmt off
+		Response response = new Response(this.request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
+		.withCookie(cookie1)
+		.withCookie(cookie2)
+		.withCookie(cookie3)
+		.header("X-Header-One", "Header Value")
+		.withHeaders(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"]);
+		// dfmt on
+
+		
+		response.setContent("Three cookies are set.<br/>");
+		response.writeContent(cookie1.toString() ~ "<br/>");
+		response.writeContent(cookie2.toString() ~ "<br/>");
+		response.writeContent(cookie3.toString() ~ "<br/>");
+
+		return response;
+	}
+
+	@Action Response getCookie()
+	{
+
+		auto response = new Response(this.request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		
+		Cookie[] cookies = this.request.getCookies();
+		if(cookies.length>0) {
+			response.writeContent("Found cookies:<br/>");
+			foreach(Cookie c; cookies) {
+				response.writeContent(format("%s=%s<br/>", c.getName(), c.getValue()));
+			}
+		}
+		else
+			response.setContent("No cookie found.");
+		return response;
+	}
 
 	@Action JSONValue testJson1()
 	{
