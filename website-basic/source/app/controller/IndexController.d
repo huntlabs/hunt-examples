@@ -32,33 +32,27 @@ import hunt.http.codec.http.model.MimeTypes;
 
 version (USE_ENTITY) import app.model.index;
 
-
-class Task1 : Task
-{
-	this(int a,int b)
-	{
+class Task1 : Task {
+	this(int a, int b) {
 		_a = a;
 		_b = b;
 	}
-	override void exec()
-	{
-		logDebug("taskid : ",this.tid,", do job ",_a," + ",_b ," = ",_a+_b);
+
+	override void exec() {
+		logDebug("taskid : ", this.tid, ", do job ", _a, " + ", _b, " = ", _a + _b);
 	}
 
-	private : 
-		int _a;
-		int _b;
+private:
+	int _a;
+	int _b;
 }
 
-class IpFilterMiddleware : MiddlewareInterface
-{
-	override string name()
-	{
+class IpFilterMiddleware : MiddlewareInterface {
+	override string name() {
 		return IpFilterMiddleware.stringof;
 	}
 
-	override Response onProcess(Request req, Response res)
-	{
+	override Response onProcess(Request req, Response res) {
 		// writeln(req.session());
 		return null;
 	}
@@ -66,16 +60,13 @@ class IpFilterMiddleware : MiddlewareInterface
 
 /**
 */
-class IndexController : Controller
-{
+class IndexController : Controller {
 	mixin MakeController;
-	this()
-	{
+	this() {
 		this.addMiddleware(new IpFilterMiddleware());
 	}
 
-	override bool before()
-	{
+	override bool before() {
 		logDebug("---running before----");
 
 		if (toUpper(request.method) == HttpMethod.OPTIONS.asString())
@@ -83,14 +74,12 @@ class IndexController : Controller
 		return true;
 	}
 
-	override bool after()
-	{
+	override bool after() {
 		logDebug("---running after----");
 		return true;
 	}
 
-	@Action string index()
-	{
+	@Action string index() {
 		JSONValue model;
 		model["title"] = "Hunt demo";
 		model["now"] = Clock.currTime.toString();
@@ -99,8 +88,7 @@ class IndexController : Controller
 		return view.render("home");
 	}
 
-	Response showAction()
-	{
+	Response showAction() {
 		logDebug("---show Action----");
 		// dfmt off
 		Response response = new Response(this.request);
@@ -112,8 +100,7 @@ class IndexController : Controller
 		return response;
 	}
 
-	Response test_action()
-	{
+	Response test_action() {
 		logDebug("---test_action----");
 		// dfmt off
 		response.setContent("Show message: Hello world<br/>")
@@ -128,32 +115,27 @@ class IndexController : Controller
 	// 	logDebug("---show void----");
 	// }
 
-	@Action string showString()
-	{
+	@Action string showString() {
 		logDebug("---show string----");
 		return "Hello world.";
 	}
 
-	@Action bool showBool()
-	{
+	@Action bool showBool() {
 		logDebug("---show bool----");
 		return true;
 	}
 
-	@Action int showInt()
-	{
+	@Action int showInt() {
 		logDebug("---test Routing1----", this.request.get("id"));
 		return 2018;
 	}
 
-	@Action string testRouting2()
-	{
+	@Action string testRouting2() {
 		logDebug("---test Routing2----", this.request.get("id"));
 		return "The router parameter(id) is: " ~ this.request.get("id");
 	}
 
-	@Action Response setCookie()
-	{
+	@Action Response setCookie() {
 		logDebug("---test Cookie ----");
 		Cookie cookie1 = new Cookie("name1", "value1", 1000);
 		Cookie cookie2 = new Cookie("name2", "value2", 1200, "/path");
@@ -167,7 +149,7 @@ class IndexController : Controller
 		.header("X-Header-One", "Header Value")
 		.withHeaders(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"]);
 		// dfmt on
-		
+
 		response.setContent("Three cookies are set.<br/>");
 		response.writeContent(cookie1.toString() ~ "<br/>");
 		response.writeContent(cookie2.toString() ~ "<br/>");
@@ -176,16 +158,15 @@ class IndexController : Controller
 		return response;
 	}
 
-	@Action Response getCookie()
-	{
+	@Action Response getCookie() {
 
 		auto response = new Response(this.request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
-		
+
 		Cookie[] cookies = this.request.getCookies();
-		if(cookies.length>0) {
+		if (cookies.length > 0) {
 			response.writeContent("Found cookies:<br/>");
-			foreach(Cookie c; cookies) {
+			foreach (Cookie c; cookies) {
 				response.writeContent(format("%s=%s<br/>", c.getName(), c.getValue()));
 			}
 		}
@@ -194,16 +175,14 @@ class IndexController : Controller
 		return response;
 	}
 
-	@Action JSONValue testJson1()
-	{
+	@Action JSONValue testJson1() {
 		logDebug("---test Json1----");
 		JSONValue js;
 		js["message"] = "Hello world.";
 		return js;
 	}
 
-	@Action JsonResponse testJson2()
-	{
+	@Action JsonResponse testJson2() {
 		logDebug("---test Json2----");
 		JSONValue company;
 		company["name"] = "Putao";
@@ -213,8 +192,7 @@ class IndexController : Controller
 		return res;
 	}
 
-	@Action string showView()
-	{
+	@Action string showView() {
 		JSONValue data;
 		data["name"] = "Cree";
 		data["alias"] = "Cree";
@@ -233,29 +211,25 @@ class IndexController : Controller
 		return view.render("index");
 	}
 
-	@Action DownloadResponse testDownload()
-	{
+	@Action DownloadResponse testDownload() {
 		string file = request.get("file", "putao.png");
 		DownloadResponse r = new DownloadResponse(this.request, file).loadData();
 		return r;
 	}
 
-	@Action RedirectResponse testRedirect1()
-	{
+	@Action RedirectResponse testRedirect1() {
 		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
 		return r;
 	}
 
-	@Action RedirectResponse testRedirect2()
-	{
+	@Action RedirectResponse testRedirect2() {
 		// TODO: Tasks pending completion -@zxp at 5/24/2018, 3:09:41 PM
 		// 
 		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
 		return r;
 	}
 
-	@Action Response setCache()
-	{
+	@Action Response setCache() {
 		Session session = request.session();
 		session.set("test", "current value");
 
@@ -277,8 +251,7 @@ class IndexController : Controller
 		return response;
 	}
 
-	@Action Response getCache()
-	{
+	@Action Response getCache() {
 		Session session = request.session();
 		string sessionValue = session.get("test");
 
@@ -300,19 +273,20 @@ class IndexController : Controller
 		return response;
 	}
 
-	@Action Response createTask()
-	{
+	@Action Response createTask() {
 		string interval = request.get("interval");
 		string value1 = request.get("value1");
 		string value2 = request.get("value2");
 
-		auto t1 = new Task1(to!int(value1),to!int(value2));
-		t1.setFinish((Task t){
-			try{
-				logDebug("the task is finish : ",t.tid);
-			}catch(Exception e){}
+		auto t1 = new Task1(to!int(value1), to!int(value2));
+		t1.setFinish((Task t) {
+			try {
+				logDebug("the task is finish : ", t.tid);
+			}
+			catch (Exception e) {
+			}
 		});
-		
+
 		// auto taskid = Application.getInstance().task().put(t1,dur!"seconds"(to!int(interval)));
 
 		Response response = new Response(this.request);
@@ -321,8 +295,7 @@ class IndexController : Controller
 		return response;
 	}
 
-	@Action Response stopTask()
-	{
+	@Action Response stopTask() {
 		string taskid = request.get("taskid");
 
 		// auto ok = Application.getInstance().task.del(to!size_t(taskid));
