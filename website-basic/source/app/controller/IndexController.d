@@ -167,7 +167,6 @@ class IndexController : Controller
 		.header("X-Header-One", "Header Value")
 		.withHeaders(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"]);
 		// dfmt on
-
 		
 		response.setContent("Three cookies are set.<br/>");
 		response.writeContent(cookie1.toString() ~ "<br/>");
