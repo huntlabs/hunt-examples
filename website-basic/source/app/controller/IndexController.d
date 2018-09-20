@@ -230,7 +230,7 @@ class IndexController : Controller {
 	}
 
 	@Action Response setCache() {
-		Session session = request.session();
+		HttpSession session = request.session(true);
 		session.set("test", "current value");
 
 		string key = request.get("key");
@@ -242,18 +242,19 @@ class IndexController : Controller {
 		stringBuilder.put("Cache test: <br/>");
 		stringBuilder.put("key : " ~ key ~ " value : " ~ value);
 		stringBuilder.put("<br/><br/>Session Test: ");
-		stringBuilder.put("<br/>SessionId: " ~ session.sessionId);
+		stringBuilder.put("<br/>SessionId: " ~ session.getId());
 		stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
 
+		request.flush();
+
 		Response response = new Response(this.request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
 		return response;
 	}
 
 	@Action Response getCache() {
-		Session session = request.session();
-		string sessionValue = session.get("test");
+		HttpSession session = request.session();
 
 		string key = request.get("key");
 		string value = cache.get!(string)(key);
@@ -262,13 +263,16 @@ class IndexController : Controller {
 		stringBuilder.put("Cache test:<br/>");
 		stringBuilder.put(" key: " ~ key ~ ", value: " ~ value);
 
-		stringBuilder.put("<br/><br/>Session Test: ");
-		stringBuilder.put("<br/>  SessionId: " ~ session.sessionId);
-		stringBuilder.put("<br/>  key: test, value: " ~ sessionValue);
+		if(session !is null) {
+			string sessionValue = session.get("test");
+			stringBuilder.put("<br/><br/>Session Test: ");
+			stringBuilder.put("<br/>  SessionId: " ~ session.getId);
+			stringBuilder.put("<br/>  key: test, value: " ~ sessionValue);
+		}
 
 		Response response = new Response(this.request);
 		response.setContent(stringBuilder.data)
-			.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
+			.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
 
 		return response;
 	}

@@ -23,7 +23,7 @@ GET		/redirect1					index.testRedirect1
 GET		/redirect2					index.testRedirect2
 GET		/testView					index.showView
 GET		/get						index.getCache
-GET		/set						index.setCache
+*		/set						index.setCache
 GET		/create						index.createTask
 GET		/stop						index.stopTask
 

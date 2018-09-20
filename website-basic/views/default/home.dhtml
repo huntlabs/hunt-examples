@@ -112,10 +112,10 @@
                         <a href="/redirect2">test redirect2</a><br/><br/>
                     </li> -->
                     <li>
-                        <a href="/set?key=company&value=Putao">set Cache</a>
+                        <a href="/set?key=company&value=Putao">set Cache & session</a>
                     </li>
                     <li>
-                        <a href="/get?key=company">get Cache (Use Postman with cookie set)</a>
+                        <a href="/get?key=company">get Cache & session</a>
                     </li>
 
                     <li>
