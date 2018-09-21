@@ -27,5 +27,7 @@ GET		/get						index.getCache
 GET		/create						index.createTask
 GET		/stop						index.stopTask
 
+POST    /testForm1                  index.testForm1
+
 # GET		/						staticDir:wwwroot
 # access: http://127.0.0.1:8080/index.html

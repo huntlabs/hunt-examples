@@ -309,4 +309,10 @@ class IndexController : Controller {
 		// response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
 		return response;
 	}
+
+	@Action Response testForm1() {
+
+		Response response = new Response(this.request);
+		return response;
+	}
 }
