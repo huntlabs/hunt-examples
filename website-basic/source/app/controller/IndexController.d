@@ -223,8 +223,6 @@ class IndexController : Controller {
 	}
 
 	@Action RedirectResponse testRedirect2() {
-		// TODO: Tasks pending completion -@zxp at 5/24/2018, 3:09:41 PM
-		// 
 		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
 		return r;
 	}
@@ -263,7 +261,7 @@ class IndexController : Controller {
 		stringBuilder.put("Cache test:<br/>");
 		stringBuilder.put(" key: " ~ key ~ ", value: " ~ value);
 
-		if(session !is null) {
+		if (session !is null) {
 			string sessionValue = session.get("test");
 			stringBuilder.put("<br/><br/>Session Test: ");
 			stringBuilder.put("<br/>  SessionId: " ~ session.getId);
@@ -271,8 +269,8 @@ class IndexController : Controller {
 		}
 
 		Response response = new Response(this.request);
-		response.setContent(stringBuilder.data)
-			.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data).setHeader(HttpHeader.CONTENT_TYPE,
+				MimeTypes.Type.TEXT_HTML_UTF_8.asString());
 
 		return response;
 	}
@@ -291,28 +289,42 @@ class IndexController : Controller {
 			}
 		});
 
-		// auto taskid = Application.getInstance().task().put(t1,dur!"seconds"(to!int(interval)));
+		auto taskid = GetTaskMObject().put(t1, dur!"seconds"(to!int(interval)));
 
 		Response response = new Response(this.request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
-		// response.setContent("the task id : " ~ to!string(taskid));
+		response.setContent("the task id : " ~ to!string(taskid));
 		return response;
 	}
 
 	@Action Response stopTask() {
 		string taskid = request.get("taskid");
-
-		// auto ok = Application.getInstance().task.del(to!size_t(taskid));
-
 		Response response = new Response(this.request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
-		// response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
+
+		if (taskid.empty()) {
+			response.setContent("The task id is empty!");
+		}
+		else {
+			auto ok = GetTaskMObject.del(to!size_t(taskid));
+			response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
+			response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
+
+		}
 		return response;
 	}
 
 	@Action Response testForm1() {
-
 		Response response = new Response(this.request);
+
+		Appender!string stringBuilder;
+		stringBuilder.put("<p>Form data:<p/>");
+		foreach (string key, string value; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ value ~ "<br/>");
+		}
+
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data);
+
 		return response;
 	}
 }
