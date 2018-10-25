@@ -17,7 +17,14 @@ import hunt.framework;
 
 void main()
 {
-	auto app = Application.getInstance();
-	app.run();
+	Application app = Application.getInstance();
+	app.webSocket("/ws")
+    .onConnect((conn) {
+        conn.sendText("Current time: " ~ Clock.currTime.toString());
+    })
+    .onText((text, conn) { 
+        writeln("The server received: " ~ text); 
+        conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
+    }).start();
 }
 
