@@ -158,7 +158,7 @@ class MessageHeadersTests {
 	@Test
 	void testHeaderKeys() {
 		Map!(string, Object) map = new HashMap!(string, Object)();
-		map.put("key1", new String("val1"));
+		map.put("key1", new Nullable!(string)("val1"));
 		map.put("key2", new Integer(123));
 		MessageHeaders headers = new MessageHeaders(map);
 		string[] keys = headers.keySet();

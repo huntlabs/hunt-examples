@@ -13,18 +13,33 @@ import std.stdio;
 import std.functional;
 
 import hunt.framework;
+import std.datetime;
 
+import hunt.framework.messaging.simp.config.MessageBrokerRegistry;
+import hunt.framework.websocket.config.annotation.StompEndpointRegistry;
 
 void main()
 {
-	Application app = Application.getInstance();
-	app.webSocket("/ws")
-    .onConnect((conn) {
-        conn.sendText("Current time: " ~ Clock.currTime.toString());
+	// Application app = Application.getInstance();
+	// app.webSocket("/ws")
+    // .onConnect((conn) {
+    //     conn.sendText("Current time: " ~ Clock.currTime.toString());
+    // })
+    // .onText((text, conn) { 
+    //     writeln("The server received: " ~ text); 
+    //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
+    // }).start();
+
+    Application app = Application.getInstance();
+	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
     })
-    .onText((text, conn) { 
-        writeln("The server received: " ~ text); 
-        conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
-    }).start();
+    .onStompEndpointsRegister((StompEndpointRegistry registry) {
+        // https://blog.csdn.net/a617137379/article/details/78765025?utm_source=blogxgwz6
+        // https://github.com/rstoyanchev/spring-websocket-portfolio/issues/14
+        registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
+    })
+    .start();
 }
 
