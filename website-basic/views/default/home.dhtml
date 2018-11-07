@@ -124,6 +124,9 @@
                     <li>
                         <a href="/get?key=company">get Cache & session</a>
                     </li>
+                    <li>
+                        <a href="/WebSocket.html" target="blank">Test WebSocket</a>
+                    </li>
 
                     <li>
                         <a href="/create?value1=1&value2=2&interval=2">Create Timer Task</a>
