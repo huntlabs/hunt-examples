@@ -62,6 +62,7 @@ class IpFilterMiddleware : MiddlewareInterface {
 */
 class IndexController : Controller {
 	mixin MakeController;
+	
 	this() {
 		this.addMiddleware(new IpFilterMiddleware());
 	}
