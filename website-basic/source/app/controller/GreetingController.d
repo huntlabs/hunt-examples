@@ -3,6 +3,8 @@ module app.controller.GreetingController;
 import hunt.framework.websocket.WebSocketController;
 import hunt.framework.messaging.annotation;
 
+import hunt.logging;
+
 import std.datetime;
 
 class GreetingController : WebSocketController {
@@ -31,18 +33,19 @@ class GreetingController : WebSocketController {
         WebSocketControllerHelper.registerController!GreetingController();
     }
 
-    alias ReturnHandler = void delegate(Object, TypeInfo);
-    void __invoke(string methodName, MessageBase message, ReturnHandler handler ) {
+    
+    override protected void __invoke(string methodName, MessageBase message, ReturnHandler handler ) {
+        version(HUNT_DEBUG) info("invoking: ", methodName);
         switch(methodName) {
             case "greeting" : {
                 string r = greeting("message");
-                // if(handler !is null) 
-                //     handler(r, typeid(string));
+                if(handler !is null) 
+                    handler(new Nullable!string(r), typeid(string));
                 break;
             }
 
             default : {
-
+                version(HUNT_DEBUG) warning("do nothing for " ~ methodName);
             }
         }
     }
