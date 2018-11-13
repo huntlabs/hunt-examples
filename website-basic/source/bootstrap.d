@@ -18,6 +18,9 @@ import std.datetime;
 import hunt.framework.messaging.simp.config.MessageBrokerRegistry;
 import hunt.framework.websocket.config.annotation.StompEndpointRegistry;
 
+
+
+
 void main()
 {
 	// Application app = Application.getInstance();
@@ -29,6 +32,18 @@ void main()
     //     writeln("The server received: " ~ text); 
     //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
     // }).start();
+
+    // import hunt.util.serialize;
+    // import app.model.Greeting;
+    // import std.json;
+    // import std.stdio;
+    // import std.datetime;
+    // Greeting gt = new Greeting();
+    //     gt.content = "Hello, " ~ "!";
+    //     gt.creationTime = Clock.currTime;
+    //     gt.currentTime = Clock.currStdTime;
+    // JSONValue jv = toJSON(gt);
+    // writeln("====>", jv, "====");
 
     Application app = Application.getInstance();
 	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
