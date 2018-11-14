@@ -9,12 +9,22 @@ import hunt.framework.messaging.annotation;
 import hunt.logging;
 
 import std.datetime;
+import std.json;
 
 class GreetingController : WebSocketController {
+
+    /**
+     * generated on compile-time
+     */
+    mixin ControllerExtensions;
 
     SysTime creationTime;
     
     this() {
+        super();
+    }
+
+    override void initialization() {
         creationTime = Clock.currTime;
     }
 
@@ -27,84 +37,118 @@ class GreetingController : WebSocketController {
         gt.currentTime = Clock.currStdTime;
         return gt; 
     }
+    // string greeting(HelloMessage message) {
+    //     Greeting gt = new Greeting();
+    //     gt.content = "Hello, " ~ message.name ~ "!";
+    //     gt.creationTime = creationTime;
+    //     gt.currentTime = Clock.currStdTime;
+    //     return gt.toString(); 
+    // }
+    // int greeting(HelloMessage message) {
+    //     Greeting gt = new Greeting();
+    //     gt.content = "Hello, " ~ message.name ~ "!";
+    //     gt.creationTime = creationTime;
+    //     gt.currentTime = Clock.currStdTime;
+    //     return 2018; 
+    // }
 
-    string greeting1(string message) {
-        return "Hello " ~ message ~ "! CreationTime: " ~ creationTime.toString() ~ 
+// TODO: Tasks pending completion -@zxp at 11/14/2018, 4:34:27 PM
+// 
+    // @MessageMapping(["/hello1"])
+    // @SendTo(["/topic/greetings1"])
+    // string greeting(string name) {
+    // // Greeting greeting(ref JSONValue __body) {
+    //     Greeting gt = new Greeting();
+    //     gt.content = "Hello, " ~ name ~ "!";
+    //     gt.creationTime = creationTime;
+    //     gt.currentTime = Clock.currStdTime;
+    //     return gt.toString(); 
+    // }
+
+    @MessageMapping(["/hello3"])
+    @SendTo(["/topic/greetings3"])
+    int greeting0(string name, ref const(JSONValue) __body, int age) {
+        return age;
+    }
+
+
+    @MessageMapping(["/hello4"])
+    @SendTo(["/topic/greetings4"])
+    string greeting1(string name, HelloMessage message) {
+        return "Hello " ~ name ~ "! CreationTime: " ~ creationTime.toString() ~ 
             " CurrentTime:" ~ Clock.currTime.toString();
     }
 
-    string greeting2(string message) {
-
-        return "Hello " ~ message ~ "! CreationTime: " ~ creationTime.toString() ~ 
-            " CurrentTime:" ~ Clock.currTime.toString();
+    @MessageMapping(["/hello5"])
+    @SendTo(["/topic/greetings5"])
+    void greetingVoid() {
+        // return "Hello world! CreationTime: " ~ creationTime.toString() ~ 
+        //     " CurrentTime:" ~ Clock.currTime.toString();
     }
 
-    /**
-     * generated on compile-time
-     */
-    import hunt.framework.messaging.Message;
-    import hunt.framework.messaging.converter.AbstractMessageConverter;
-    import hunt.framework.messaging.converter.MessageConverter;
-    import hunt.framework.messaging.converter.MessageConverterHelper;
-    import hunt.http.codec.http.model.MimeTypes;
-    import hunt.lang.Nullable;
-    import hunt.logging;
-    import hunt.util.serialize;
-    import std.json;
+    // import hunt.framework.messaging.Message;
+    // import hunt.framework.messaging.converter.AbstractMessageConverter;
+    // import hunt.framework.messaging.converter.MessageConverter;
+    // import hunt.framework.messaging.converter.MessageConverterHelper;
+    // import hunt.http.codec.http.model.MimeTypes;
+    // import hunt.lang.Nullable;
+    // import hunt.logging;
+    // import hunt.util.serialize;
+    // import std.json;
     
-    shared static this() {
-        WebSocketControllerHelper.registerController!GreetingController();
-    }
+    // shared static this() {
+    //     WebSocketControllerHelper.registerController!GreetingController();
+    // }
 
     
-    override protected void __invoke(string methodName, MessageBase message, ReturnHandler handler ) {
+    // override protected void __invoke(string methodName, MessageBase message, ReturnHandler handler ) {
 
-        version(HUNT_DEBUG) info("invoking: ", methodName);
+    //     version(HUNT_DEBUG) info("invoking: ", methodName);
         
-        MessageConverter messageConverter = 
-            annotationHandler.getMessageConverter();
+    //     MessageConverter messageConverter = 
+    //         annotationHandler.getMessageConverter();
 
-        // MimeType mt = messageConverter.getMimeType();
-        // info(mt.toString());
+    //     // MimeType mt = messageConverter.getMimeType();
+    //     // info(mt.toString());
             
-        Object ob = messageConverter.fromMessage(message, typeid(JSONValue));
-        if(ob is null)
-            warning("no payload");
-        else {
-             version(HUNT_DEBUG) infof("playload: %s", typeid(ob));
-        }
+    //     Object ob = messageConverter.fromMessage(message, typeid(JSONValue));
+    //     if(ob is null)
+    //         warning("no payload");
+    //     else {
+    //          version(HUNT_DEBUG) infof("playload: %s", typeid(ob));
+    //     }
 
-        switch(methodName) {
-            case "greeting" : {
-                // string str = MessageConverterHelper.fromMessage!string(message);
-                // auto temp = cast(Nullable!string) ob;
-                auto temp = cast(Nullable!JSONValue) ob;
-                if(temp is null) {
-                    warningf("Wrong pyaload type: %s, handler: %s", typeid(ob), methodName);
-                    return;
-                }
+    //     switch(methodName) {
+    //         case "greeting" : {
+    //             // string str = MessageConverterHelper.fromMessage!string(message);
+    //             // auto temp = cast(Nullable!string) ob;
+    //             auto temp = cast(Nullable!JSONValue) ob;
+    //             if(temp is null) {
+    //                 warningf("Wrong pyaload type: %s, handler: %s", typeid(ob), methodName);
+    //                 return;
+    //             }
 
-                JSONValue parametersInJson = temp.value;
-                HelloMessage parameterModel = toObject!(HelloMessage)(parametersInJson);
-                string str = parameterModel.name;
-                version(HUNT_DEBUG) tracef("incoming message: %s", str);
+    //             JSONValue parametersInJson = temp.value;
+    //             HelloMessage parameterModel = toObject!(HelloMessage)(parametersInJson);
+    //             string str = parameterModel.name;
+    //             version(HUNT_DEBUG) tracef("incoming message: %s", str);
 
-                auto r = greeting(parameterModel);
+    //             auto r = greeting(parameterModel);
 
-                if(handler !is null) {
-                    JSONValue resultInJson = toJson(r);
-                    string resultInString = resultInJson.toString();
-                    version(HUNT_DEBUG) tracef("outgoing message: %s", resultInString);
-                    handler(new Nullable!string(resultInString), typeid(string));  
-                }          
+    //             if(handler !is null) {
+    //                 JSONValue resultInJson = toJson(r);
+    //                 string resultInString = resultInJson.toString();
+    //                 version(HUNT_DEBUG) tracef("outgoing message: %s", resultInString);
+    //                 handler(new Nullable!string(resultInString), typeid(string));  
+    //             }          
 
-                break;
-            }
+    //             break;
+    //         }
 
-            default : {
-                version(HUNT_DEBUG) warning("do nothing for invoking " ~ methodName);
-            }
-        }
-    }
+    //         default : {
+    //             version(HUNT_DEBUG) warning("do nothing for invoking " ~ methodName);
+    //         }
+    //     }
+    // }
 
 }

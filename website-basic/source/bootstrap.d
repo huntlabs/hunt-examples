@@ -33,17 +33,6 @@ void main()
     //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
     // }).start();
 
-    // import hunt.util.serialize;
-    // import app.model.Greeting;
-    // import std.json;
-    // import std.stdio;
-    // import std.datetime;
-    // Greeting gt = new Greeting();
-    //     gt.content = "Hello, " ~ "!";
-    //     gt.creationTime = Clock.currTime;
-    //     gt.currentTime = Clock.currStdTime;
-    // JSONValue jv = toJSON(gt);
-    // writeln("====>", jv, "====");
 
     Application app = Application.getInstance();
 	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
@@ -58,3 +47,35 @@ void main()
     .start();
 }
 
+
+void testJson(){
+
+    // import hunt.util.serialize;
+    // import app.model.Greeting;
+    // import hunt.logging;
+    // import std.json;
+    // import std.stdio;
+    // import std.datetime;
+    // import hunt.util.JsonHelper;
+
+	// LogConf conf;
+	// //conf.disableConsole = true;
+	// //conf.level = 1;
+	// logLoadConf(conf);
+
+    // Greeting gt = new Greeting();
+    //     gt.content = "Hello, world!";
+    //     gt.creationTime = Clock.currTime;
+    //     gt.currentTime = Clock.currStdTime;
+    // JSONValue jv = toJSON(gt);
+    // // writeln("====>", jv, "====");
+
+    // Greeting gt1 = JsonHelper.getAs!(Greeting)(jv);
+    // // Greeting gt1 = toObject!(Greeting)(jv);
+    // assert(gt.content == gt1.content);
+
+    // JSONValue parametersInJson;
+    // parametersInJson["name"] = "Hunt";
+    // string parameterModel = JsonHelper.getItemAs!(string)(parametersInJson, "name");
+    // assert(parameterModel == "Hunt");
+}
