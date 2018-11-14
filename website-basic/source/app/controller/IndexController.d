@@ -47,7 +47,7 @@ private:
 	int _b;
 }
 
-class IpFilterMiddleware : MiddlewareInterface {
+class IpFilterMiddleware : Middleware {
 	override string name() {
 		return IpFilterMiddleware.stringof;
 	}
