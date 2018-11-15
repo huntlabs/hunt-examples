@@ -4,7 +4,7 @@ import app.model.HelloMessage;
 import app.model.Greeting;
 
 import hunt.framework.websocket.WebSocketController;
-import hunt.framework.messaging.annotation;
+import hunt.stomp.annotation;
 
 import hunt.logging;
 
@@ -89,10 +89,10 @@ class GreetingController : WebSocketController {
         //     " CurrentTime:" ~ Clock.currTime.toString();
     }
 
-    // import hunt.framework.messaging.Message;
-    // import hunt.framework.messaging.converter.AbstractMessageConverter;
-    // import hunt.framework.messaging.converter.MessageConverter;
-    // import hunt.framework.messaging.converter.MessageConverterHelper;
+    // import hunt.stomp.Message;
+    // import hunt.stomp.converter.AbstractMessageConverter;
+    // import hunt.stomp.converter.MessageConverter;
+    // import hunt.stomp.converter.MessageConverterHelper;
     // import hunt.http.codec.http.model.MimeTypes;
     // import hunt.lang.Nullable;
     // import hunt.logging;
