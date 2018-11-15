@@ -18,6 +18,9 @@ class GreetingController : WebSocketController {
      */
     mixin ControllerExtensions;
 
+    // BUG: Reported defects -@zxp at 11/15/2018, 10:23:57 AM
+    // See also: https://forum.dlang.org/post/mailman.4142.1538654511.29801.digitalmars-d-learn@puremagic.com
+    // private SysTime creationTime;
     SysTime creationTime;
     
     this() {
