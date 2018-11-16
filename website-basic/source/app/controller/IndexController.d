@@ -14,6 +14,7 @@ import hunt.logging;
 import hunt.framework.application;
 import hunt.framework.http;
 import hunt.framework.view;
+import hunt.validation;
 
 import core.time;
 
@@ -31,6 +32,7 @@ import hunt.http.codec.http.model.HttpHeader;
 import hunt.http.codec.http.model.MimeTypes;
 
 version (USE_ENTITY) import app.model.index;
+import app.model.ValidForm;
 
 class Task1 : Task {
 	this(int a, int b) {
@@ -47,7 +49,7 @@ private:
 	int _b;
 }
 
-class IpFilterMiddleware : MiddlewareInterface {
+class IpFilterMiddleware : Middleware {
 	override string name() {
 		return IpFilterMiddleware.stringof;
 	}
@@ -131,9 +133,9 @@ class IndexController : Controller {
 		return 2018;
 	}
 
-	@Action string testRouting2() {
-		logDebug("---test Routing2----", this.request.get("id"));
-		return "The router parameter(id) is: " ~ this.request.get("id");
+	@Action string testRouting2(int id) {
+		logDebug("---test Routing2----", this.request.queries);
+		return "The router parameter(id) is: " ~ id.to!string;
 	}
 
 	@Action Response setCookie() {
@@ -328,4 +330,25 @@ class IndexController : Controller {
 
 		return response;
 	}
+
+
+	@Action
+	Response testValidForm(User user) {
+
+		auto result = user.valid();
+		logDebug("user( %s , %s , %s ) ,isValid : %s , valid result : %s ".format(user.name,user.age,user.email,result.isValid,result.messages()));
+		Response response = new Response(this.request);
+
+		Appender!string stringBuilder;
+		stringBuilder.put("<p>Form data:<p/>");
+		foreach (string key, string value; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ value ~ "<br/>");
+		}
+
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data);
+
+		return response;
+	}
 }
+

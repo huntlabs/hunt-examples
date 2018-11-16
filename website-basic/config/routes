@@ -13,7 +13,7 @@
 *		/showInt				    index.showInt
 *		/showInt/{id}				index.showInt
 #*		/person     				index.testRouting2
-*		/person/{id}				index.testRouting2
+*		/person/{id<\d+>}				index.testRouting2
 *		/setCookie					index.setCookie
 *		/getCookie					index.getCookie
 *		/testJson1					index.testJson1
@@ -28,6 +28,9 @@ GET		/create						index.createTask
 GET		/stop						index.stopTask
 
 POST    /testForm1                  index.testForm1
+
+POST    /testValidForm                  index.testValidForm
+
 
 # GET		/						staticDir:wwwroot
 # access: http://127.0.0.1:8080/index.html

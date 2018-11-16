@@ -4,7 +4,7 @@
 		"gaoxincheng"
 	],
 	"dependencies": {
-		"hunt": "~>1.0.0-beta.1"
+		"hunt-framework":{"path":"../../hunt-framework"}
 	},
 	"description": "A minimal D application.",
 	"copyright": "Copyright © 2018, gaoxincheng",

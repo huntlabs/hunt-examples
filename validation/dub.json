@@ -1,6 +1,8 @@
 {
-	"name": "website-basic",
-	"description": "A basic example for Hunt-Framework.",
+	"name": "validation",
+	"authors": [
+		"gaoxincheng"
+	],
 	"license": "Apache-2.0",
 	"copyright": "Copyright (C) 2015-2018, Shanghai Putao Technology Co., Ltd",
 	"targetType": "executable",

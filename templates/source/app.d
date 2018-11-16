@@ -1,7 +1,7 @@
 import std.stdio;
 import std.json;
 
-import hunt.view;
+import hunt.framework.view;
 
 void main()
 {
