@@ -11,7 +11,7 @@
 		"hunt-framework" : "empty"
 	},
 	"versions": [
-		"HUNT_DEBUG1",
+		"HUNT_DEBUG",
 		"NO_TASKPOOL"
 	]
 }
