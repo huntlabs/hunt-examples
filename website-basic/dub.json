@@ -5,12 +5,13 @@
 	"copyright": "Copyright (C) 2015-2018, Shanghai Putao Technology Co., Ltd",
 	"targetType": "executable",
 	"dependencies": {
-        "hunt-framework":{"path":"../../hunt-framework"} 
+        "hunt-framework": "~>2.0.0-beta.1"
 	},
 	"subConfigurations": {
 		"hunt-framework" : "empty"
 	},
 	"versions": [
-		"HuntDebugMode"
+		"HUNT_DEBUG1",
+		"NO_TASKPOOL"
 	]
 }
