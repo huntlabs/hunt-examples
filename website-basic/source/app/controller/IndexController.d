@@ -29,7 +29,7 @@ import hunt.framework.task;
 import hunt.http.codec.http.model.Cookie;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.http.codec.http.model.HttpHeader;
-import hunt.http.codec.http.model.MimeTypes;
+import hunt.util.MimeType;
 
 version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
@@ -164,7 +164,7 @@ class IndexController : Controller {
 	@Action Response getCookie() {
 
 		auto response = new Response(this.request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 
 		Cookie[] cookies = this.request.getCookies();
 		if (cookies.length > 0) {
@@ -249,7 +249,7 @@ class IndexController : Controller {
 		request.flush();
 
 		Response response = new Response(this.request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
 		return response;
 	}
@@ -273,7 +273,7 @@ class IndexController : Controller {
 
 		Response response = new Response(this.request);
 		response.setContent(stringBuilder.data).setHeader(HttpHeader.CONTENT_TYPE,
-				MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+				MimeType.TEXT_HTML_UTF_8.asString());
 
 		return response;
 	}
@@ -325,7 +325,7 @@ class IndexController : Controller {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ value ~ "<br/>");
 		}
 
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
 
 		return response;
