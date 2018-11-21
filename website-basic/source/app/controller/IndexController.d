@@ -345,7 +345,7 @@ class IndexController : Controller {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ value ~ "<br/>");
 		}
 
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
 
 		return response;

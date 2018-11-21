@@ -32,21 +32,6 @@ void main()
     // }).start();
 
 
-    Application app = Application.getInstance();
-	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
-    })
-    .onStompEndpointsRegister((StompEndpointRegistry registry) {
-        // https://blog.csdn.net/a617137379/article/details/78765025?utm_source=blogxgwz6
-        // https://github.com/rstoyanchev/spring-websocket-portfolio/issues/14
-        registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
-    })
-    .onText((text, conn) { 
-        writeln("The server received: " ~ text); 
-        conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
-    }).start();
-
     // Application app = Application.getInstance();
 	// app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
     //     config.enableSimpleBroker("/topic");
@@ -57,5 +42,20 @@ void main()
     //     // https://github.com/rstoyanchev/spring-websocket-portfolio/issues/14
     //     registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
     // })
-    // .start();
+    // .onText((text, conn) { 
+    //     writeln("The server received: " ~ text); 
+    //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
+    // }).start();
+
+    Application app = Application.getInstance();
+	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
+    })
+    .onStompEndpointsRegister((StompEndpointRegistry registry) {
+        // https://blog.csdn.net/a617137379/article/details/78765025?utm_source=blogxgwz6
+        // https://github.com/rstoyanchev/spring-websocket-portfolio/issues/14
+        registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
+    })
+    .start();
 }
