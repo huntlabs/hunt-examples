@@ -5,7 +5,7 @@ import hunt.framework.http.Form;
 
 class User : Form
 {
-	mixin MakeValid;
+	mixin MakeForm;
 
 	@Range(3,6)
 	int age;

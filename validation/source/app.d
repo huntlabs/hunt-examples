@@ -2,16 +2,14 @@ import std.stdio;
 import std.traits;
 
 import hunt.framework;
-import hunt.validation;
 import hunt.logging;
 import std.regex;
-
 
 
 class User : Form
 {
 
-	mixin MakeValid;
+	mixin MakeForm;
 
 	@Min(2)
 	@Max(10)
