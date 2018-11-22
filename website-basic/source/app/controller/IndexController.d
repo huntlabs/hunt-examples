@@ -345,10 +345,39 @@ class IndexController : Controller {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ value ~ "<br/>");
 		}
 
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
 
 		return response;
+	}
+
+	@Action
+	Response testMultiLang() {
+		logDebug("url : ",request.url);
+		Cookie cookie;
+		// dfmt off
+		Response response = new Response(this.request);
+		if(request.url == "/zh")
+		{
+			cookie = new Cookie("Content-Language","zh-cn");
+			view.setLocale("zh-cn");
+		}
+		else
+		{
+			cookie = new Cookie("Content-Language","en-us");
+			view.setLocale("en-us");
+		}
+
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
+		.withCookie(cookie);
+
+
+		JSONValue model;
+		model["now"] = Clock.currTime.toString();
+		view.setTemplateExt(".dhtml");
+		view.assign("model", model);
+		return response.setContent(view.render("home"));
+
 	}
 }
 

@@ -125,4 +125,8 @@ void main()
 	writeln("------------------FUNCTION date-------------------------");
 	input = "{{ date('Y-m-d H:i:s',time) }}";
 	writeln("result : ",Env.render(input, data));
+
+	writeln("------------------FUNCTION lang-------------------------");
+	input = "{{ lang(\"message.hello-world\") }}";
+	writeln("result : ",Env.render(input, data));
 }
