@@ -11,7 +11,7 @@ import hunt.logging;
 import std.datetime;
 import std.json;
 
-// // class GreetingController : WebSocketController {
+// class GreetingController : WebSocketController {
 
 //     /**
 //      * generated on compile-time
