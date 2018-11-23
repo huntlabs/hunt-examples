@@ -347,6 +347,11 @@ class IndexController : Controller {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
 		}
 
+		stringBuilder.put("<br/>");
+		stringBuilder.put("validation result:<br/>");
+		stringBuilder.put(format("isValid : %s , valid result : %s<br/>", 
+			result.isValid,result.messages()));
+
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
 
