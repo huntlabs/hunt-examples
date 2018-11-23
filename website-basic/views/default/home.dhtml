@@ -182,8 +182,10 @@
                                 </div>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" name="check1" id="exampleCheck1">
-                                <label for="exampleCheck1">Check me out</label>
+                                <input type="checkbox" name="role" value="1" id="exampleCheck1">
+                                <label for="exampleCheck1">Manager</label>
+                                <input type="checkbox" name="role" value="2" id="exampleCheck2">
+                                <label for="exampleCheck2">Employee</label>
                             </div>
                         </div>
                         <!-- /.card-body -->

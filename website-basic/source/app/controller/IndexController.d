@@ -318,11 +318,12 @@ class IndexController : Controller {
 
 	@Action Response testForm1() {
 		Response response = new Response(this.request);
+		import std.conv;
 
 		Appender!string stringBuilder;
 		stringBuilder.put("<p>Form data:<p/>");
-		foreach (string key, string value; this.request.xFormData()) {
-			stringBuilder.put(" name: " ~ key ~ ", value: " ~ value ~ "<br/>");
+		foreach (string key, string[] values; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
 		}
 
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
@@ -336,13 +337,14 @@ class IndexController : Controller {
 	Response testValidForm(User user) {
 
 		auto result = user.valid();
-		logDebug("user( %s , %s , %s ) ,isValid : %s , valid result : %s ".format(user.name,user.age,user.email,result.isValid,result.messages()));
+		logDebug(format("user( %s , %s , %s ) ,isValid : %s , valid result : %s ",
+			user.name,user.age,user.email,result.isValid,result.messages()));
 		Response response = new Response(this.request);
 
 		Appender!string stringBuilder;
 		stringBuilder.put("<p>Form data:<p/>");
-		foreach (string key, string value; this.request.xFormData()) {
-			stringBuilder.put(" name: " ~ key ~ ", value: " ~ value ~ "<br/>");
+		foreach (string key, string[] values; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
 		}
 
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
