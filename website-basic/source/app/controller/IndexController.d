@@ -321,10 +321,16 @@ class IndexController : Controller {
 		import std.conv;
 
 		Appender!string stringBuilder;
-		stringBuilder.put("<p>Form data:<p/>");
+		stringBuilder.put("<p>Form data from xFormData:<p/>");
 		foreach (string key, string[] values; this.request.xFormData()) {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
 		}
+
+		stringBuilder.put("<p>Form data from post:<p/>");
+		foreach (string key, string[] values; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ this.request.post(key) ~ "<br/>");
+		}
+
 
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
