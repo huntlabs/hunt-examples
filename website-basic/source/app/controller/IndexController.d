@@ -221,6 +221,8 @@ class IndexController : Controller {
 	}
 
 	@Action RedirectResponse testRedirect1() {
+		HttpSession session = request.session(true);
+		session.set("test", "for RedirectResponse");
 		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
 		return r;
 	}
@@ -246,7 +248,7 @@ class IndexController : Controller {
 		stringBuilder.put("<br/>SessionId: " ~ session.getId());
 		stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
 
-		request.flush();
+		// request.flush(); // Can be called automatically by Response.done.
 
 		Response response = new Response(this.request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
