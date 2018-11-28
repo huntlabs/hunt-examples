@@ -10,12 +10,6 @@
  */
 module app.controller.IndexController;
 
-import hunt.logging;
-import hunt.framework.application;
-import hunt.framework.http;
-import hunt.framework.view;
-import hunt.validation;
-
 import core.time;
 
 import std.conv;
@@ -25,11 +19,8 @@ import std.datetime;
 import std.json;
 import std.string;
 
-import hunt.framework.task;
-import hunt.http.codec.http.model.Cookie;
-import hunt.http.codec.http.model.HttpMethod;
-import hunt.http.codec.http.model.HttpHeader;
-import hunt.util.MimeType;
+import hunt.framework;
+import hunt.logging;
 
 version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
