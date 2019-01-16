@@ -67,21 +67,21 @@ void main()
 	writeln("result : ",Env.render(input, data));
 
 	writeln("---------Render file with `include`-----------");
-	writeln("result : ", Env.render_file("index.txt", data));
+	writeln("result : ", Env.renderFile("index.txt", data));
 
 	writeln("---------------Render file--------------------");
-	writeln("result : ", Env.render_file("main.txt", data));
+	writeln("result : ", Env.renderFile("main.txt", data));
 
 	writeln("---------Render file with `include` & save to file-----------");
 	Env.write("index.txt", data,"index.html");
 
 
 	writeln("------------------Deep for-------------------------");
-	input = "{% for user in userinfo %}{{user.hobby.1}} {% endfor %}";
+	input = "{% for user in userinfo %}{{user.hobby[1]}} {% endfor %}";
 	writeln("result : ",Env.render(input, data2));
 
 	writeln("------------------Deep for 2-------------------------");
-	input = "{{userinfo.1.name}}";
+	input = "{{userinfo[1].name}}";
 	writeln("result : ",Env.render(input, data2));
 
 	writeln("------------------Deep for-------------------------");
@@ -89,11 +89,11 @@ void main()
 	writeln("result : ",Env.render(input, data2));
 
 	writeln("-------------FUNC  operator------------");
-	input = "{{ 'a' <= '1' }} ~ {{ age >= age1 }} ~ {{ 2 < 1 }} ~ {{ 4 > 3 }} ~ {{ '4' > 3 }}";
+	input = "{{ 'a' <= '1' }} ~ {{ age >= age1 }} ~ {{ 2 < 1 }} ~ {{ 4 > 3 }}";
 	writeln("result : ",Env.render(input, data));
 
 	writeln("-------------Array value------------");
-	input = "{{ addrs.0 }} or {{ users.name }}";
+	input = "{{ addrs[0] }} or {{ users.name }}";
 	writeln("result : ",Env.render(input, data));
 
 	 writeln("-------------FUNC length------------");
@@ -119,7 +119,7 @@ void main()
 	Env.write("detail.txt", d,"detail.html");
 
 	writeln("------------------FUNCTION range-------------------------");
-	input = "{% for id in range(1,4) %}{{id}} {% endfor %}";
+	input = "{% for id in range(4) %}{{id}} {% endfor %}";
 	writeln("result : ",Env.render(input, data));
 
 	writeln("------------------FUNCTION date-------------------------");

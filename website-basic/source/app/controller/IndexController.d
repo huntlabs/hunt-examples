@@ -15,6 +15,7 @@ import hunt.framework.application;
 import hunt.framework.http;
 import hunt.framework.view;
 import hunt.validation;
+import hunt.framework.application.MiddlewareInterface;
 
 import core.time;
 
@@ -49,7 +50,7 @@ private:
 	int _b;
 }
 
-class IpFilterMiddleware : Middleware {
+class IpFilterMiddleware : MiddlewareInterface {
 	override string name() {
 		return IpFilterMiddleware.stringof;
 	}
@@ -85,6 +86,8 @@ class IndexController : Controller {
 	@Action string index() {
 		JSONValue model;
 		model["title"] = "Hunt demo";
+		import hunt.util.DateTime;
+		model["stamp"] = time();
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
@@ -380,6 +383,8 @@ class IndexController : Controller {
 
 
 		JSONValue model;
+		import hunt.util.DateTime;
+		model["stamp"] = time();
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
