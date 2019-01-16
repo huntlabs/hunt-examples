@@ -340,7 +340,7 @@ class IndexController : Controller {
 		stringBuilder.put("<br/>Uploaded files:<br/>");	
 		import hunt.http.codec.http.model.MultipartFormInputStream;
 		import std.format;
-		import hunt.string;
+		import hunt.text.StringUtils;
 		foreach(Part p; request.allFiles()) {
 			MultipartFormInputStream.MultiPart mp = cast(MultipartFormInputStream.MultiPart)p;
 			// logInfo(mp.toString());
