@@ -41,7 +41,7 @@ void main()
 	auto user = new User();
 	user.id = 11;
 	user.name = "gxc";
-	user.email = "gaoxincheng@putao.com";
+	user.email = "18601699402";
 	user.age = 18;
 	auto context = user.valid();
 	logDebug("Valid Context : ",context);

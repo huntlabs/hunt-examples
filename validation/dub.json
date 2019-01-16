@@ -10,7 +10,7 @@
         "hunt-framework":{"path":"../../hunt-framework"} 
 	},
 	"subConfigurations": {
-		"hunt-framework" : "empty"
+		"hunt-framework" : "default"
 	},
 	"versions": [
 		"HuntDebugMode"

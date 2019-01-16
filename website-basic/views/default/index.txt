@@ -1,4 +1,4 @@
-{% include "main.txt" %}
+{% include "./views/default/main.txt" %}
 
 
 <label>Users</label>
@@ -7,4 +7,4 @@
 {% endfor %}
 
 
-{% include "main.txt" %}
+{% include "./views/default/main.txt" %}
