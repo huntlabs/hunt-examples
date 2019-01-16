@@ -80,7 +80,7 @@
 
         <div class="row">
             <!-- left column -->
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <ul class="list-unstyled text-left">
                     <li>
                         <a href="/show">show Response</a>
@@ -116,6 +116,10 @@
                     <li>
                         <a href="/testJson2">test json2</a><br /><br />
                     </li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <ul class="list-unstyled text-left">
                     <li>
                         <a href="/download?file=putao.png">download file</a><br /><br />
                     </li>
@@ -149,12 +153,15 @@
                     </li>
                 </ul>
             </div>
+            <!--/.col (left) -->
+        </div>
 
+        <div class="row">
             <div class="col-md-6">
                 <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Quick Example</h3>
+                        <h3 class="card-title">Form Example</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
@@ -198,7 +205,6 @@
                 </div>
                 <!-- /.card -->
             </div>
-
             <div class="col-md-6">
                 <!-- general form elements -->
                 <div class="card card-primary">
@@ -232,8 +238,14 @@
                 </div>
                 <!-- /.card -->
             </div>
-            <!--/.col (left) -->
         </div>
+
+        <div class="row">
+            <div class="col">
+                <img class="nav-item mr-2" width="100%" height="200px" src="images/big.jpg" />
+            </div>
+        </div>
+
     </div>
 
     <!-- Bootstrap core JavaScript -->

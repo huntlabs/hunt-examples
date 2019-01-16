@@ -28,7 +28,7 @@ GET		/create						index.createTask
 GET		/stop						index.stopTask
 
 POST    /testForm1                  index.testForm1
-
+POST    /upload                     index.testUpload
 POST    /testValidForm                  index.testValidForm
 
 GET    /zh                  index.testMultiLang

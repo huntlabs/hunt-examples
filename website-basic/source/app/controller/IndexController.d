@@ -26,11 +26,8 @@ import std.datetime;
 import std.json;
 import std.string;
 
-import hunt.framework.task;
-import hunt.http.codec.http.model.Cookie;
-import hunt.http.codec.http.model.HttpMethod;
-import hunt.http.codec.http.model.HttpHeader;
-import hunt.util.MimeType;
+import hunt.framework;
+import hunt.logging;
 
 version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
@@ -224,6 +221,8 @@ class IndexController : Controller {
 	}
 
 	@Action RedirectResponse testRedirect1() {
+		HttpSession session = request.session(true);
+		session.set("test", "for RedirectResponse");
 		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
 		return r;
 	}
@@ -249,7 +248,7 @@ class IndexController : Controller {
 		stringBuilder.put("<br/>SessionId: " ~ session.getId());
 		stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
 
-		request.flush();
+		// request.flush(); // Can be called automatically by Response.done.
 
 		Response response = new Response(this.request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
@@ -324,10 +323,16 @@ class IndexController : Controller {
 		import std.conv;
 
 		Appender!string stringBuilder;
-		stringBuilder.put("<p>Form data:<p/>");
+		stringBuilder.put("<p>Form data from xFormData:<p/>");
 		foreach (string key, string[] values; this.request.xFormData()) {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
 		}
+
+		stringBuilder.put("<p>Form data from post:<p/>");
+		foreach (string key, string[] values; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ this.request.post(key) ~ "<br/>");
+		}
+
 
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
@@ -335,6 +340,33 @@ class IndexController : Controller {
 		return response;
 	}
 
+	@Action Response testUpload() {
+		Response response = new Response(this.request);
+		import std.conv;
+
+		Appender!string stringBuilder;
+
+		stringBuilder.put("<br/>Uploaded files:<br/>");	
+		import hunt.http.codec.http.model.MultipartFormInputStream;
+		import std.format;
+		import hunt.text;
+		foreach(Part p; request.allFiles()) {
+			MultipartFormInputStream.MultiPart mp = cast(MultipartFormInputStream.MultiPart)p;
+			// logInfo(mp.toString());
+			string content = cast(string)mp.getBytes();
+			mp.write("MultiPart-" ~ StringUtils.randomId());
+			stringBuilder.put(format("File: key=%s, fileName=%s, actualFile=%s<br/>", 
+				mp.getName(), mp.getSubmittedFileName(), mp.getFile()));
+			stringBuilder.put("<br/>content:" ~ content);
+			stringBuilder.put("<br/><br/>");
+
+		}
+
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data);
+
+		return response;
+	}
 
 	@Action
 	Response testValidForm(User user) {

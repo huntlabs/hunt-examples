@@ -7,7 +7,6 @@ __dummy.html
 .lumenconfig
 *.cmake
 CMakeLists.txt
-/hunt
 .directory
 *.kdev4
 dub.selections.json
@@ -18,6 +17,5 @@ core
 *.a
 *.so
 *.kate-swp
-/server
-website-basic
+website-basic*
 storage/sessions/*
