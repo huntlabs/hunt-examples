@@ -60,7 +60,7 @@ void main()
 
         breadcrumbs.register("index.show", (BreadcrumbsGenerator trail, Object[] params...) {
             trail.parent("home");
-            trail.push("About", createUrl("index.show", null));
+            trail.push("About", url("index.show"));
         });
 
         breadcrumbs.register("blog", (BreadcrumbsGenerator trail, Object[] params...) {

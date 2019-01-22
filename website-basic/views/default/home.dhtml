@@ -72,8 +72,8 @@
         <div class="col">
             <ol class="breadcrumb">
                 {% for item in breadcrumbs %}
-                    {% if (item.url && not loop.last %}
-                        <li class="breadcrumb-item"><a href="{{ item.url }}">{{ item.title }}</a></li>
+                    {% if item.link and not loop.last %}
+                        <li class="breadcrumb-item"><a href="{{ item.link }}">{{ item.title }}</a></li>
                     {% else %}
                         <li class="breadcrumb-item active">{{ item.title }}</li>
                     {% endif %}

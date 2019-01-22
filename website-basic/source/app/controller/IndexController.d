@@ -217,8 +217,9 @@ class IndexController : Controller {
 	}
 
 	@Action DownloadResponse testDownload() {
-		string file = request.get("file", "putao.png");
-		DownloadResponse r = new DownloadResponse(this.request, file).loadData();
+		// string file = request.get("file", "putao.png");
+		string file = "attachments/putao.png";
+		FileResponse r = new FileResponse(file);
 		return r;
 	}
 
