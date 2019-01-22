@@ -16,6 +16,7 @@ import hunt.framework.http;
 import hunt.framework.view;
 import hunt.validation;
 import hunt.framework.application.MiddlewareInterface;
+import hunt.framework.application.BreadcrumbsManager;
 
 import core.time;
 
@@ -88,7 +89,6 @@ class IndexController : Controller {
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
-		import hunt.framework.application.BreadcrumbsManager;
 		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		return view.render("home");
 	}
@@ -423,6 +423,7 @@ class IndexController : Controller {
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
+		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		return response.setContent(view.render("home"));
 
 	}
