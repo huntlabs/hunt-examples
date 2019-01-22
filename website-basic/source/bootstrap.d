@@ -47,8 +47,16 @@ void main()
     // }).start();
 
     Application app = Application.getInstance();
-    app.enableLocale("./resources/lang");
+    app.enableLocale("./resources/translations");
     app.onBreadcrumbsInitializing((BreadcrumbsManager breadcrumbs) {
+
+        // Router r = app.router();
+        // RouteGroup rg = r.getGroup();
+        // if(rg !is null)
+        //     rg.iterateAll();
+        // writeln(url("index.index"));
+        // writeln(url("index.testJson1"));
+        // writeln(url("index.stopTask"));
 
         // breadcrumbs.register("home", delegate void (BreadcrumbsGenerator trail, Object[] params...) {
         //     trail.push("Home", "/home");
