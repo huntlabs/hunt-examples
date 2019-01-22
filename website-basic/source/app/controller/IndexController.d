@@ -216,9 +216,9 @@ class IndexController : Controller {
 		return view.render("index");
 	}
 
-	@Action DownloadResponse testDownload() {
-		// string file = request.get("file", "putao.png");
-		string file = "attachments/putao.png";
+	@Action FileResponse testDownload() {
+		string file = request.get("file", "putao.png");
+		file = "attachments/" ~ file;
 		FileResponse r = new FileResponse(file);
 		return r;
 	}
