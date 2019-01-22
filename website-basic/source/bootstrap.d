@@ -15,8 +15,8 @@ import std.functional;
 import hunt.framework;
 import std.datetime;
 
-import hunt.stomp.simp.config.MessageBrokerRegistry;
 import hunt.framework.websocket.config.annotation.StompEndpointRegistry;
+import hunt.stomp.simp.config.MessageBrokerRegistry;
 
 
 void main()
@@ -48,6 +48,37 @@ void main()
 
     Application app = Application.getInstance();
     app.enableLocale("./resources/lang");
+    app.onBreadcrumbsInitializing((BreadcrumbsManager breadcrumbs) {
+
+        // breadcrumbs.register("home", delegate void (BreadcrumbsGenerator trail, Object[] params...) {
+        //     trail.push("Home", "/home");
+        // });
+
+        breadcrumbs.register("home", (BreadcrumbsGenerator trail, Object[] params...) {
+            trail.push("Home", "/home");
+        });
+
+        breadcrumbs.register("index.show", (BreadcrumbsGenerator trail, Object[] params...) {
+            trail.parent("home");
+            trail.push("About", createUrl("index.show", null));
+        });
+
+        breadcrumbs.register("blog", (BreadcrumbsGenerator trail, Object[] params...) {
+            trail.parent("home");
+            trail.push("Blog", "/blog");
+        });
+
+        breadcrumbs.register("category", (BreadcrumbsGenerator trail, Object[] params...) {
+            trail.parent("blog");
+            trail.push("Category", "/blog/category");
+        });
+
+        string s = breadcrumbs.render("index.show", null) ;
+        writeln(s);
+        s = breadcrumbs.render("category", null) ;
+        writeln(s);
+    });
+
 	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");
         config.setApplicationDestinationPrefixes("/app");
@@ -58,4 +89,8 @@ void main()
         registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
     })
     .start();
+
+
+    
+
 }

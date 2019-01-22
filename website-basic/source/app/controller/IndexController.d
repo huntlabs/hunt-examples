@@ -88,6 +88,8 @@ class IndexController : Controller {
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
+		import hunt.framework.application.BreadcrumbsManager;
+		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		return view.render("home");
 	}
 
