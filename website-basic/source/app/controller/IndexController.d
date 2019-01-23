@@ -90,7 +90,7 @@ class IndexController : Controller {
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
-		view.assign("app",parseJSON(`{"name":"hunt"}`));
+		view.assign("app",parseJSON(`{"name":"Hunt"}`));
 		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		return view.render("home");
 	}
