@@ -45,46 +45,47 @@ void main()
     //     writeln("The server received: " ~ text); 
     //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
     // }).start();
+    // testI18n();
+
 
     Application app = Application.getInstance();
     app.enableLocale("./resources/translations");
+
+    // writeln(trans("message.title"));
+    // writeln(trans("message.title%s"));
+    // writeln(transf("message.title", "Hunt"));
+
+    // writeln(trans("zh-cn", "message.title"));
+    // writeln(transfWithLocale("zh-cn", "message.title", "Hunt"));
     app.onBreadcrumbsInitializing((BreadcrumbsManager breadcrumbs) {
 
-        // Router r = app.router();
-        // RouteGroup rg = r.getGroup();
-        // if(rg !is null)
-        //     rg.iterateAll();
-        // writeln(url("index.index"));
-        // writeln(url("index.testJson1"));
-        // writeln(url("index.stopTask"));
-
-        // breadcrumbs.register("home", delegate void (BreadcrumbsGenerator trail, Object[] params...) {
+        // breadcrumbs.register("home", delegate void (Breadcrumbs trail, Object[] params...) {
         //     trail.push("Home", "/home");
         // });
 
-        breadcrumbs.register("home", (BreadcrumbsGenerator trail, Object[] params...) {
+        breadcrumbs.register("home", (Breadcrumbs trail, Object[] params...) {
             trail.push("Home", "/home");
         });
 
-        breadcrumbs.register("index.show", (BreadcrumbsGenerator trail, Object[] params...) {
+        breadcrumbs.register("index.show", (Breadcrumbs trail, Object[] params...) {
             trail.parent("home");
             trail.push("About", url("index.show"));
         });
 
-        breadcrumbs.register("blog", (BreadcrumbsGenerator trail, Object[] params...) {
+        breadcrumbs.register("blog", (Breadcrumbs trail, Object[] params...) {
             trail.parent("home");
             trail.push("Blog", "/blog");
         });
 
-        breadcrumbs.register("category", (BreadcrumbsGenerator trail, Object[] params...) {
+        breadcrumbs.register("category", (Breadcrumbs trail, Object[] params...) {
             trail.parent("blog");
             trail.push("Category", "/blog/category");
         });
 
-        string s = breadcrumbs.render("index.show", null) ;
-        writeln(s);
-        s = breadcrumbs.render("category", null) ;
-        writeln(s);
+        // string s = breadcrumbs.render("index.show", null) ;
+        // writeln(s);
+        // s = breadcrumbs.render("category", null) ;
+        // writeln(s);
     });
 
 	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
@@ -97,8 +98,32 @@ void main()
         registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
     })
     .start();
+}
 
 
-    
+void testI18n() {
+	
+    import hunt.framework.i18n.I18n;
+	I18n i18n = I18n.instance();
+	i18n.loadLangResources("./resources/translations");
+	i18n.defaultLocale = "en-us";
+	writeln(i18n.resources);
+	
+	
+	///
+	setLocale("en-br");
+	assert( trans("message.hello-world") == "Hello, world");
+	
+	///
+	setLocale("zh-cn");
+	assert( trans("email.subject") == "收件人");
+	
+	
+	setLocale("en-us");
+	assert( trans("email.subject") == "email.subject");
 
+    assert(trans("message.title") == "%s Demo");
+    assert(transf("message.title", "Hunt") == "Hunt Demo");
+
+    assert(transfWithLocale("zh-cn", "message.title", "Hunt") == "Hunt 示例");
 }

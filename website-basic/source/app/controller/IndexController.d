@@ -63,7 +63,7 @@ class IpFilterMiddleware : MiddlewareInterface {
 */
 class IndexController : Controller {
 	mixin MakeController;
-	
+
 	this() {
 		this.addMiddleware(new IpFilterMiddleware());
 	}
@@ -85,6 +85,7 @@ class IndexController : Controller {
 		JSONValue model;
 		model["title"] = "Hunt demo";
 		import hunt.util.DateTime;
+
 		model["stamp"] = time();
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
@@ -174,8 +175,7 @@ class IndexController : Controller {
 			foreach (Cookie c; cookies) {
 				response.writeContent(format("%s=%s<br/>", c.getName(), c.getValue()));
 			}
-		}
-		else
+		} else
 			response.setContent("No cookie found.");
 		return response;
 	}
@@ -292,8 +292,7 @@ class IndexController : Controller {
 		t1.setFinish((Task t) {
 			try {
 				logDebug("the task is finish : ", t.tid);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 			}
 		});
 
@@ -311,8 +310,7 @@ class IndexController : Controller {
 
 		if (taskid.empty()) {
 			response.setContent("The task id is empty!");
-		}
-		else {
+		} else {
 			auto ok = GetTaskMObject.del(to!size_t(taskid));
 			response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
 			response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
@@ -336,7 +334,6 @@ class IndexController : Controller {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ this.request.post(key) ~ "<br/>");
 		}
 
-
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
 
@@ -349,17 +346,18 @@ class IndexController : Controller {
 
 		Appender!string stringBuilder;
 
-		stringBuilder.put("<br/>Uploaded files:<br/>");	
+		stringBuilder.put("<br/>Uploaded files:<br/>");
 		import hunt.http.codec.http.model.MultipartFormInputStream;
 		import std.format;
 		import hunt.text.StringUtils;
-		foreach(Part p; request.allFiles()) {
-			MultipartFormInputStream.MultiPart mp = cast(MultipartFormInputStream.MultiPart)p;
+
+		foreach (Part p; request.allFiles()) {
+			MultipartFormInputStream.MultiPart mp = cast(MultipartFormInputStream.MultiPart) p;
 			// logInfo(mp.toString());
-			string content = cast(string)mp.getBytes();
+			string content = cast(string) mp.getBytes();
 			mp.write("MultiPart-" ~ StringUtils.randomId());
-			stringBuilder.put(format("File: key=%s, fileName=%s, actualFile=%s<br/>", 
-				mp.getName(), mp.getSubmittedFileName(), mp.getFile()));
+			stringBuilder.put(format("File: key=%s, fileName=%s, actualFile=%s<br/>",
+					mp.getName(), mp.getSubmittedFileName(), mp.getFile()));
 			stringBuilder.put("<br/>content:" ~ content);
 			stringBuilder.put("<br/><br/>");
 
@@ -371,12 +369,11 @@ class IndexController : Controller {
 		return response;
 	}
 
-	@Action
-	Response testValidForm(User user) {
+	@Action Response testValidForm(User user) {
 
 		auto result = user.valid();
 		logDebug(format("user( %s , %s , %s ) ,isValid : %s , valid result : %s ",
-			user.name,user.age,user.email,result.isValid,result.messages()));
+				user.name, user.age, user.email, result.isValid, result.messages()));
 		Response response = new Response(this.request);
 
 		Appender!string stringBuilder;
@@ -387,8 +384,8 @@ class IndexController : Controller {
 
 		stringBuilder.put("<br/>");
 		stringBuilder.put("validation result:<br/>");
-		stringBuilder.put(format("isValid : %s , valid result : %s<br/>", 
-			result.isValid,result.messages()));
+		stringBuilder.put(format("isValid : %s , valid result : %s<br/>",
+				result.isValid, result.messages()));
 
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
@@ -396,29 +393,23 @@ class IndexController : Controller {
 		return response;
 	}
 
-	@Action
-	Response testMultiLang() {
-		logDebug("url : ",request.url);
+	@Action Response testMultiLang() {
+		logDebug("url : ", request.url);
 		Cookie cookie;
-		// dfmt off
 		Response response = new Response(this.request);
-		if(request.url == "/zh")
-		{
-			cookie = new Cookie("Content-Language","zh-cn");
+		if (request.url == "/zh") {
+			cookie = new Cookie("Content-Language", "zh-cn");
 			view.setLocale("zh-cn");
-		}
-		else
-		{
-			cookie = new Cookie("Content-Language","en-us");
+		} else {
+			cookie = new Cookie("Content-Language", "en-us");
 			view.setLocale("en-us");
 		}
 
-		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
-		.withCookie(cookie);
-
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8").withCookie(cookie);
 
 		JSONValue model;
 		import hunt.util.DateTime;
+
 		model["stamp"] = time();
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
@@ -428,4 +419,3 @@ class IndexController : Controller {
 
 	}
 }
-
