@@ -71,7 +71,7 @@ class IndexController : Controller {
 	override bool before() {
 		logDebug("---running before----");
 
-		if (toUpper(request.method) == HttpMethod.OPTIONS.asString())
+		if (toUpper(request.methodAsString) == HttpMethod.OPTIONS.asString())
 			return false;
 		return true;
 	}
