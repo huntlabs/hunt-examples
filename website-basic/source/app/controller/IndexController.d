@@ -16,6 +16,7 @@ import hunt.framework.http;
 import hunt.framework.view;
 import hunt.validation;
 import hunt.framework.application.MiddlewareInterface;
+import hunt.framework.application.BreadcrumbsManager;
 
 import core.time;
 
@@ -88,6 +89,7 @@ class IndexController : Controller {
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
+		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		return view.render("home");
 	}
 
@@ -214,9 +216,10 @@ class IndexController : Controller {
 		return view.render("default/index");
 	}
 
-	@Action DownloadResponse testDownload() {
+	@Action FileResponse testDownload() {
 		string file = request.get("file", "putao.png");
-		DownloadResponse r = new DownloadResponse(this.request, file).loadData();
+		file = "attachments/" ~ file;
+		FileResponse r = new FileResponse(file);
 		return r;
 	}
 
@@ -349,7 +352,7 @@ class IndexController : Controller {
 		stringBuilder.put("<br/>Uploaded files:<br/>");	
 		import hunt.http.codec.http.model.MultipartFormInputStream;
 		import std.format;
-		import hunt.text;
+		import hunt.text.StringUtils;
 		foreach(Part p; request.allFiles()) {
 			MultipartFormInputStream.MultiPart mp = cast(MultipartFormInputStream.MultiPart)p;
 			// logInfo(mp.toString());
@@ -420,6 +423,7 @@ class IndexController : Controller {
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
+		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		return response.setContent(view.render("home"));
 
 	}

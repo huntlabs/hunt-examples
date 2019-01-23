@@ -67,6 +67,23 @@
         </div>
     </nav>
 
+    <!-- Breadcrumbs -->
+    {% if breadcrumbs.defined and breadcrumbs.length>0 %}
+    <div class="row">
+        <div class="col">
+            <ol class="breadcrumb">
+                {% for item in breadcrumbs %}
+                    {% if item.link and not loop.last %}
+                        <li class="breadcrumb-item"><a href="{{ item.link }}">{{ item.title }}</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item active">{{ item.title }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Page Content -->
     <div class="container">
         <div class="row">

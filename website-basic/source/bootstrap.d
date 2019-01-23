@@ -15,8 +15,8 @@ import std.functional;
 import hunt.framework;
 import std.datetime;
 
-import hunt.stomp.simp.config.MessageBrokerRegistry;
 import hunt.framework.websocket.config.annotation.StompEndpointRegistry;
+import hunt.stomp.simp.config.MessageBrokerRegistry;
 
 
 void main()
@@ -47,7 +47,46 @@ void main()
     // }).start();
 
     Application app = Application.getInstance();
-    app.enableLocale("./resources/lang");
+    app.enableLocale("./resources/translations");
+    app.onBreadcrumbsInitializing((BreadcrumbsManager breadcrumbs) {
+
+        // Router r = app.router();
+        // RouteGroup rg = r.getGroup();
+        // if(rg !is null)
+        //     rg.iterateAll();
+        // writeln(url("index.index"));
+        // writeln(url("index.testJson1"));
+        // writeln(url("index.stopTask"));
+
+        // breadcrumbs.register("home", delegate void (BreadcrumbsGenerator trail, Object[] params...) {
+        //     trail.push("Home", "/home");
+        // });
+
+        breadcrumbs.register("home", (BreadcrumbsGenerator trail, Object[] params...) {
+            trail.push("Home", "/home");
+        });
+
+        breadcrumbs.register("index.show", (BreadcrumbsGenerator trail, Object[] params...) {
+            trail.parent("home");
+            trail.push("About", url("index.show"));
+        });
+
+        breadcrumbs.register("blog", (BreadcrumbsGenerator trail, Object[] params...) {
+            trail.parent("home");
+            trail.push("Blog", "/blog");
+        });
+
+        breadcrumbs.register("category", (BreadcrumbsGenerator trail, Object[] params...) {
+            trail.parent("blog");
+            trail.push("Category", "/blog/category");
+        });
+
+        string s = breadcrumbs.render("index.show", null) ;
+        writeln(s);
+        s = breadcrumbs.render("category", null) ;
+        writeln(s);
+    });
+
 	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");
         config.setApplicationDestinationPrefixes("/app");
@@ -58,4 +97,8 @@ void main()
         registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
     })
     .start();
+
+
+    
+
 }
