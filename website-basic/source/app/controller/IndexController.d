@@ -90,6 +90,7 @@ class IndexController : Controller {
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
+		view.assign("app",parseJSON(`{"name":"hunt"}`));
 		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		return view.render("home");
 	}
@@ -212,7 +213,7 @@ class IndexController : Controller {
 
 		view.setTemplateExt(".txt");
 		view.assign("model", data);
-
+		
 		return view.render("default/index");
 	}
 
@@ -393,7 +394,7 @@ class IndexController : Controller {
 		return response;
 	}
 
-	@Action Response testMultiLang() {
+	@Action Response testMultitrans() {
 		logDebug("url : ", request.url);
 		Cookie cookie;
 		Response response = new Response(this.request);
@@ -414,6 +415,7 @@ class IndexController : Controller {
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
+		view.assign("app",parseJSON(`{"name":"hunt"}`));
 		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		return response.setContent(view.render("home"));
 

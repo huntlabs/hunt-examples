@@ -31,8 +31,8 @@ POST    /testForm1                  index.testForm1
 POST    /upload                     index.testUpload
 POST    /testValidForm                  index.testValidForm
 
-GET    /zh                  index.testMultiLang
-GET    /en                  index.testMultiLang
+GET    /zh                  index.testMultitrans
+GET    /en                  index.testMultitrans
 
 
 

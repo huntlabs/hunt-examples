@@ -127,7 +127,7 @@ void main()
 	writeln("result : ",Env.render(input, data));
 
 	writeln("------------------FUNCTION lang-------------------------");
-	input = "{{ lang(\"message.hello-world\") }}";
+	input = "{{ trans(\"message.hello-world\") }}";
 	writeln("result : ",Env.render(input, data));
 
 	writeln("------------------For array-------------------------");
