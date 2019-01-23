@@ -129,4 +129,20 @@ void main()
 	writeln("------------------FUNCTION lang-------------------------");
 	input = "{{ lang(\"message.hello-world\") }}";
 	writeln("result : ",Env.render(input, data));
+
+	writeln("------------------For array-------------------------");
+	input = "{% for id in data %} {{ loop.index }} - {{id}} - {{ loop.index0 }}{% endfor %}";
+	JSONValue test;
+	JSONValue arr = ['a','b','c','d'];
+	test["data"] =arr;
+	writeln("result : ",Env.render(input, test));
+
+	writeln("------------------IF defined/undefined/number/list/dict-------------------------");
+	test["num"] = 12;
+	input = "{% if data.defined %} defined {% else %} undefined {% endif %} \r\n
+			{% if unknown.undefined %} undefined {% else %} defined {% endif %} \r\n
+			{% if num.number %} is number {% else %} not is number {% endif %} \r\n
+			{% if data.list %} is list {% else %} not is list {% endif %} \r\n";
+
+	writeln("result : ",Env.render(input, test));
 }

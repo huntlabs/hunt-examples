@@ -211,7 +211,7 @@ class IndexController : Controller {
 		view.setTemplateExt(".txt");
 		view.assign("model", data);
 
-		return view.render("index");
+		return view.render("default/index");
 	}
 
 	@Action DownloadResponse testDownload() {

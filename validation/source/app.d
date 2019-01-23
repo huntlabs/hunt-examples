@@ -15,7 +15,7 @@ class User : Form
 	@Max(10)
 	int id;
 
-	@Pattern(r"[\d+]")
+	@Pattern(`[\d+]$`)
 	@Length(4,10)
 	string name;
 
@@ -26,7 +26,7 @@ class User : Form
 	string addr;
 
 	@AssertTrue("must be male")
-	bool male;
+	bool male = true;
 
 	@Range(18,30)
 	int age;
@@ -39,9 +39,10 @@ void main()
 	logLoadConf(conf);
 
 	auto user = new User();
-	user.id = 11;
-	user.name = "gxc";
-	user.email = "18601699402";
+	user.id = 10;
+	user.name = "2123";
+	user.email = "18601699402@163.com34";
+	user.addr = "tianlin road";
 	user.age = 18;
 	auto context = user.valid();
 	logDebug("Valid Context : ",context);

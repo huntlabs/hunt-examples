@@ -1,6 +1,6 @@
-{% include "./views/main.txt" %}
+{% include "./main.txt" %}
 {% for key, value in users %}
     <p><strong>{{ key }}</strong>: {{ value }}</p>
 {% endfor %}
 
-{% include "./views/main.txt" %}
+{% include "main.txt" %}
