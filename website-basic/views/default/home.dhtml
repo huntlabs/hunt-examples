@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{{trans("message.title",app.name)}}</title>
+    <title>{{trans("title",app.name)}}</title>
 
     <div class="sidebarBox">
         <ul>
@@ -88,7 +88,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
-                <h1 class="mt-5">{{trans("message.title",app.name)}}</h1>
+                <h1 class="mt-5">{{trans("title",app.name)}}</h1>
                 <p class="lead">The time now is {{ model.now }}</p>
                 <p class="lead">The DateFormat  is {{ date('Y-m-d H:i:s',model.stamp) }}</p>
 
@@ -185,12 +185,12 @@
                     <form role="form" method="POST" action="/testForm1">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="exampleInputEmail1">{{trans("message.email")}}</label>
+                                <label for="exampleInputEmail1">{{trans("email")}}</label>
                                 <input type="email" name="email" class="form-control" id="exampleInputEmail1"
                                     placeholder="Enter email">
                             </div>
                             <div class="form-group">
-                                <label for="exampleInputPassword1">{{trans("message.password")}}</label>
+                                <label for="exampleInputPassword1">{{trans("password")}}</label>
                                 <input type="password" name="password" class="form-control" id="exampleInputPassword1"
                                     placeholder="Password">
                             </div>
@@ -216,7 +216,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">{{trans("message.submit")}}</button>
+                            <button type="submit" class="btn btn-primary">{{trans("submit")}}</button>
                         </div>
                     </form>
                 </div>
@@ -233,7 +233,7 @@
                     <form role="form" method="POST" action="/testValidForm">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="exampleInputEmail1">{{trans("message.email")}}</label>
+                                <label for="exampleInputEmail1">{{trans("email")}}</label>
                                 <input type="email" name="email" class="form-control" id="exampleInputEmail1"
                                     placeholder="Enter email">
                             </div>
@@ -249,7 +249,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">{{trans("message.submit")}}</button>
+                            <button type="submit" class="btn btn-primary">{{trans("submit")}}</button>
                         </div>
                     </form>
                 </div>

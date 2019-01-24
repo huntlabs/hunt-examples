@@ -45,18 +45,18 @@ void main()
     //     writeln("The server received: " ~ text); 
     //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
     // }).start();
-    // testI18n();
+    testI18n();
 
 
     Application app = Application.getInstance();
-    app.enableLocale("./resources/translations");
+    // app.enableLocale("./resources/translations");
 
-    // writeln(trans("message.title"));
-    // writeln(trans("message.title%s"));
-    // writeln(transf("message.title", "Hunt"));
+    // writeln(trans("title"));
+    // writeln(trans("title%s"));
+    // writeln(transf("title", "Hunt"));
 
-    // writeln(trans("zh-cn", "message.title"));
-    // writeln(transfWithLocale("zh-cn", "message.title", "Hunt"));
+    // writeln(trans("zh-cn", "title"));
+    // writeln(transfWithLocale("zh-cn", "title", "Hunt"));
     app.onBreadcrumbsInitializing((BreadcrumbsManager breadcrumbs) {
 
         // breadcrumbs.register("home", delegate void (Breadcrumbs trail, Object[] params...) {
@@ -112,7 +112,7 @@ void testI18n() {
 	
 	///
 	setLocale("en-br");
-	assert( trans("message.hello-world") == "Hello, world");
+	assert( trans("hello-world") == "Hello, world");
 	
 	///
 	setLocale("zh-cn");
@@ -122,8 +122,8 @@ void testI18n() {
 	setLocale("en-us");
 	assert( trans("email.subject") == "email.subject");
 
-    assert(trans("message.title") == "%s Demo");
-    assert(transf("message.title", "Hunt") == "Hunt Demo");
+    assert(trans("title") == "%s Demo");
+    assert(transf("title", "Hunt") == "Hunt Demo");
 
-    assert(transfWithLocale("zh-cn", "message.title", "Hunt") == "Hunt 示例");
+    assert(transfWithLocale("zh-cn", "title", "Hunt") == "Hunt 示例");
 }
