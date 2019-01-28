@@ -344,6 +344,7 @@ class IndexController : Controller {
 	@Action Response testUpload() {
 		Response response = new Response(this.request);
 		import std.conv;
+		import hunt.framework.file.UploadedFile;
 
 		Appender!string stringBuilder;
 
@@ -352,16 +353,19 @@ class IndexController : Controller {
 		import std.format;
 		import hunt.text.StringUtils;
 
-		foreach (Part p; request.allFiles()) {
-			MultipartFormInputStream.MultiPart mp = cast(MultipartFormInputStream.MultiPart) p;
-			// logInfo(mp.toString());
-			string content = cast(string) mp.getBytes();
-			mp.write("MultiPart-" ~ StringUtils.randomId());
-			stringBuilder.put(format("File: key=%s, fileName=%s, actualFile=%s<br/>",
-					mp.getName(), mp.getSubmittedFileName(), mp.getFile()));
-			stringBuilder.put("<br/>content:" ~ content);
+		foreach (UploadedFile p; request.allFiles()) {
+			// string content = cast(string) mp.getBytes();
+			p.move("Multipart file - " ~ StringUtils.randomId());
+			stringBuilder.put(format("File: fileName=%s, actualFile=%s<br/>",
+					p.originalName(), p.path()));
+			// stringBuilder.put("<br/>content:" ~ content);
 			stringBuilder.put("<br/><br/>");
+		}
 
+		foreach (string key, string[] values; request.xFormData) {
+			stringBuilder.put(format("Form data: key=%s, value=%s<br/>",
+					 key, values));
+			stringBuilder.put("<br/><br/>");
 		}
 
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());

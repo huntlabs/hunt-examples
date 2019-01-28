@@ -45,7 +45,7 @@ void main()
     //     writeln("The server received: " ~ text); 
     //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
     // }).start();
-    testI18n();
+    // testI18n();
 
 
     Application app = Application.getInstance();
