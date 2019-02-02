@@ -55,8 +55,8 @@ void main()
     // writeln(trans("title%s"));
     // writeln(transf("title", "Hunt"));
 
-    // writeln(trans("zh-cn", "title"));
-    // writeln(transfWithLocale("zh-cn", "title", "Hunt"));
+    // writeln(transWithLocale("zh-cn", "title"));
+    // writeln(transWithLocale("zh-cn", "title", "Hunt"));
     app.onBreadcrumbsInitializing((BreadcrumbsManager breadcrumbs) {
 
         // breadcrumbs.register("home", delegate void (Breadcrumbs trail, Object[] params...) {
@@ -120,10 +120,10 @@ void testI18n() {
 	
 	
 	setLocale("en-us");
-	assert( trans("email.subject") == "email.subject");
+	assert(trans("email.subject") == "email.subject");
 
-    assert(trans("title") == "%s Demo");
-    assert(transf("title", "Hunt") == "Hunt Demo");
+    // assert(trans("title") == "%s Demo");
+    assert(trans("title", "Hunt") == "Hunt Demo");
 
-    assert(transfWithLocale("zh-cn", "title", "Hunt") == "Hunt 示例");
+    assert(transWithLocale("zh-cn", "title", "Hunt") == "Hunt 示例");
 }
