@@ -145,4 +145,27 @@ void main()
 			{% if data.list %} is list {% else %} not is list {% endif %} \r\n";
 
 	writeln("result : ",Env.render(input, test));
+
+	writeln("------------------Int -------------------------");
+	JSONValue testInt;
+	testInt["num1"] = 12;
+	testInt["num2"] = "12";
+	testInt["num3"] = true;
+	testInt["num4"] = false;
+
+	input = "{{ int(num1) }} ~ {{ int(num2) }} ~ {{ int(num3) }} ~ {{ int(num4) }}";
+
+	writeln("result : ",Env.render(input, testInt));
+
+	writeln("------------------String -------------------------");
+	JSONValue testString;
+	testString["num1"] = 12;
+	testString["num2"] = "12";
+	testString["num3"] = true;
+	testString["num4"] = false;
+
+	input = "{{ string(num1) }} ~ {{ string(num2) }} ~ {{ string(num3) }} ~ {{ string(num4) }}";
+
+	writeln("result : ",Env.render(input, testString));
+
 }
