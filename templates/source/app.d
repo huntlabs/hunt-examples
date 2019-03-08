@@ -164,8 +164,20 @@ void main()
 	testString["num3"] = true;
 	testString["num4"] = false;
 
-	input = "{{ string(num1) }} ~ {{ string(num2) }} ~ {{ string(num3) }} ~ {{ string(num4) }}";
+	input = "{{ string(num1) }} ~ {{ string(num2) }} ~ {{ num3.string }} ~ {{ string(num4) }}";
 
 	writeln("result : ",Env.render(input, testString));
+
+
+	writeln("------------------Format -------------------------");
+	JSONValue testFormat;
+	testFormat["age"] = 12;
+	testFormat["name"] = "tom";
+	testFormat["man"] = true;
+	testFormat["score"] = 59.955;
+
+	input = "{{ format('age : %d ,name : %s, isMan : %s ,score : %.2f ',age,name,man,score) }} ";
+
+	writeln("result : ",Env.render(input, testFormat));
 
 }
