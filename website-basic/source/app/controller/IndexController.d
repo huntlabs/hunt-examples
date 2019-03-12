@@ -55,6 +55,7 @@ class IpFilterMiddleware : MiddlewareInterface {
 
 	override Response onProcess(Request req, Response res) {
 		// writeln(req.session());
+		warning(req.post("name"));
 		return null;
 	}
 }
@@ -194,7 +195,7 @@ class IndexController : Controller {
 		company["name"] = "Putao";
 		company["city"] = "Shanghai";
 
-		JsonResponse res = new JsonResponse(this.request, company);
+		JsonResponse res = new JsonResponse(company);
 		return res;
 	}
 
@@ -375,6 +376,8 @@ class IndexController : Controller {
 	}
 
 	@Action Response testValidForm(User user) {
+
+		warning(request.post("name"));
 
 		auto result = user.valid();
 		logDebug(format("user( %s , %s , %s ) ,isValid : %s , valid result : %s ",

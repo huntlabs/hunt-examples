@@ -10,7 +10,7 @@ class User : Form
 	@Range(3,6)
 	int age;
 
-	@Length(4,10)
+	@Length(4,1000)
 	string name;
 
     @Email
