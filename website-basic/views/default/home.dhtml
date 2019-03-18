@@ -131,14 +131,17 @@
                         <a href="/testJson1">test json1</a>
                     </li>
                     <li>
-                        <a href="/testJson2">test json2</a><br /><br />
+                        <a href="/testJson2">test json2</a>
+                    </li>
+                    <li>
+                        <a href="/testRedis">Test Redis store</a>
                     </li>
                 </ul>
             </div>
             <div class="col-md-3">
                 <ul class="list-unstyled text-left">
                     <li>
-                        <a href="/download?file=putao.png">download file</a><br /><br />
+                        <a href="/download?file=putao.png">download file</a>
                     </li>
 
                     <li>

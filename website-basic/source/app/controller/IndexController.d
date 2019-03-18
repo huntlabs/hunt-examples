@@ -17,9 +17,9 @@ import hunt.framework.view;
 import hunt.validation;
 import hunt.framework.application.MiddlewareInterface;
 import hunt.framework.application.BreadcrumbsManager;
+import hunt.framework.storage.redis;
 
 import core.time;
-
 import std.conv;
 import std.array;
 import std.stdio;
@@ -141,6 +141,26 @@ class IndexController : Controller {
 	@Action string testRouting2(int id) {
 		logDebug("---test Routing2----", this.request.queries);
 		return "The router parameter(id) is: " ~ id.to!string;
+	}
+
+	@Action Response testRedis() {
+
+		import redis.redis : Redis;
+
+		Redis r = getRedis();
+
+		r.set("hunt_demo_redis","Hunt redis storage");
+		string s = r.get("hunt_demo_redis");
+    	trace(s);
+
+		// dfmt off
+		Response response = new Response(this.request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
+		// dfmt on
+
+		response.setContent("Redis result: " ~ s ~ "<br/>");
+
+		return response;
 	}
 
 	@Action Response setCookie() {
