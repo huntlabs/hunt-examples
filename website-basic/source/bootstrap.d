@@ -17,19 +17,11 @@ import std.datetime;
 
 import hunt.framework.websocket.config.annotation.StompEndpointRegistry;
 import hunt.stomp.simp.config.MessageBrokerRegistry;
-
+import hunt.logging;
 
 void main()
 {
-	// Application app = Application.getInstance();
-	// app.webSocket("/ws")
-    // .onConnect((conn) {
-    //     conn.sendText("Current time: " ~ Clock.currTime.toString());
-    // })
-    // .onText((text, conn) { 
-    //     writeln("The server received: " ~ text); 
-    //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
-    // }).start();
+	//testWebSocket();
 
     // Application app = Application.getInstance();
 	// app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
@@ -48,6 +40,7 @@ void main()
     // testI18n();
 
 
+    // example 3
     Application app = Application.getInstance();
     // app.enableLocale("./resources/translations");
 
@@ -100,6 +93,28 @@ void main()
     .start();
 }
 
+void testWebSocket() {
+    Application app = Application.getInstance();
+    app.webSocket("/ws")
+    .onConnect((WebSocketConnection conn) {
+        info("new connecion");
+        IOState ioState = conn.getIOState();
+        ioState.addListener((ConnectionState state){
+            tracef("Connection state: %s", state);
+        });
+
+        conn.sendText("Current time: " ~ Clock.currTime.toString());
+    })
+    .onText((text, conn) { 
+        tracef("The server received: " ~ text); 
+        conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
+    })
+    .onError((Throwable t, WebSocketConnection c) {
+        ConnectionState s = c.getIOState().getConnectionState();
+        warningf("ConnectionState: %s", s);
+    })
+    .start();
+}
 
 void testI18n() {
 	
