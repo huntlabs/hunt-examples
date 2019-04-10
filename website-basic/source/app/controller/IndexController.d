@@ -140,7 +140,12 @@ class IndexController : Controller {
 
 	@Action string testRouting2(int id) {
 		logDebug("---test Routing2----", this.request.queries);
-		return "The router parameter(id) is: " ~ id.to!string;
+		Appender!string sb;
+		sb.put("The router parameter(id) is: ");
+		sb.put(id.to!string);
+		sb.put(" The query parameters are: ");
+		sb.put(to!string(this.request.queries));
+		return sb.data;
 	}
 
 	@Action Response testRedis() {

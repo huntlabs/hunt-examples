@@ -19,9 +19,11 @@ import hunt.framework.websocket.config.annotation.StompEndpointRegistry;
 import hunt.stomp.simp.config.MessageBrokerRegistry;
 import hunt.logging;
 
+import hunt.entity;
+
 void main()
 {
-	//testWebSocket();
+	// testWebSocket();
 
     // Application app = Application.getInstance();
 	// app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
@@ -37,12 +39,13 @@ void main()
     //     writeln("The server received: " ~ text); 
     //     conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
     // }).start();
+
     // testI18n();
 
 
     // example 3
     Application app = Application.getInstance();
-    // app.enableLocale("./resources/translations");
+    app.enableLocale("./resources/translations");
 
     // writeln(trans("title"));
     // writeln(trans("title%s"));
@@ -90,6 +93,7 @@ void main()
         // https://github.com/rstoyanchev/spring-websocket-portfolio/issues/14
         registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
     })
+
     .start();
 }
 
@@ -97,10 +101,10 @@ void testWebSocket() {
     Application app = Application.getInstance();
     app.webSocket("/ws")
     .onConnect((WebSocketConnection conn) {
-        info("new connecion");
+        info("new connecion from ", conn.getRemoteAddress().toString());
         IOState ioState = conn.getIOState();
         ioState.addListener((ConnectionState state){
-            tracef("Connection state: %s", state);
+            tracef("Connection(%s) state: %s", conn.getRemoteAddress(), state);
         });
 
         conn.sendText("Current time: " ~ Clock.currTime.toString());
