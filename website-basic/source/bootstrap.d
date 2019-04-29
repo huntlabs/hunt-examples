@@ -19,7 +19,7 @@ import hunt.framework.websocket.config.annotation.StompEndpointRegistry;
 import hunt.stomp.simp.config.MessageBrokerRegistry;
 import hunt.logging;
 
-import hunt.entity;
+// import hunt.entity;
 
 void main()
 {
