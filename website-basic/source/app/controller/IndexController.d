@@ -346,6 +346,26 @@ class IndexController : Controller {
 		return response;
 	}
 
+
+	@Action Response testPost() {
+
+		Response response = new Response(this.request);
+		import std.conv;
+
+		Appender!string stringBuilder;
+		stringBuilder.put("<p>Content:<p/>");
+		stringBuilder.put(" MIME Type: " ~ this.request.header(HttpHeader.CONTENT_TYPE) ~ "<br/>");
+		stringBuilder.put(" Length: " ~ this.request.header(HttpHeader.CONTENT_LENGTH) ~ "<br/>");
+
+		stringBuilder.put("body content: <br/>");
+		stringBuilder.put( this.request.getBodyAsString() ~ "<br/>");
+
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data);
+
+		return response;		
+	}
+
 	@Action Response testForm1() {
 		Response response = new Response(this.request);
 		import std.conv;
