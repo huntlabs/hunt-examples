@@ -425,8 +425,8 @@ class IndexController : Controller {
 		warning(request.post("name"));
 
 		auto result = user.valid();
-		logDebug(format("user( %s , %s , %s ) ,isValid : %s , valid result : %s ",
-				user.name, user.age, user.email, result.isValid, result.messages()));
+		logDebug(format("user(name = %s, age = %s, email = %s, friends = %s) ,isValid : %s , valid result : %s ",
+				user.name, user.age, user.email, user.friends, result.isValid, result.messages()));
 		Response response = new Response(this.request);
 
 		Appender!string stringBuilder;

@@ -15,4 +15,6 @@ class User : Form
 
     @Email
     string email;
+
+	string[] friends;
 }

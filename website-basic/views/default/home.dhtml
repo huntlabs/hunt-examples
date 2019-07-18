@@ -248,6 +248,14 @@
                                 <label for="inputAge">age</label>
                                 <input type="text" name="age" class="form-control" id="inputAge" placeholder="Age">
                             </div>
+                            <div class="form-group">
+                                <label for="inputAge">Friend1</label>
+                                <input type="text" name="friends" class="form-control" id="inputFriend1" placeholder="Friend one">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputAge">Friend2</label>
+                                <input type="text" name="friends" class="form-control" id="inputFriend2" placeholder="Friend tow">
+                            </div>
                         </div>
                         <!-- /.card-body -->
 
