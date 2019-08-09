@@ -55,7 +55,12 @@ class IpFilterMiddleware : MiddlewareInterface {
 
 	override Response onProcess(Request req, Response res) {
 		// writeln(req.session());
-		warning(req.post("name"));
+		string path = req.path();
+		infof("path: %s, post name: %s", path, req.post("name"));
+		if(path == "/redirect1") {
+			RedirectResponse r = new RedirectResponse(req, "https://www.putao.com/");
+			return r;
+		}
 		return null;
 	}
 }
@@ -125,7 +130,7 @@ class IndexController : Controller {
 
 	@Action string showString() {
 		logDebug("---show string----");
-		return "Hello world.";
+		return "Hello world.内网IP ";
 	}
 
 	@Action bool showBool() {
