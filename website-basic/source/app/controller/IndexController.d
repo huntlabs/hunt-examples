@@ -128,9 +128,12 @@ class IndexController : Controller {
 	// 	logDebug("---show void----");
 	// }
 
-	@Action string showString() {
+// FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/20 下午11:59:05
+// 
+	@Action string showString(sdd) {
+	// @Action string showString() {
 		logDebug("---show string----");
-		return "Hello world.内网IP ";
+		return "Hello world. ";
 	}
 
 	@Action bool showBool() {
@@ -155,13 +158,16 @@ class IndexController : Controller {
 
 	@Action Response testRedis() {
 
-		import redis.redis : Redis;
+// FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/13 下午9:48:38
+// 
+		// import redis.redis : Redis;
 
-		Redis r = getRedis();
+		// Redis r = getRedis();
 
-		r.set("hunt_demo_redis","Hunt redis storage");
-		string s = r.get("hunt_demo_redis");
-    	trace(s);
+		// r.set("hunt_demo_redis","Hunt redis storage");
+		// string s = r.get("hunt_demo_redis");
+    	// trace(s);
+		string s = "TODO";
 
 		// dfmt off
 		Response response = new Response(this.request);
@@ -268,20 +274,22 @@ class IndexController : Controller {
 	}
 
 	@Action Response setCache() {
-		HttpSession session = request.session(true);
-		session.set("test", "current value");
+// TODO: Tasks pending completion -@zhangxueping at 2019/9/13 下午9:51:26		
+// 
+		// HttpSession session = request.session(true);
+		// session.set("test", "current value");
 
-		string key = request.get("key");
-		string value = request.get("value");
-		cache.put(key, value);
+		// string key = request.get("key");
+		// string value = request.get("value");
+		// cache.put(key, value);
 
 		Appender!string stringBuilder;
 
 		stringBuilder.put("Cache test: <br/>");
-		stringBuilder.put("key : " ~ key ~ " value : " ~ value);
-		stringBuilder.put("<br/><br/>Session Test: ");
-		stringBuilder.put("<br/>SessionId: " ~ session.getId());
-		stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
+		// stringBuilder.put("key : " ~ key ~ " value : " ~ value);
+		// stringBuilder.put("<br/><br/>Session Test: ");
+		// stringBuilder.put("<br/>SessionId: " ~ session.getId());
+		// stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
 
 		// request.flush(); // Can be called automatically by Response.done.
 

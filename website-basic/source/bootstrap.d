@@ -98,6 +98,8 @@ void main()
 }
 
 void testWebSocket() {
+// FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/13 下午9:50:40    
+// 
     Application app = Application.getInstance();
     app.webSocket("/ws")
     .onConnect((WebSocketConnection conn) {

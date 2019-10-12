@@ -9,7 +9,8 @@
     <meta name="author" content="">
 
     <title>{{trans("title",app.name)}}</title>
-
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <div class="sidebarBox">
         <ul>
             <li><a href="/zh" id="langLink_zhs">中文</a></li>
