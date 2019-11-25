@@ -274,22 +274,20 @@ class IndexController : Controller {
 	}
 
 	@Action Response setCache() {
-// TODO: Tasks pending completion -@zhangxueping at 2019/9/13 下午9:51:26		
-// 
-		// HttpSession session = request.session(true);
-		// session.set("test", "current value");
+		HttpSession session = request.session(true);
+		session.set("test", "current value");
 
-		// string key = request.get("key");
-		// string value = request.get("value");
-		// cache.put(key, value);
+		string key = request.get("key");
+		string value = request.get("value");
+		cache.set(key, value);
 
 		Appender!string stringBuilder;
 
 		stringBuilder.put("Cache test: <br/>");
-		// stringBuilder.put("key : " ~ key ~ " value : " ~ value);
-		// stringBuilder.put("<br/><br/>Session Test: ");
-		// stringBuilder.put("<br/>SessionId: " ~ session.getId());
-		// stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
+		stringBuilder.put("key : " ~ key ~ " value : " ~ value);
+		stringBuilder.put("<br/><br/>Session Test: ");
+		stringBuilder.put("<br/>SessionId: " ~ session.getId());
+		stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
 
 		// request.flush(); // Can be called automatically by Response.done.
 
