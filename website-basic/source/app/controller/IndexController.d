@@ -334,7 +334,7 @@ class IndexController : Controller {
 			}
 		});
 
-		auto taskid = GetTaskMObject().put(t1, dur!"seconds"(to!int(interval)));
+		auto taskid = taskManager().put(t1, dur!"seconds"(to!int(interval)));
 
 		Response response = new Response(this.request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
@@ -349,7 +349,7 @@ class IndexController : Controller {
 		if (taskid.empty()) {
 			response.setContent("The task id is empty!");
 		} else {
-			auto ok = GetTaskMObject.del(to!size_t(taskid));
+			auto ok = taskManager.del(to!size_t(taskid));
 			response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
 			response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
 
