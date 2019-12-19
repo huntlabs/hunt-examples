@@ -275,7 +275,8 @@ class IndexController : Controller {
 
 	@Action Response setCache() {
 		HttpSession session = request.session(true);
-		session.set("test", "current value");
+		DateTime now = cast(DateTime)Clock.currTime ;
+		session.set("test", "current time: " ~ now.toSimpleString());
 
 		string key = request.get("key");
 		string value = request.get("value");
