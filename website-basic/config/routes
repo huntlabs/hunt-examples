@@ -18,6 +18,7 @@ GET		/testRedis					index.testRedis
 *		/getCookie					index.getCookie
 *		/testJson1					index.testJson1
 *		/testJson2					index.testJson2
+*		/test/tracing   			index.testTracing
 GET		/download					index.testDownload
 GET		/redirect1					index.testRedirect1
 GET		/redirect2					index.testRedirect2

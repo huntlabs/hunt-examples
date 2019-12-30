@@ -130,7 +130,7 @@ class IndexController : Controller {
 
 // FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/20 下午11:59:05
 // 
-	@Action string showString(sdd) {
+	@Action string showString(error) {
 	// @Action string showString() {
 		logDebug("---show string----");
 		return "Hello world. ";
@@ -144,6 +144,47 @@ class IndexController : Controller {
 	@Action int showInt() {
 		logDebug("---test Routing1----", this.request.get("id"));
 		return 2018;
+	}
+
+	@Action string testTracing() {
+version(WITH_HUNT_TRACE) {
+		import hunt.http.client;
+		import hunt.trace;
+		import std.range;
+
+		ApplicationConfig conf = config();
+		
+			
+		string url = "http://10.1.222.120:801/index.html";
+		HttpClient client = new HttpClient();
+
+		RequestBuilder requestBuilder = new RequestBuilder()
+				.url(url)
+				.localServiceName(conf.application.name);
+
+		Tracer tracer = this.request.tracer;
+		if(tracer !is null) {
+			requestBuilder.withTracer(tracer);
+		} else {
+			info("No tracer found. Use the default instead.");
+		}
+
+		Request req = requestBuilder.build();
+		Response response = client.newCall(req).execute();
+
+		if (response !is null) {
+			tracef("status code: %d", response.getStatus());
+			// if(response.haveBody())
+			//  trace(response.getBody().asString());
+		} else {
+			warning("no response");
+		}
+
+		return "traceid: " ~ tracer.root.traceId;
+} else {
+		return "Trace is disabled.";
+}
+		
 	}
 
 	@Action string testRouting2(int id) {

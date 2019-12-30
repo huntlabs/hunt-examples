@@ -142,6 +142,9 @@
             <div class="col-md-3">
                 <ul class="list-unstyled text-left">
                     <li>
+                        <a href="/test/tracing">OpenTracing</a>
+                    </li>
+                    <li>
                         <a href="/upload.html">Upload</a>
                     </li>
                     <li>
