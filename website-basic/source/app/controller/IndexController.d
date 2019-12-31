@@ -198,17 +198,19 @@ version(WITH_HUNT_TRACE) {
 	}
 
 	@Action Response testRedis() {
+		import hunt.framework.storage.redis;
+		import hunt.redis.RedisCluster;
+		import hunt.redis.Redis;
 
-// FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/13 下午9:48:38
-// 
-		// import redis.redis : Redis;
+		// RedisCluster redisCluster = getRedisFromCluster();
 
-		// Redis r = getRedis();
+		Redis r = getRedis!(true)();
 
-		// r.set("hunt_demo_redis","Hunt redis storage");
-		// string s = r.get("hunt_demo_redis");
-    	// trace(s);
-		string s = "TODO";
+		scope(exit) r.close();
+
+		r.set("hunt_demo_redis","Hunt redis storage");
+		string s = r.get("hunt_demo_redis");
+    	trace(s);
 
 		// dfmt off
 		Response response = new Response(this.request);
