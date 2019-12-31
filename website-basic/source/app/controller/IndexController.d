@@ -204,7 +204,7 @@ version(WITH_HUNT_TRACE) {
 
 		// RedisCluster redisCluster = getRedisFromCluster();
 
-		Redis r = getRedis!(true)();
+		Redis r = getRedis();
 
 		scope(exit) r.close();
 
