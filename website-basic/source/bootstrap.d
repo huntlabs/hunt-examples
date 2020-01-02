@@ -15,16 +15,12 @@ import std.functional;
 import hunt.framework;
 import std.datetime;
 
-import hunt.framework.websocket.config.annotation.StompEndpointRegistry;
-import hunt.stomp.simp.config.MessageBrokerRegistry;
 import hunt.logging;
 
 // import hunt.entity;
 
 void main()
 {
-	// testWebSocket();
-
     // Application app = Application.getInstance();
 	// app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
     //     config.enableSimpleBroker("/topic");
@@ -84,43 +80,9 @@ void main()
         // writeln(s);
     });
 
-	app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
-    })
-    .onStompEndpointsRegister((StompEndpointRegistry registry) {
-        // https://blog.csdn.net/a617137379/article/details/78765025?utm_source=blogxgwz6
-        // https://github.com/rstoyanchev/spring-websocket-portfolio/issues/14
-        registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*");
-    })
-
-    .start();
+	app.start();
 }
 
-void testWebSocket() {
-// FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/13 下午9:50:40    
-// 
-    Application app = Application.getInstance();
-    app.webSocket("/ws")
-    .onConnect((WebSocketConnection conn) {
-        info("new connecion from ", conn.getRemoteAddress().toString());
-        IOState ioState = conn.getIOState();
-        ioState.addListener((ConnectionState state){
-            tracef("Connection(%s) state: %s", conn.getRemoteAddress(), state);
-        });
-
-        conn.sendText("Current time: " ~ Clock.currTime.toString());
-    })
-    .onText((text, conn) { 
-        tracef("The server received: " ~ text); 
-        conn.sendText(Clock.currTime.toString() ~ ": " ~ text);
-    })
-    .onError((Throwable t, WebSocketConnection c) {
-        ConnectionState s = c.getIOState().getConnectionState();
-        warningf("ConnectionState: %s", s);
-    })
-    .start();
-}
 
 void testI18n() {
 	
