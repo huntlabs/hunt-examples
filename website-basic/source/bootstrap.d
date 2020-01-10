@@ -59,10 +59,12 @@ void main()
             trail.push("Home", "/home");
         });
 
-        breadcrumbs.register("index.show", (Breadcrumbs trail, Object[] params...) {
-            trail.parent("home");
-            trail.push("About", url("index.show"));
-        });
+// TODO: Tasks pending completion -@zhangxueping at 2020-01-02T18:45:03+08:00
+// 
+        // breadcrumbs.register("index.show", (Breadcrumbs trail, Object[] params...) {
+        //     trail.parent("home");
+        //     trail.push("About", url("index.show"));
+        // });
 
         breadcrumbs.register("blog", (Breadcrumbs trail, Object[] params...) {
             trail.parent("home");

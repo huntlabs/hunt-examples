@@ -2,5 +2,6 @@
 # [GET,POST,PUT...]    path    controller.method
 #
 
-# *	/	index.dashboard
-#*	/	admin.show
+*	/dashboard	index.dashboard
+*	/	index.index
+*	/test	index.test
