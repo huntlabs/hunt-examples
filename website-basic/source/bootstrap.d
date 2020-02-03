@@ -9,17 +9,18 @@
  *
  */
 
+
+import hunt.console;
+import hunt.framework;
+import hunt.logging;
+
+import std.datetime;
 import std.stdio;
 import std.functional;
 
-import hunt.framework;
-import std.datetime;
-
-import hunt.logging;
-
 // import hunt.entity;
 
-void main()
+void main(string[] args)
 {
     // Application app = Application.getInstance();
 	// app.withStompBroker().onConfiguration((MessageBrokerRegistry config) {
@@ -39,9 +40,16 @@ void main()
     // testI18n();
 
 
+    // Console console = new Console("Hunt Example", "3.0.0");
+
+    // console.setAutoExit(false);
+    // console.add(new ServeCommand());
+
+    // console.run(args);
+
     // example 3
-    Application app = Application.getInstance();
-    app.enableLocale("./resources/translations");
+    Application app = Application.instance();
+    // app.enableLocale("./resources/translations");
 
     // writeln(trans("title"));
     // writeln(trans("title%s"));
@@ -82,7 +90,7 @@ void main()
         // writeln(s);
     });
 
-	app.start();
+	app.run(args);
 }
 
 

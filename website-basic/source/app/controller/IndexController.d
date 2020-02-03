@@ -93,7 +93,7 @@ class IndexController : Controller {
 		return true;
 	}
 
-	@Action string index() {
+	@Action void index() {
 		JSONValue model;
 		model["title"] = "Hunt demo";
 		import hunt.util.DateTime;
@@ -104,7 +104,9 @@ class IndexController : Controller {
 		view.assign("model", model);
 		view.assign("app",parseJSON(`{"name":"Hunt"}`));
 		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
-		return view.render("home");
+		
+		HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));
+		this.response.setBody(hb);
 	}
 
 	// Response showAction() {
