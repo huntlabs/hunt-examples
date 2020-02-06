@@ -31,6 +31,11 @@ import std.string;
 
 import hunt.framework;
 import hunt.logging;
+// import hunt.redis;
+
+import hunt.redis.RedisCluster;
+import hunt.redis.Redis;
+import hunt.redis.RedisPool;
 
 
 version (USE_ENTITY) import app.model.index;
@@ -206,30 +211,32 @@ class IndexController : Controller {
 // 		return sb.data;
 // 	}
 
-// 	@Action Response testRedis() {
-// 		import hunt.framework.storage.redis;
-// 		import hunt.redis.RedisCluster;
-// 		import hunt.redis.Redis;
+	@Action Response testRedis() {
+		// import hunt.redis.RedisCluster;
+		// import hunt.redis.Redis;
 
-// 		// RedisCluster redisCluster = getRedisFromCluster();
+		// RedisCluster redisCluster = getRedisFromCluster();
 
-// 		Redis r = getRedis();
 
-// 		scope(exit) r.close();
+		RedisPool pool = Application.instance().serviceContainer.resolve!RedisPool();
+		Redis r = pool.getResource();
 
-// 		r.set("hunt_demo_redis","Hunt redis storage");
-// 		string s = r.get("hunt_demo_redis");
-//     	trace(s);
+		scope(exit) r.close();
 
-// 		// dfmt off
-// 		Response response = new Response(this.request);
-// 		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
-// 		// dfmt on
+		r.set("hunt_demo_redis","Hunt redis storage");
+		string s = r.get("hunt_demo_redis");
+    	trace(s);
 
-// 		response.setContent("Redis result: " ~ s ~ "<br/>");
+		HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Redis result: " ~ s ~ "<br/>");
+		
+		// dfmt off
+		Response response = new Response();
+		response.withHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
+				.withBody(hb);
+		// dfmt on
 
-// 		return response;
-// 	}
+		return response;
+	}
 
 	@Action Response setCookie() {
 		logDebug("---test Cookie ----");
