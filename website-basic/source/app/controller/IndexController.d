@@ -10,32 +10,31 @@
  */
 module app.controller.IndexController;
 
-import hunt.logging;
 import hunt.framework.application;
 import hunt.framework.http;
 import hunt.framework.view;
-import hunt.validation;
-import hunt.framework.application.MiddlewareInterface;
-import hunt.framework.application.BreadcrumbsManager;
 import hunt.framework.storage.redis;
+import hunt.framework.task.Task;
 
 import hunt.http.server;
-
-import core.time;
-import std.conv;
-import std.array;
-import std.stdio;
-import std.datetime;
-import std.json;
-import std.string;
-
 import hunt.framework;
 import hunt.logging;
-// import hunt.redis;
+import hunt.util.DateTime;
+import hunt.validation;
 
+// import hunt.redis;
 import hunt.redis.RedisCluster;
 import hunt.redis.Redis;
 import hunt.redis.RedisPool;
+
+import core.time;
+
+import std.conv;
+import std.array;
+import std.datetime;
+import std.json;
+import std.stdio;
+import std.string;
 
 
 version (USE_ENTITY) import app.model.index;
@@ -98,16 +97,21 @@ class IndexController : Controller {
 		return true;
 	}
 
-	@Action void index() {
+	@Action 
+	void index() {
+
+		BreadcrumbsManager breadcrumbsManager = serviceContainer.resolve!(BreadcrumbsManager)();
+
+		BreadcrumbItem[] items = breadcrumbsManager.generate("home");
+		trace(items);
+
 		JSONValue model;
 		model["title"] = "Hunt demo";
-		import hunt.util.DateTime;
-
 		model["stamp"] = time();
 		model["now"] = Clock.currTime.toString();
 		view.setTemplateExt(".dhtml");
 		view.assign("model", model);
-		view.assign("app",parseJSON(`{"name":"Hunt"}`));
+		view.assign("app", parseJSON(`{"name":"Hunt"}`));
 		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
 		
 		HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));

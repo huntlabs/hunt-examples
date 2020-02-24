@@ -9,7 +9,9 @@
  *
  */
 
+module bootstrap;
 
+import app.BreadcrumbProvider;
 import hunt.console;
 import hunt.framework;
 import hunt.logging;
@@ -57,38 +59,7 @@ void main(string[] args)
 
     // writeln(transWithLocale("zh-cn", "title"));
     // writeln(transWithLocale("zh-cn", "title", "Hunt"));
-    app.onBreadcrumbsInitializing((BreadcrumbsManager breadcrumbs) {
-
-        // breadcrumbs.register("home", delegate void (Breadcrumbs trail, Object[] params...) {
-        //     trail.push("Home", "/home");
-        // });
-
-        breadcrumbs.register("home", (Breadcrumbs trail, Object[] params...) {
-            trail.push("Home", "/home");
-        });
-
-// TODO: Tasks pending completion -@zhangxueping at 2020-01-02T18:45:03+08:00
-// 
-        // breadcrumbs.register("index.show", (Breadcrumbs trail, Object[] params...) {
-        //     trail.parent("home");
-        //     trail.push("About", url("index.show"));
-        // });
-
-        breadcrumbs.register("blog", (Breadcrumbs trail, Object[] params...) {
-            trail.parent("home");
-            trail.push("Blog", "/blog");
-        });
-
-        breadcrumbs.register("category", (Breadcrumbs trail, Object[] params...) {
-            trail.parent("blog");
-            trail.push("Category", "/blog/category");
-        });
-
-        // string s = breadcrumbs.render("index.show", null) ;
-        // writeln(s);
-        // s = breadcrumbs.render("category", null) ;
-        // writeln(s);
-    });
+    app.register!BreadcrumbProvider; 
 
 	app.run(args);
 }
