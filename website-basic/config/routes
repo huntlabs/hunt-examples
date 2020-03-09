@@ -11,8 +11,8 @@
 *		/showBool					index.showBool
 *		/showInt				    index.showInt
 *		/showInt/{id}				index.showInt
-#*		/person     				index.testRouting2
-*		/person/{id<\d+>}				index.testRouting2
+#*		/order       				index.testRouting2
+*		/order/{id<\d+>}			index.testRouting2
 GET		/testRedis					index.testRedis
 *		/setCookie					index.setCookie
 *		/getCookie					index.getCookie

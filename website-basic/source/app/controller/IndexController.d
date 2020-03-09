@@ -41,128 +41,125 @@ version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
 
 class Task1 : Task {
-	this(int a, int b) {
-		_a = a;
-		_b = b;
-	}
+    this(int a, int b) {
+        _a = a;
+        _b = b;
+    }
 
-	override void exec() {
-		logDebug("taskid : ", this.tid, ", do job ", _a, " + ", _b, " = ", _a + _b);
-	}
+    override void exec() {
+        logDebug("taskid : ", this.tid, ", do job ", _a, " + ", _b, " = ", _a + _b);
+    }
 
 private:
-	int _a;
-	int _b;
+    int _a;
+    int _b;
 }
 
 class IpFilterMiddleware : MiddlewareInterface {
-	override string name() {
-		return IpFilterMiddleware.stringof;
-	}
+    override string name() {
+        return IpFilterMiddleware.stringof;
+    }
 
-	override Response onProcess(Request req, Response res) {
-		// writeln(req.session());
-		string path = req.path();
-		infof("path: %s, post name: %s", path, req.post("name"));
-		// FIXME: Needing refactor or cleanup -@zhangxueping at 2020-01-06T14:37:41+08:00
-		// 
-		// if(path == "/redirect1") {
-		// 	RedirectResponse r = new RedirectResponse(req, "https://www.putao.com/");
-		// 	return r;
-		// }
-		return null;
-	}
+    override Response onProcess(Request req, Response res) {
+        // writeln(req.session());
+        string path = req.path();
+        infof("path: %s, post name: %s", path, req.post("name"));
+        // FIXME: Needing refactor or cleanup -@zhangxueping at 2020-01-06T14:37:41+08:00
+        // 
+        // if(path == "/redirect1") {
+        // 	RedirectResponse r = new RedirectResponse(req, "https://www.putao.com/");
+        // 	return r;
+        // }
+        return null;
+    }
 }
 
 /**
  * 
  */
 class IndexController : Controller {
-	mixin MakeController;
+    mixin MakeController;
 
-	this() {
-		this.addMiddleware(new IpFilterMiddleware());
-	}
+    this() {
+        this.addMiddleware(new IpFilterMiddleware());
+    }
 
-	override bool before() {
-		logDebug("---running before----");
+    override bool before() {
+        logDebug("---running before----");
 
-		if (toUpper(request.getMethod()) == HttpMethod.OPTIONS.asString())
-			return false;
-		return true;
-	}
+        if (toUpper(request.getMethod()) == HttpMethod.OPTIONS.asString())
+            return false;
+        return true;
+    }
 
-	override bool after() {
-		logDebug("---running after----");
-		return true;
-	}
+    override bool after() {
+        logDebug("---running after----");
+        return true;
+    }
 
-	@Action 
-	void index() {
+    @Action 
+    void index() {
+        BreadcrumbItem[] items = breadcrumbsManager.generate("home");
+        trace(items);
 
-		BreadcrumbsManager breadcrumbsManager = serviceContainer.resolve!(BreadcrumbsManager)();
+        JSONValue model;
+        model["title"] = "Hunt demo";
+        model["stamp"] = time();
+        model["now"] = Clock.currTime.toString();
+        view.setTemplateExt(".dhtml");
+        view.assign("model", model);
+        view.assign("app", parseJSON(`{"name":"Hunt"}`));
+        view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
+        
+        HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));
+        this.response.setBody(hb);
+    }
 
-		BreadcrumbItem[] items = breadcrumbsManager.generate("home");
-		trace(items);
+    // Response showAction() {
+    // 	logDebug("---show Action----");
+        
+    // 	HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Show message(No @Action defined): Hello world<br/>");
 
-		JSONValue model;
-		model["title"] = "Hunt demo";
-		model["stamp"] = time();
-		model["now"] = Clock.currTime.toString();
-		view.setTemplateExt(".dhtml");
-		view.assign("model", model);
-		view.assign("app", parseJSON(`{"name":"Hunt"}`));
-		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
-		
-		HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));
-		this.response.setBody(hb);
-	}
+    // 	// dfmt off
+    // 	response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
+    // 		.header("X-Header-One", "Header Value")
+    // 		.headers(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"])
+    // 		.setBody(hb);
 
-	// Response showAction() {
-	// 	logDebug("---show Action----");
-		
-	// 	HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Show message(No @Action defined): Hello world<br/>");
+    // 	// dfmt on
+    // 	return response;
+    // }
 
-	// 	// dfmt off
-	// 	response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
-	// 		.header("X-Header-One", "Header Value")
-	// 		.headers(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"])
-	// 		.setBody(hb);
+    Response test_action() {
+        logDebug("---test_action----");
+        HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Show message: Hello world<br/>");
+        response.setBody(hb);
 
-	// 	// dfmt on
-	// 	return response;
-	// }
+        return response;
+    }
 
-	Response test_action() {
-		logDebug("---test_action----");
-		HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Show message: Hello world<br/>");
-		response.setBody(hb);
-
-		return response;
-	}
-
-	@Action void showVoid()
-	{
-		logDebug("---show void----");
-	}
+    @Action void showVoid()
+    {
+        logDebug("---show void----");
+    }
 
 // FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/20 下午11:59:05
 // 
-	// @Action string showString(error) {
-	@Action string showString() {
-		logDebug("---show string----");
-		return "Hello world. ";
-	}
+    // @Action string showString(error) {
+    @Action string showString() {
+        logDebug("---show string----");
+        return "Hello world. ";
+    }
 
-	@Action bool showBool() {
-		logDebug("---show bool----");
-		return true;
-	}
+    @Action bool showBool() {
+        logDebug("---show bool----");
+        return true;
+    }
 
-	@Action int showInt() {
-		logDebug("---test Routing1----", this.request.get("id"));
-		return 2018;
-	}
+    @Action int showInt() {
+        logDebug("---test Routing1----", this.request.get("id"));
+        return 2018;
+    }
 
 // 	@Action string testTracing() {
 // version(WITH_HUNT_TRACE) {
@@ -171,8 +168,8 @@ class IndexController : Controller {
 // 		import std.range;
 
 // 		ApplicationConfig conf = config();
-		
-			
+        
+            
 // 		string url = "http://10.1.222.120:801/index.html";
 // 		HttpClient client = new HttpClient();
 
@@ -202,91 +199,92 @@ class IndexController : Controller {
 // } else {
 // 		return "Trace is disabled.";
 // }
-		
+        
 // 	}
 
-// 	@Action string testRouting2(int id) {
-// 		logDebug("---test Routing2----", this.request.queries);
-// 		Appender!string sb;
-// 		sb.put("The router parameter(id) is: ");
-// 		sb.put(id.to!string);
-// 		sb.put(" The query parameters are: ");
-// 		sb.put(to!string(this.request.queries));
-// 		return sb.data;
-// 	}
+    @Action string testRouting2(int id) {
+        logDebug("---test Routing2----", this.request.queries);
+        // request.get("id");
+        Appender!string sb;
+        sb.put("The router parameter(id) is: ");
+        sb.put(id.to!string);
+        sb.put(". <br>");
+        sb.put(" The query parameters are: ");
+        sb.put(to!string(this.request.queries));
+        return sb.data;
+    }
 
-	@Action Response testRedis() {
-		// import hunt.redis.RedisCluster;
-		// import hunt.redis.Redis;
+    @Action Response testRedis() {
+        // import hunt.redis.RedisCluster;
+        // import hunt.redis.Redis;
 
-		// RedisCluster redisCluster = getRedisFromCluster();
+        // RedisCluster redisCluster = getRedisFromCluster();
 
+        RedisPool pool = redisPool();
+        Redis r = pool.getResource();
 
-		RedisPool pool = Application.instance().serviceContainer.resolve!RedisPool();
-		Redis r = pool.getResource();
+        scope(exit) r.close();
 
-		scope(exit) r.close();
+        r.set("hunt_demo_redis","Hunt redis storage");
+        string s = r.get("hunt_demo_redis");
+        trace(s);
 
-		r.set("hunt_demo_redis","Hunt redis storage");
-		string s = r.get("hunt_demo_redis");
-    	trace(s);
+        HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Redis result: " ~ s ~ "<br/>");
+        
+        // dfmt off
+        Response response = new Response();
+        response.withHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
+                .withBody(hb);
+        // dfmt on
 
-		HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Redis result: " ~ s ~ "<br/>");
-		
-		// dfmt off
-		Response response = new Response();
-		response.withHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
-				.withBody(hb);
-		// dfmt on
+        return response;
+    }
 
-		return response;
-	}
+    @Action Response setCookie() {
+        logDebug("---test Cookie ----");
+        Cookie cookie1 = new Cookie("name1", "value1", 1000);
+        Cookie cookie2 = new Cookie("name2", "value2", 1200, "/path");
+        Cookie cookie3 = new Cookie("name3", "value3", 4000);
 
-	@Action Response setCookie() {
-		logDebug("---test Cookie ----");
-		Cookie cookie1 = new Cookie("name1", "value1", 1000);
-		Cookie cookie2 = new Cookie("name2", "value2", 1200, "/path");
-		Cookie cookie3 = new Cookie("name3", "value3", 4000);
+        Appender!string sb;
+        sb.put("Three cookies are set.<br/>");
+        sb.put(cookie1.toString() ~ "<br/>");
+        sb.put(cookie2.toString() ~ "<br/>");
+        sb.put(cookie3.toString() ~ "<br/>");
+        HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, sb.data());
 
-		Appender!string sb;
-		sb.put("Three cookies are set.<br/>");
-		sb.put(cookie1.toString() ~ "<br/>");
-		sb.put(cookie2.toString() ~ "<br/>");
-		sb.put(cookie3.toString() ~ "<br/>");
-		HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, sb.data());
+        // dfmt off
+        Response response = new Response();
 
-		// dfmt off
-		Response response = new Response();
+        response.withCookie(cookie1)
+            .withCookie(cookie2)
+            .withCookie(cookie3)
+            .withHeader("X-Header-One", "Header Value")
+            .withHeaders(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"])
+            .withBody(hb);
+        // dfmt on
 
-		response.withCookie(cookie1)
-			.withCookie(cookie2)
-			.withCookie(cookie3)
-			.withHeader("X-Header-One", "Header Value")
-			.withHeaders(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"])
-			.withBody(hb);
-		// dfmt on
+        return response;
+    }
 
-		return response;
-	}
+    @Action Response getCookie() {
 
-	@Action Response getCookie() {
+        Appender!string sb;
 
-		Appender!string sb;
+        Cookie[] cookies = this.request.getCookies();
+        if (cookies.length > 0) {
+            sb.put("Found cookies:<br/>");
+            foreach (Cookie c; cookies) {
+                sb.put(format("%s=%s<br/>", c.getName(), c.getValue()));
+            }
+        } else {
+            sb.put("No cookie found.");
+        }
 
-		Cookie[] cookies = this.request.getCookies();
-		if (cookies.length > 0) {
-			sb.put("Found cookies:<br/>");
-			foreach (Cookie c; cookies) {
-				sb.put(format("%s=%s<br/>", c.getName(), c.getValue()));
-			}
-		} else {
-			sb.put("No cookie found.");
-		}
-
-		auto response = new Response();
-		response.withBody(HttpBody.create(MimeType.TEXT_HTML_VALUE, sb.data));
-		return response;
-	}
+        auto response = new Response();
+        response.withBody(HttpBody.create(MimeType.TEXT_HTML_VALUE, sb.data));
+        return response;
+    }
 
 // 	@Action JSONValue testJson1() {
 // 		logDebug("---test Json1----");
@@ -320,7 +318,7 @@ class IndexController : Controller {
 
 // 		view.setTemplateExt(".txt");
 // 		view.assign("model", data);
-		
+        
 // 		return view.render("index");
 // 	}
 

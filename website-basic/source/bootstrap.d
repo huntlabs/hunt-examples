@@ -68,7 +68,7 @@ void main(string[] args)
 void testI18n() {
 	
     import hunt.framework.i18n.I18n;
-	I18n i18n = I18n.instance();
+	I18n i18n = new I18n();
 	i18n.loadLangResources("./resources/translations");
 	i18n.defaultLocale = "en-us";
 	writeln(i18n.resources);
