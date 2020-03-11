@@ -93,7 +93,7 @@ class IndexController : Controller {
 
         // BasicApplicationConfig appConfig = serviceContainer().resolve!(BasicApplicationConfig);
         BasicApplicationConfig appConfig = cast(BasicApplicationConfig)config();
-        info(appConfig.github.appid);
+        warning(appConfig.github.appid);
     }
 
     override bool before() {
