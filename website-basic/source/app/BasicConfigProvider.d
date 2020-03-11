@@ -1,6 +1,6 @@
 module app.BasicConfigProvider;
 
-import app.BasicApplicationConfig;
+import app.config.BasicApplicationConfig;
 
 import hunt.framework.provider.ServiceProvider;
 import hunt.framework.provider.ConfigServiceProvider;

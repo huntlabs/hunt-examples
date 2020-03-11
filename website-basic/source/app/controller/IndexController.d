@@ -10,6 +10,8 @@
  */
 module app.controller.IndexController;
 
+import app.config;
+
 import hunt.framework.application;
 import hunt.framework.http;
 import hunt.framework.view;
@@ -75,7 +77,6 @@ class IpFilterMiddleware : MiddlewareInterface {
 }
 
 
-import app.BasicApplicationConfig;
 
 /**
  * 
@@ -94,6 +95,9 @@ class IndexController : Controller {
         // BasicApplicationConfig appConfig = serviceContainer().resolve!(BasicApplicationConfig);
         BasicApplicationConfig appConfig = cast(BasicApplicationConfig)config();
         warning(appConfig.github.appid);
+
+        GithubConfig githubConfig = configManager().load!GithubConfig();
+        warning(githubConfig.accessTokenUrl);
     }
 
     override bool before() {

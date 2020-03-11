@@ -1,4 +1,4 @@
-module app.BasicApplicationConfig;
+module app.config.BasicApplicationConfig;
 
 import hunt.framework.application.ApplicationConfig;
 import hunt.util.Configuration;
@@ -11,6 +11,7 @@ class BasicApplicationConfigBase : ApplicationConfig {
  * 
  */
 // @Configuration("hunt")
+@ConfigurationFile("application")
 class BasicApplicationConfig : BasicApplicationConfigBase {
 
     struct GithubConfig {
