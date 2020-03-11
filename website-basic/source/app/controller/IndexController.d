@@ -74,6 +74,9 @@ class IpFilterMiddleware : MiddlewareInterface {
     }
 }
 
+
+import app.BasicApplicationConfig;
+
 /**
  * 
  */
@@ -82,6 +85,15 @@ class IndexController : Controller {
 
     this() {
         this.addMiddleware(new IpFilterMiddleware());
+
+        assert(serviceContainer.isRegistered!ApplicationConfig());
+        assert(serviceContainer.isRegistered!BasicApplicationConfig());
+        assert(!serviceContainer.isRegistered!BasicApplicationConfigBase());
+
+
+        // BasicApplicationConfig appConfig = serviceContainer().resolve!(BasicApplicationConfig);
+        BasicApplicationConfig appConfig = cast(BasicApplicationConfig)config();
+        info(appConfig.github.appid);
     }
 
     override bool before() {
