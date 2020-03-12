@@ -20,9 +20,17 @@ class BasicConfigProvider : ConfigServiceProvider {
 
         container.register!(ApplicationConfig, BasicApplicationConfig)(() {
             ConfigManager configManager = container.resolve!(ConfigManager)();
-            BasicApplicationConfig config = configManager.load!(BasicApplicationConfig);
-            return config;
+            return configManager.load!(BasicApplicationConfig);
         }).singleInstance();
+        
+        container.register!(RouteConfig)(() {
+            ConfigManager configManager = container.resolve!(ConfigManager)();
+            ApplicationConfig appConfig = container.resolve!(ApplicationConfig)();
+            RouteConfig routeConfig = new RouteConfig(appConfig);
+            routeConfig.basePath = configManager.configPath();
+
+            return routeConfig;
+        });
     }
 
 }

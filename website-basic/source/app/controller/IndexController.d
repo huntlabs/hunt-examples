@@ -98,6 +98,8 @@ class IndexController : Controller {
 
         GithubConfig githubConfig = configManager().load!GithubConfig();
         warning(githubConfig.accessTokenUrl);
+
+        
     }
 
     override bool before() {
@@ -129,6 +131,11 @@ class IndexController : Controller {
         
         HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));
         this.response.setBody(hb);
+    }
+
+    @Action string about() {
+        warning("index.about url: ", url("index.about") );
+        return "Hunt examples 3.0";
     }
 
     // Response showAction() {

@@ -4,7 +4,7 @@
 
 *		/						index.index
 *		/home						index.index
-*		/show						index.show
+*		/about						index.about
 *		/index						index.index
 *		/showvoid					index.showVoid
 *		/showString					index.showString

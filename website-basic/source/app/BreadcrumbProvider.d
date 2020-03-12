@@ -21,8 +21,11 @@ class BreadcrumbProvider : BreadcrumbServiceProvider {
             trail.push("Home", "/home");
         });
 
-// TODO: Tasks pending completion -@zhangxueping at 2020-01-02T18:45:03+08:00
-// 
+        breadcrumbs.register("index.about", (Breadcrumbs trail, Object[] params...) {
+            trail.parent("home");
+            trail.push("About", url("index.about"));
+        });
+        
         // breadcrumbs.register("index.show", (Breadcrumbs trail, Object[] params...) {
         //     trail.parent("home");
         //     trail.push("About", url("index.show"));
@@ -38,10 +41,10 @@ class BreadcrumbProvider : BreadcrumbServiceProvider {
             trail.push("Category", "/blog/category");
         });
 
-        string s = breadcrumbs.render("index.show", null) ;
-        trace(s);
+        // string s = breadcrumbs.render("index.show", null) ;
+        // trace(s);
 
-        s = breadcrumbs.render("category", null) ;
-        trace(s);        
+        // s = breadcrumbs.render("category", null) ;
+        // trace(s);        
     }
 }
