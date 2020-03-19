@@ -129,8 +129,9 @@ class IndexController : Controller {
         view.assign("app", parseJSON(`{"name":"Hunt"}`));
         view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
         
-        HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));
-        this.response.setBody(hb);
+        // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));
+        // this.response.setBody(hb);
+        this.response.setContent(view.render("home"), MimeType.TEXT_HTML_VALUE);
     }
 
     @Action string about() {
@@ -155,8 +156,10 @@ class IndexController : Controller {
 
     Response test_action() {
         logDebug("---test_action----");
-        HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Show message: Hello world<br/>");
-        response.setBody(hb);
+        // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Show message: Hello world<br/>");
+        // response.setBody(hb);
+
+        response.setContent("Show message: Hello world<br/>", MimeType.TEXT_HTML_VALUE);
 
         return response;
     }
@@ -252,13 +255,10 @@ class IndexController : Controller {
         string s = r.get("hunt_demo_redis");
         trace(s);
 
-        HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Redis result: " ~ s ~ "<br/>");
+        // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Redis result: " ~ s ~ "<br/>");
         
-        // dfmt off
         Response response = new Response();
-        response.withHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8")
-                .withBody(hb);
-        // dfmt on
+        response.setContent("Redis result: " ~ s ~ "<br/>", MimeType.TEXT_HTML_VALUE);
 
         return response;
     }
@@ -274,7 +274,7 @@ class IndexController : Controller {
         sb.put(cookie1.toString() ~ "<br/>");
         sb.put(cookie2.toString() ~ "<br/>");
         sb.put(cookie3.toString() ~ "<br/>");
-        HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, sb.data());
+        // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, sb.data());
 
         // dfmt off
         Response response = new Response();
@@ -282,9 +282,9 @@ class IndexController : Controller {
         response.withCookie(cookie1)
             .withCookie(cookie2)
             .withCookie(cookie3)
-            .withHeader("X-Header-One", "Header Value")
+            .header("X-Header-One", "Header Value")
             .withHeaders(["X-Header-Two":"Header Value", "X-Header-Tree": "Header Value"])
-            .withBody(hb);
+            .withContent(sb.data(), MimeType.TEXT_HTML_VALUE);
         // dfmt on
 
         return response;
@@ -304,114 +304,119 @@ class IndexController : Controller {
             sb.put("No cookie found.");
         }
 
-        auto response = new Response();
-        response.withBody(HttpBody.create(MimeType.TEXT_HTML_VALUE, sb.data));
+        // auto response = new Response();
+        response.withContent(sb.data, MimeType.TEXT_HTML_VALUE);
         return response;
     }
 
-// 	@Action JSONValue testJson1() {
-// 		logDebug("---test Json1----");
-// 		JSONValue js;
-// 		js["message"] = "Hello world.";
-// 		return js;
-// 	}
+	@Action JSONValue testJson1() {
+		logDebug("---test Json1----");
+		JSONValue js;
+		js["message"] = "Hello world.";
+		return js;
+	}
 
-// 	@Action JsonResponse testJson2() {
-// 		logDebug("---test Json2----");
-// 		JSONValue company;
-// 		company["name"] = "Putao";
-// 		company["city"] = "Shanghai";
+	@Action JsonResponse testJson2() {
+		logDebug("---test Json2----");
+		JSONValue company;
+		company["name"] = "Putao";
+		company["city"] = "Shanghai";
 
-// 		JsonResponse res = new JsonResponse(company);
-// 		return res;
-// 	}
+		JsonResponse res = new JsonResponse(company);
+		return res;
+	}
 
-// 	@Action string showView() {
-// 		JSONValue data;
-// 		data["name"] = "Cree";
-// 		data["alias"] = "Cree";
-// 		data["city"] = "Christchurch";
-// 		data["age"] = 3;
-// 		data["age1"] = 28;
-// 		data["addrs"] = ["ShangHai", "BeiJing"];
-// 		data["is_happy"] = false;
-// 		data["allow"] = false;
-// 		data["users"] = ["name" : "jeck", "age" : "18"];
-// 		data["nums"] = [3, 5, 2, 1];
+	@Action string showView() {
+		JSONValue data;
+		data["name"] = "Cree";
+		data["alias"] = "Cree";
+		data["city"] = "Christchurch";
+		data["age"] = 3;
+		data["age1"] = 28;
+		data["addrs"] = ["ShangHai", "BeiJing"];
+		data["is_happy"] = false;
+		data["allow"] = false;
+		data["users"] = ["name" : "jeck", "age" : "18"];
+		data["nums"] = [3, 5, 2, 1];
 
-// 		view.setTemplateExt(".txt");
-// 		view.assign("model", data);
+		view.setTemplateExt(".txt");
+		view.assign("model", data);
         
-// 		return view.render("index");
-// 	}
+		return view.render("index");
+	}
 
-// 	@Action FileResponse testDownload() {
-// 		string file = request.get("file", "putao.png");
-// 		file = "attachments/" ~ file;
-// 		FileResponse r = new FileResponse(file);
-// 		return r;
-// 	}
+	@Action FileResponse testDownload() {
+		string file = request.get("file", "putao.png");
+		file = "attachments/" ~ file;
+		FileResponse r = new FileResponse(file);
+		return r;
+	}
 
-// 	@Action RedirectResponse testRedirect1() {
-// 		HttpSession session = request.session(true);
-// 		session.set("test", "for RedirectResponse");
-// 		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
-// 		return r;
-// 	}
+	@Action RedirectResponse testRedirect1() {
+		HttpSession session = request.session(true);
+		session.set("test", "for RedirectResponse");
+		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
+		return r;
+	}
 
-// 	@Action RedirectResponse testRedirect2() {
-// 		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
-// 		return r;
-// 	}
+	@Action RedirectResponse testRedirect2() {
+		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
+		return r;
+	}
 
-// 	@Action Response setCache() {
-// 		HttpSession session = request.session(true);
-// 		DateTime now = cast(DateTime)Clock.currTime ;
-// 		session.set("test", "current time: " ~ now.toSimpleString());
+	@Action Response setCache() {
+		HttpSession session = request.session(true);
+		std.datetime.DateTime now = cast(std.datetime.DateTime)Clock.currTime ;
+		session.set("test", "current time: " ~ now.toSimpleString());
 
-// 		string key = request.get("key");
-// 		string value = request.get("value");
-// 		cache.set(key, value);
+		string key = request.get("key");
+		string value = request.get("value");
+		cache.set(key, value);
 
-// 		Appender!string stringBuilder;
+		Appender!string stringBuilder;
 
-// 		stringBuilder.put("Cache test: <br/>");
-// 		stringBuilder.put("key : " ~ key ~ " value : " ~ value);
-// 		stringBuilder.put("<br/><br/>Session Test: ");
-// 		stringBuilder.put("<br/>SessionId: " ~ session.getId());
-// 		stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
+		stringBuilder.put("Cache test: <br/>");
+		stringBuilder.put("key : " ~ key ~ " value : " ~ value);
+		stringBuilder.put("<br/><br/>Session Test: ");
+		stringBuilder.put("<br/>SessionId: " ~ session.getId());
+		stringBuilder.put("<br/>key: test, value: " ~ session.get("test"));
 
-// 		// request.flush(); // Can be called automatically by Response.done.
+		// request.flush(); // Can be called automatically by Response.done.
 
-// 		Response response = new Response(this.request);
-// 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-// 		response.setContent(stringBuilder.data);
-// 		return response;
-// 	}
+		// Response response = new Response();
+        
+        // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, stringBuilder.data);
+        // return new Response(hb);
 
-// 	@Action Response getCache() {
-// 		HttpSession session = request.session();
+		response.setContent(stringBuilder.data);
+		return response;
+	}
 
-// 		string key = request.get("key");
-// 		string value = cache.get!(string)(key);
+	@Action Response getCache() {
+		HttpSession session = request.session();
 
-// 		Appender!string stringBuilder;
-// 		stringBuilder.put("Cache test:<br/>");
-// 		stringBuilder.put(" key: " ~ key ~ ", value: " ~ value);
+		string key = request.get("key");
+		string value = cache.get!(string)(key);
 
-// 		if (session !is null) {
-// 			string sessionValue = session.get("test");
-// 			stringBuilder.put("<br/><br/>Session Test: ");
-// 			stringBuilder.put("<br/>  SessionId: " ~ session.getId);
-// 			stringBuilder.put("<br/>  key: test, value: " ~ sessionValue);
-// 		}
+		Appender!string stringBuilder;
+		stringBuilder.put("Cache test:<br/>");
+		stringBuilder.put(" key: " ~ key ~ ", value: " ~ value);
 
-// 		Response response = new Response(this.request);
-// 		response.setContent(stringBuilder.data).setHeader(HttpHeader.CONTENT_TYPE,
-// 				MimeType.TEXT_HTML_UTF_8.asString());
+		if (session !is null) {
+			string sessionValue = session.get("test");
+			stringBuilder.put("<br/><br/>Session Test: ");
+			stringBuilder.put("<br/>  SessionId: " ~ session.getId);
+			stringBuilder.put("<br/>  key: test, value: " ~ sessionValue);
+		}
 
-// 		return response;
-// 	}
+        // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, stringBuilder.data);
+        // return new Response(hb);
+		Response response = new Response();
+		response.setContent(stringBuilder.data)
+            .header(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_VALUE);
+
+		return response;
+	}
 
 // 	@Action Response createTask() {
 // 		string interval = request.get("interval");

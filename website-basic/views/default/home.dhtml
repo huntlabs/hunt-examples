@@ -101,7 +101,7 @@
             <div class="col-md-3">
                 <ul class="list-unstyled text-left">
                     <li>
-                        <a href="/show">show Response</a>
+                        <a href="/showVoid">show void</a>
                     </li>
 
                     <li>
