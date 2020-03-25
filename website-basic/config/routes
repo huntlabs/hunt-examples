@@ -6,7 +6,7 @@
 *		/home						index.index
 *		/about						index.about
 *		/index						index.index
-*		/showvoid					index.showVoid
+*		/showVoid					index.showVoid
 *		/showString					index.showString
 *		/showBool					index.showBool
 *		/showInt				    index.showInt
@@ -14,6 +14,7 @@
 #*		/order       				index.testRouting2
 *		/order/{id<\d+>}			index.testRouting2
 GET		/testRedis					index.testRedis
+GET		/testAmqp					index.testAmqp
 *		/setCookie					index.setCookie
 *		/getCookie					index.getCookie
 *		/testJson1					index.testJson1

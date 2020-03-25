@@ -28,6 +28,7 @@ import hunt.validation;
 import hunt.redis.RedisCluster;
 import hunt.redis.Redis;
 import hunt.redis.RedisPool;
+import hunt.amqp.client;
 
 import core.time;
 
@@ -261,6 +262,33 @@ class IndexController : Controller {
         response.setContent("Redis result: " ~ s ~ "<br/>", MimeType.TEXT_HTML_VALUE);
 
         return response;
+    }
+
+    @Action string testAmqp() {
+        AmqpConnection conn = amqpConnection();
+
+        logInfo("Connection succeeded");
+        conn.createSender("my-queue", new class hunt.amqp.client.Handler!AmqpSender {
+            void handle(AmqpSender sender)
+            {
+                if(sender is null)
+                {
+                    logWarning("Unable to create a sender");
+                    return;
+                }
+
+                sender.send(AmqpMessage.create().withBody("hello world").build());
+                trace("send completed");
+
+                //for (int i = 0 ; i < 100; ++i)
+                //{
+                //  sender.send(AmqpMessage.create().withBody("hello world").build());
+                //  logInfo("send complite");
+                //}
+            }
+        });
+
+        return "Ok";
     }
 
     @Action Response setCookie() {

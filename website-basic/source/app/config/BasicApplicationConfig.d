@@ -1,6 +1,6 @@
 module app.config.BasicApplicationConfig;
 
-import hunt.framework.application.ApplicationConfig;
+import hunt.framework.config.ApplicationConfig;
 import hunt.util.Configuration;
 
 class BasicApplicationConfigBase : ApplicationConfig {
