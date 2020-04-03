@@ -16,7 +16,7 @@ import hunt.framework.application;
 import hunt.framework.http;
 import hunt.framework.view;
 import hunt.framework.storage.redis;
-import hunt.framework.task.Task;
+import hunt.framework.queue;
 
 import hunt.http.server;
 import hunt.framework;
@@ -35,6 +35,7 @@ import core.time;
 import std.conv;
 import std.array;
 import std.datetime;
+import std.format;
 import std.json;
 import std.stdio;
 import std.string;
@@ -43,20 +44,20 @@ import std.string;
 version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
 
-class Task1 : Task {
-    this(int a, int b) {
-        _a = a;
-        _b = b;
-    }
+// class TestQueueJob : Job {
+//     this(int a, int b) {
+//         _a = a;
+//         _b = b;
+//     }
 
-    override void exec() {
-        logDebug("taskid : ", this.tid, ", do job ", _a, " + ", _b, " = ", _a + _b);
-    }
+//     override void exec() {
+//         logDebug("taskid : ", this.id, ", do job ", _a, " + ", _b, " = ", _a + _b);
+//     }
 
-private:
-    int _a;
-    int _b;
-}
+// private:
+//     int _a;
+//     int _b;
+// }
 
 class IpFilterMiddleware : MiddlewareInterface {
     override string name() {
@@ -249,12 +250,12 @@ class IndexController : Controller {
 
         RedisPool pool = redisPool();
         Redis r = pool.getResource();
+        // scope(exit) r.close();
 
-        scope(exit) r.close();
-
-        r.set("hunt_demo_redis","Hunt redis storage");
+		std.datetime.DateTime now = cast(std.datetime.DateTime)Clock.currTime ;
+        r.set("hunt_demo_redis", "Hunt redis test, " ~ now.toSimpleString());
         string s = r.get("hunt_demo_redis");
-        trace(s);
+        // trace(s);
 
         // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Redis result: " ~ s ~ "<br/>");
         
@@ -446,41 +447,67 @@ class IndexController : Controller {
 		return response;
 	}
 
-// 	@Action Response createTask() {
-// 		string interval = request.get("interval");
-// 		string value1 = request.get("value1");
-// 		string value2 = request.get("value2");
+    @Action Response pushQueue() {        
 
-// 		auto t1 = new Task1(to!int(value1), to!int(value2));
-// 		t1.setFinish((Task t) {
-// 			try {
-// 				logDebug("the task is finish : ", t.tid);
-// 			} catch (Exception e) {
-// 			}
-// 		});
+        std.datetime.DateTime dt = cast(std.datetime.DateTime)Clock.currTime();
+        string message = format("Say hello at %s", dt.toSimpleString());
 
-// 		auto taskid = taskManager().put(t1, dur!"seconds"(to!int(interval)));
+        QueueWorker worker  = queueWorker();
+        worker.push("my-queue", cast(ubyte[])message);
 
-// 		Response response = new Response(this.request);
-// 		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
-// 		response.setContent("the task id : " ~ to!string(taskid));
-// 		return response;
-// 	}
+        Response response = new Response();
+        response.setContent(message);
+        return response;
+    }
 
-// 	@Action Response stopTask() {
-// 		string taskid = request.get("taskid");
-// 		Response response = new Response(this.request);
+    @Action Response queryQueue() {
 
-// 		if (taskid.empty()) {
-// 			response.setContent("The task id is empty!");
-// 		} else {
-// 			auto ok = taskManager.del(to!size_t(taskid));
-// 			response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
-// 			response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
+        enum string ChannelName = "my-queue";
+        
+        QueueWorker worker  = queueWorker();
+        bool result = worker.addListener(ChannelName, (ubyte[] message) {
+            warningf("Received message: %s", cast(string)message);
+        });
 
-// 		}
-// 		return response;
-// 	}
+        worker.startListening();
+
+        Response response = new Response();
+        if(result) {
+            response.setContent(format("Listener for channel %s registed", ChannelName));
+        } else {
+            response.setContent(format("Listener for channel %s existed", ChannelName));
+        }
+        return response;
+    }
+
+	// @Action Response createTask() {
+	// 	string value1 = request.get("value1", "1");
+	// 	string value2 = request.get("value2", "2");
+
+	// 	auto t1 = new TestQueueJob(to!int(value1), to!int(value2));
+
+	// 	queueWorker().push("test", t1);
+
+	// 	Response response = new Response();
+	// 	response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
+	// 	// response.setContent("the task id : " ~ to!string(t1.id()));
+	// 	return response;
+	// }
+
+	// @Action Response stopTask() {
+	// 	string taskid = request.get("taskid");
+	// 	Response response = new Response(this.request);
+
+	// 	if (taskid.empty()) {
+	// 		response.setContent("The task id is empty!");
+	// 	} else {
+	// 		auto ok = taskManager.del(to!size_t(taskid));
+	// 		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
+	// 		response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
+
+	// 	}
+	// 	return response;
+	// }
 
 
 // 	@Action Response testPost() {

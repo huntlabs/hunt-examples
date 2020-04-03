@@ -26,8 +26,12 @@ GET		/redirect2					index.testRedirect2
 GET		/testView					index.showView
 GET		/get						index.getCache
 *		/set						index.setCache
-GET		/create						index.createTask
+# GET		/create						index.createTask
 GET		/stop						index.stopTask
+
+# Queue
+GET		/pushQueue						index.pushQueue
+GET		/queryQueue						index.queryQueue
 
 POST    /testpost                  index.testPost
 POST    /testForm1                  index.testForm1
