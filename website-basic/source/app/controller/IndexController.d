@@ -15,20 +15,21 @@ import app.config;
 import hunt.framework.application;
 import hunt.framework.http;
 import hunt.framework.view;
-import hunt.framework.storage.redis;
 import hunt.framework.queue;
 
+
+import hunt.amqp.client;
+import hunt.concurrency.Future;
+import hunt.concurrency.FuturePromise;
 import hunt.http.server;
 import hunt.framework;
 import hunt.logging;
-import hunt.util.DateTime;
-import hunt.validation;
-
 // import hunt.redis;
 import hunt.redis.RedisCluster;
 import hunt.redis.Redis;
 import hunt.redis.RedisPool;
-import hunt.amqp.client;
+import hunt.util.DateTime;
+import hunt.validation;
 
 import core.time;
 
@@ -93,15 +94,12 @@ class IndexController : Controller {
         assert(serviceContainer.isRegistered!BasicApplicationConfig());
         assert(!serviceContainer.isRegistered!BasicApplicationConfigBase());
 
-
         // BasicApplicationConfig appConfig = serviceContainer().resolve!(BasicApplicationConfig);
-        BasicApplicationConfig appConfig = cast(BasicApplicationConfig)config();
-        warning(appConfig.github.appid);
+        // BasicApplicationConfig appConfig = cast(BasicApplicationConfig)config();
+        // trace(appConfig.github.appid);
 
-        GithubConfig githubConfig = configManager().load!GithubConfig();
-        warning(githubConfig.accessTokenUrl);
-
-        
+        // GithubConfig githubConfig = configManager().load!GithubConfig();
+        // trace(githubConfig.accessTokenUrl);
     }
 
     override bool before() {
@@ -119,7 +117,7 @@ class IndexController : Controller {
 
     @Action 
     void index() {
-        BreadcrumbItem[] items = breadcrumbsManager.generate("home");
+        BreadcrumbItem[] items = Application.instance().breadcrumbs.generate("home");
         trace(items);
 
         JSONValue model;
@@ -129,7 +127,7 @@ class IndexController : Controller {
         view.setTemplateExt(".dhtml");
         view.assign("model", model);
         view.assign("app", parseJSON(`{"name":"Hunt"}`));
-        view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
+        view.assign("breadcrumbs", Application.instance().breadcrumbs.generate("home"));
         
         // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));
         // this.response.setBody(hb);
@@ -198,7 +196,7 @@ class IndexController : Controller {
 // 		ApplicationConfig conf = config();
         
             
-// 		string url = "http://10.1.222.120:801/index.html";
+// 		string url = "http://10.1.222.110:801/index.html";
 // 		HttpClient client = new HttpClient();
 
 // 		RequestBuilder requestBuilder = new RequestBuilder()
@@ -246,10 +244,7 @@ class IndexController : Controller {
         // import hunt.redis.RedisCluster;
         // import hunt.redis.Redis;
 
-        // RedisCluster redisCluster = getRedisFromCluster();
-
-        RedisPool pool = redisPool();
-        Redis r = pool.getResource();
+        Redis r = Application.instance().redis(); // getRedis();
         // scope(exit) r.close();
 
 		std.datetime.DateTime now = cast(std.datetime.DateTime)Clock.currTime ;
@@ -265,32 +260,32 @@ class IndexController : Controller {
         return response;
     }
 
-    @Action string testAmqp() {
-        AmqpConnection conn = amqpConnection();
+    // @Action string testAmqp() {
+    //     AmqpConnection conn = amqpConnection();
 
-        logInfo("Connection succeeded");
-        conn.createSender("my-queue", new class hunt.amqp.client.Handler!AmqpSender {
-            void handle(AmqpSender sender)
-            {
-                if(sender is null)
-                {
-                    logWarning("Unable to create a sender");
-                    return;
-                }
+    //     logInfo("Connection succeeded");
+    //     conn.createSender("my-queue", new class hunt.amqp.client.Handler!AmqpSender {
+    //         void handle(AmqpSender sender)
+    //         {
+    //             if(sender is null)
+    //             {
+    //                 logWarning("Unable to create a sender");
+    //                 return;
+    //             }
 
-                sender.send(AmqpMessage.create().withBody("hello world").build());
-                trace("send completed");
+    //             sender.send(AmqpMessage.create().withBody("hello world").build());
+    //             trace("send completed");
 
-                //for (int i = 0 ; i < 100; ++i)
-                //{
-                //  sender.send(AmqpMessage.create().withBody("hello world").build());
-                //  logInfo("send complite");
-                //}
-            }
-        });
+    //             //for (int i = 0 ; i < 100; ++i)
+    //             //{
+    //             //  sender.send(AmqpMessage.create().withBody("hello world").build());
+    //             //  logInfo("send complite");
+    //             //}
+    //         }
+    //     });
 
-        return "Ok";
-    }
+    //     return "Ok";
+    // }
 
     @Action Response setCookie() {
         logDebug("---test Cookie ----");
@@ -400,7 +395,7 @@ class IndexController : Controller {
 
 		string key = request.get("key");
 		string value = request.get("value");
-		cache.set(key, value);
+		Application.instance().cache.set(key, value);
 
 		Appender!string stringBuilder;
 
@@ -425,7 +420,7 @@ class IndexController : Controller {
 		HttpSession session = request.session();
 
 		string key = request.get("key");
-		string value = cache.get!(string)(key);
+		string value = Application.instance().cache.get!(string)(key);
 
 		Appender!string stringBuilder;
 		stringBuilder.put("Cache test:<br/>");
@@ -452,8 +447,8 @@ class IndexController : Controller {
         std.datetime.DateTime dt = cast(std.datetime.DateTime)Clock.currTime();
         string message = format("Say hello at %s", dt.toSimpleString());
 
-        QueueWorker worker  = queueWorker();
-        worker.push("my-queue", cast(ubyte[])message);
+        AbstractQueue queue  = messageQueue();
+        queue.push("my-queue", cast(ubyte[])message);
 
         Response response = new Response();
         response.setContent(message);
@@ -462,21 +457,39 @@ class IndexController : Controller {
 
     @Action Response queryQueue() {
 
+        // FIXME: Needing refactor or cleanup -@zhangxueping at 2020-04-07T11:20:43+08:00
+        // More tests needed
+
         enum string ChannelName = "my-queue";
+        FuturePromise!string promise = new FuturePromise!string();
+        string registTime = hunt.util.DateTime.DateTime.getTimeAsGMT();
         
-        QueueWorker worker  = queueWorker();
-        bool result = worker.addListener(ChannelName, (ubyte[] message) {
-            warningf("Received message: %s", cast(string)message);
+        AbstractQueue queue  = messageQueue();
+        scope(exit) {
+            queue.remove(ChannelName);
+        }
+
+        queue.addListener(ChannelName, (ubyte[] message) {
+            string msg = cast(string)message;
+            warningf("Received message: %s", msg);
+            promise.succeeded(msg);
         });
 
-        worker.startListening();
-
+        string resultContent;
         Response response = new Response();
-        if(result) {
-            response.setContent(format("Listener for channel %s registed", ChannelName));
-        } else {
-            response.setContent(format("Listener for channel %s existed", ChannelName));
+        resultContent = format("Listener for channel %s registed at %s", ChannelName, registTime);
+
+        try {
+            string message = promise.get(25.seconds);
+
+            resultContent ~= "<br>\nThe received message: " ~ message;
+        } catch(Exception ex) {
+            resultContent ~= "<br>\nThe error message: " ~ ex.msg;
         }
+
+        resultContent ~= "<br>\nThe end time: " ~ hunt.util.DateTime.DateTime.getTimeAsGMT();
+
+        response.setContent(resultContent);
         return response;
     }
 

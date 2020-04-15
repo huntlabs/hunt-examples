@@ -7,7 +7,7 @@
 *		/about						index.about
 *		/index						index.index
 *		/showVoid					index.showVoid
-*		/showString					index.showString
+*		/plaintext					index.showString
 *		/showBool					index.showBool
 *		/showInt				    index.showInt
 *		/showInt/{id}				index.showInt
