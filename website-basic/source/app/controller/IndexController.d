@@ -172,7 +172,7 @@ class IndexController : Controller {
 // FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/20 下午11:59:05
 // 
     // @Action string showString(error) {
-    @Action string showString() {
+    @Action string plaintext() {testtest
         logDebug("---show string----");
         return "Hello world. ";
     }
@@ -185,6 +185,17 @@ class IndexController : Controller {
     @Action int showInt() {
         logDebug("---test Routing1----", this.request.get("id"));
         return 2018;
+    }
+
+    @Action string testUDAs(int number, @Length(3, 6) string name) {
+        
+
+        ConstraintValidatorContext context = validate();
+        if(context.isValid()) {
+            return "OK";
+        } else {
+            return context.toString();
+    }
     }
 
 // 	@Action string testTracing() {
