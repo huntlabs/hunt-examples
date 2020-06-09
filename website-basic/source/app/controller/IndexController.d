@@ -172,7 +172,7 @@ class IndexController : Controller {
 // FIXME: Needing refactor or cleanup -@zhangxueping at 2019/9/20 下午11:59:05
 // 
     // @Action string showString(error) {
-    @Action string plaintext() {testtest
+    @Action string plaintext() {
         logDebug("---show string----");
         return "Hello world. ";
     }
@@ -198,46 +198,46 @@ class IndexController : Controller {
     }
     }
 
-// 	@Action string testTracing() {
-// version(WITH_HUNT_TRACE) {
-// 		import hunt.http.client;
-// 		import hunt.trace;
-// 		import std.range;
+	@Action string testTracing() {
+version(WITH_HUNT_TRACE) {
+		import hunt.http.client;
+		import hunt.trace;
+		import std.range;
 
-// 		ApplicationConfig conf = config();
+		ApplicationConfig conf = config();
         
             
-// 		string url = "http://10.1.222.110:801/index.html";
-// 		HttpClient client = new HttpClient();
+		string url = "http://10.1.222.110/index.html";
+		HttpClient client = new HttpClient();
 
-// 		RequestBuilder requestBuilder = new RequestBuilder()
-// 				.url(url)
-// 				.localServiceName(conf.application.name);
+		RequestBuilder requestBuilder = new RequestBuilder()
+				.url(url)
+				.localServiceName(conf.application.name);
 
-// 		Tracer tracer = this.request.tracer;
-// 		if(tracer !is null) {
-// 			requestBuilder.withTracer(tracer);
-// 		} else {
-// 			info("No tracer found. Use the default instead.");
-// 		}
+		Tracer tracer = this.request.tracer;
+		if(tracer !is null) {
+			requestBuilder.withTracer(tracer);
+		} else {
+			info("No tracer found. Use the default instead.");
+		}
 
-// 		Request req = requestBuilder.build();
-// 		Response response = client.newCall(req).execute();
+		Request req = requestBuilder.build();
+        tracer = req.tracer;
+		Response response = client.newCall(req).execute();
 
-// 		if (response !is null) {
-// 			tracef("status code: %d", response.getStatus());
-// 			// if(response.haveBody())
-// 			//  trace(response.getBody().asString());
-// 		} else {
-// 			warning("no response");
-// 		}
+		if (response !is null) {
+			tracef("status code: %d", response.getStatus());
+			// if(response.haveBody())
+			//  trace(response.getBody().asString());
+		} else {
+			warning("no response");
+		}
 
-// 		return "traceid: " ~ tracer.root.traceId;
-// } else {
-// 		return "Trace is disabled.";
-// }
-        
-// 	}
+		return "traceid: " ~ tracer.root.traceId;
+} else {
+		return "Trace is disabled.";
+}
+	}
 
     @Action string testRouting2(int id) {
         logDebug("---test Routing2----", this.request.queries);
@@ -534,24 +534,24 @@ class IndexController : Controller {
 	// }
 
 
-// 	@Action Response testPost() {
+	@Action Response testPost() {
 
-// 		Response response = new Response(this.request);
-// 		import std.conv;
+		Response response = new Response();
+		import std.conv;
 
-// 		Appender!string stringBuilder;
-// 		stringBuilder.put("<p>Content:<p/>");
-// 		stringBuilder.put(" MIME Type: " ~ this.request.header(HttpHeader.CONTENT_TYPE) ~ "<br/>");
-// 		stringBuilder.put(" Length: " ~ this.request.header(HttpHeader.CONTENT_LENGTH) ~ "<br/>");
+		Appender!string stringBuilder;
+		stringBuilder.put("<p>Content:<p/>");
+		stringBuilder.put(" MIME Type: " ~ this.request.header(HttpHeader.CONTENT_TYPE) ~ "<br/>");
+		stringBuilder.put(" Length: " ~ this.request.header(HttpHeader.CONTENT_LENGTH) ~ "<br/>");
 
-// 		stringBuilder.put("body content: <br/>");
-// 		stringBuilder.put( this.request.getBodyAsString() ~ "<br/>");
+		stringBuilder.put("body content: <br/>");
+		// stringBuilder.put( this.request.getBodyAsString() ~ "<br/>");
 
-// 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-// 		response.setContent(stringBuilder.data);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data);
 
-// 		return response;		
-// 	}
+		return response;		
+	}
 
 // 	@Action Response testForm1() {
 // 		Response response = new Response(this.request);

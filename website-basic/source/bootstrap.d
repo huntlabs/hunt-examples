@@ -23,8 +23,6 @@ import std.datetime;
 import std.stdio;
 import std.functional;
 
-// import hunt.entity;
-
 import hunt.io.channel.Common;
 
 void main(string[] args)
@@ -45,14 +43,8 @@ void main(string[] args)
     // }).start();
 
     // testI18n();
+    // testConsole(args);
 
-
-    // Console console = new Console("Hunt Example", "3.0.0");
-
-    // console.setAutoExit(false);
-    // console.add(new ServeCommand());
-
-    // console.run(args);
 
     // example 3
     Application app = Application.instance();
@@ -70,30 +62,38 @@ void main(string[] args)
 	app.run(args);
 }
 
+void testConsole(string[] args) {
+    Console console = new Console("Hunt Example", "3.0.0");
 
-void testI18n() {
-	
-    import hunt.framework.i18n.I18n;
-	I18n i18n = new I18n();
-	i18n.loadLangResources("./resources/translations");
-	i18n.defaultLocale = "en-us";
-	writeln(i18n.resources);
-	
-	
-	///
-	setLocale("en-br");
-	assert( trans("hello-world") == "Hello, world");
-	
-	///
-	setLocale("zh-cn");
-	assert( trans("email.subject") == "收件人");
-	
-	
-	setLocale("en-us");
-	assert(trans("email.subject") == "email.subject");
+    console.setAutoExit(false);
+    console.add(new ServeCommand());
 
-    // assert(trans("title") == "%s Demo");
-    assert(trans("title", "Hunt") == "Hunt Demo");
-
-    assert(transWithLocale("zh-cn", "title", "Hunt") == "Hunt 示例");
+    console.run(args);
 }
+
+// void testI18n() {
+	
+//     import hunt.framework.i18n.I18n;
+// 	I18n i18n = new I18n();
+// 	i18n.loadLangResources("./resources/translations");
+// 	i18n.defaultLocale = "en-us";
+// 	writeln(i18n.resources);
+	
+	
+// 	///
+// 	setLocale("en-br");
+// 	assert( trans("hello-world") == "Hello, world");
+	
+// 	///
+// 	setLocale("zh-cn");
+// 	assert( trans("email.subject") == "收件人");
+	
+	
+// 	setLocale("en-us");
+// 	assert(trans("email.subject") == "email.subject");
+
+//     // assert(trans("title") == "%s Demo");
+//     assert(trans("title", "Hunt") == "Hunt Demo");
+
+//     assert(transWithLocale("zh-cn", "title", "Hunt") == "Hunt 示例");
+// }
