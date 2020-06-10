@@ -61,7 +61,7 @@ import app.model.ValidForm;
 // }
 
 class IpFilterMiddleware : MiddlewareInterface {
-    override string name() {
+    string name() {
         return IpFilterMiddleware.stringof;
     }
 
@@ -212,7 +212,7 @@ version(WITH_HUNT_TRACE) {
 
 		RequestBuilder requestBuilder = new RequestBuilder()
 				.url(url)
-				.localServiceName(conf.application.name);
+				.localServiceName(conf.application.name ~ "-client");
 
 		Tracer tracer = this.request.tracer;
 		if(tracer !is null) {
@@ -222,7 +222,6 @@ version(WITH_HUNT_TRACE) {
 		}
 
 		Request req = requestBuilder.build();
-        tracer = req.tracer;
 		Response response = client.newCall(req).execute();
 
 		if (response !is null) {
