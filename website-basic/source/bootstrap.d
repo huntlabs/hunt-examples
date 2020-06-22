@@ -11,8 +11,7 @@
 
 module bootstrap;
 
-import app.BasicConfigProvider;
-import app.BreadcrumbProvider;
+import app.providers;
 
 import hunt.console;
 import hunt.framework;
@@ -58,6 +57,7 @@ void main(string[] args)
     // writeln(transWithLocale("zh-cn", "title", "Hunt"));
     app.register!BasicConfigProvider; 
     app.register!BreadcrumbProvider;
+    app.register!HuntUserServiceProvider; 
 
 	app.run(args);
 }

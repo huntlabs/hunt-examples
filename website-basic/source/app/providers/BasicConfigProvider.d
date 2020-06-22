@@ -1,4 +1,4 @@
-module app.BasicConfigProvider;
+module app.providers.BasicConfigProvider;
 
 import app.config.BasicApplicationConfig;
 

@@ -11,12 +11,13 @@
 module app.controller.IndexController;
 
 import app.config;
+import app.form.LoginUser;
 
 import hunt.framework.application;
 import hunt.framework.http;
 import hunt.framework.view;
 import hunt.framework.queue;
-
+import hunt.shiro;
 
 import hunt.amqp.client;
 import hunt.concurrency.Future;
@@ -24,7 +25,6 @@ import hunt.concurrency.FuturePromise;
 import hunt.http.server;
 import hunt.framework;
 import hunt.logging;
-// import hunt.redis;
 import hunt.redis.RedisCluster;
 import hunt.redis.Redis;
 import hunt.redis.RedisPool;
@@ -41,6 +41,7 @@ import std.json;
 import std.stdio;
 import std.string;
 
+import hunt.framework.auth;
 
 version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
@@ -98,7 +99,8 @@ class IndexController : Controller {
         // BasicApplicationConfig appConfig = cast(BasicApplicationConfig)config();
         // trace(appConfig.github.appid);
 
-        // GithubConfig githubConfig = configManager().load!GithubConfig();
+        GithubConfig githubConfig = configManager().load!GithubConfig();
+
         // trace(githubConfig.accessTokenUrl);
     }
 
@@ -137,6 +139,81 @@ class IndexController : Controller {
     @Action string about() {
         warning("index.about url: ", url("index.about") );
         return "Hunt examples 3.0";
+    }
+
+    @Action string checkAuth() {
+        // Subject currentUser = SecurityUtils.getSubject();
+        // string content = format("Auth status: %s, who: %s", currentUser.isAuthenticated, currentUser.getPrincipal());
+        Identity currentUser = this.request.user();
+        string content = format("Auth status: %s, who: %s", currentUser.isAuthenticated, currentUser.name);
+        return content;
+    }
+
+    @Action Response login(LoginUser user) {
+        // Subject currentUser = SecurityUtils.getSubject();
+
+        // warningf("Checking at first: %s", currentUser.isAuthenticated());
+
+        // if(currentUser.isAuthenticated()) {
+        //     currentUser.logout();
+        // }
+
+        string username = user.name;
+        string password = user.password;
+
+        Identity authUser = this.request.signIn(username, password);
+
+		// UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+		// token.setRememberMe(true);
+
+        Response r;
+
+		// try {
+		// 	currentUser.login(token);
+		// } catch (UnknownAccountException uae) {
+		// 	info("There is no user with username of " ~ token.getPrincipal());
+		// } catch (IncorrectCredentialsException ice) {
+		// 	info("Password for account " ~ token.getPrincipal() ~ " was incorrect!");
+		// } catch (LockedAccountException lae) {
+		// 	info("The account for username " ~ token.getPrincipal() ~ " is locked.  " ~
+		// 			"Please contact your administrator to unlock it.");
+		// } catch (AuthenticationException ex) {
+        //     errorf("Authentication failed: ", ex.msg);
+        //     error(ex);
+        // } catch (Exception ex) {
+        //     errorf("Authentication failed: ", ex.msg);
+        //     error(ex);
+        // }
+        
+        string msg;
+        if(authUser.isAuthenticated()) {
+            msg = "User [" ~ authUser.name ~ "] logged in successfully.";
+            info(msg);
+
+            if (authUser.hasRole("admin")) {
+                msg ~= "<br>Welcome Administrator!";
+                trace("Administrator logged");
+            } else {
+                
+            }
+
+            // jwt token
+            // UserService userService = serviceContainer().resolve!UserService();
+            // string salt = userService.getSalt(username, password);
+            // string jwtToken = JwtUtil.sign(username, salt);
+            // Cookie tokenCookie = new Cookie("__auth_token__", jwtToken);
+
+            // msg ~= "<br>token: " ~ jwtToken;
+            // msg ~= "<br>salt: " ~ salt;
+            Cookie tokenCookie = this.request().authCookie();
+            r = new Response(msg);
+            r.withCookie(tokenCookie);
+        } else {
+            msg = "Login failed!";
+            r = new Response(msg);
+        }
+
+        return r;
     }
 
     // Response showAction() {
@@ -184,18 +261,26 @@ class IndexController : Controller {
 
     @Action int showInt() {
         logDebug("---test Routing1----", this.request.get("id"));
-        return 2018;
+
+        // string id = this.request.get("id");
+        string id = this.request.id;
+        if(!id.empty) {
+            int v = id.to!int();
+            infof("---test Routing1----%d", v);
+            return v;
+        } else {
+            return 2020;
+        }
+
     }
 
     @Action string testUDAs(int number, @Length(3, 6) string name) {
-        
-
         ConstraintValidatorContext context = validate();
         if(context.isValid()) {
             return "OK";
         } else {
             return context.toString();
-    }
+        }
     }
 
 	@Action string testTracing() {
@@ -206,7 +291,6 @@ version(WITH_HUNT_TRACE) {
 
 		ApplicationConfig conf = config();
         
-            
 		string url = "http://10.1.222.110/index.html";
 		HttpClient client = new HttpClient();
 
@@ -457,8 +541,9 @@ version(WITH_HUNT_TRACE) {
         std.datetime.DateTime dt = cast(std.datetime.DateTime)Clock.currTime();
         string message = format("Say hello at %s", dt.toSimpleString());
 
-        AbstractQueue queue  = messageQueue();
-        queue.push("my-queue", cast(ubyte[])message);
+        // AbstractQueue queue  = messageQueue();
+        AbstractQueue queue  = Application.instance().queue();
+        queue.push("my-queue", message);
 
         Response response = new Response();
         response.setContent(message);
@@ -606,7 +691,7 @@ version(WITH_HUNT_TRACE) {
 // 		return response;
 // 	}
 
-// 	@Action Response testValidForm(User user) {
+	// @Action Response testValidForm(User user) {
 
 // 		warning(request.post("name"));
 

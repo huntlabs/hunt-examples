@@ -1,4 +1,4 @@
-module app.BreadcrumbProvider;
+module app.providers.BreadcrumbProvider;
 
 import hunt.framework.provider.ServiceProvider;
 import hunt.framework.provider.BreadcrumbServiceProvider;

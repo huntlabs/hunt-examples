@@ -2,7 +2,7 @@
 # [GET,POST,PUT...]    path    controller.method
 #
 
-*		/						index.index
+#*		/						index.index
 *		/home						index.index
 *		/about						index.about
 *		/index						index.index
@@ -10,7 +10,6 @@
 *		/plaintext					index.plaintext
 *		/showBool					index.showBool
 *		/showInt				    index.showInt
-*		/showInt/{id}				index.showInt
 *		/testUDA					index.testUDAs
 #*		/order       				index.testRouting2
 *		/order/{id<\d+>}			index.testRouting2
@@ -20,7 +19,7 @@ GET		/testAmqp					index.testAmqp
 *		/getCookie					index.getCookie
 *		/testJson1					index.testJson1
 *		/testJson2					index.testJson2
-*		/test/tracing   			index.testTracing
+GET		/tracing   			        index.testTracing
 GET		/download					index.testDownload
 GET		/redirect1					index.testRedirect1
 GET		/redirect2					index.testRedirect2
@@ -29,6 +28,10 @@ GET		/get						index.getCache
 *		/set						index.setCache
 # GET		/create						index.createTask
 GET		/stop						index.stopTask
+
+# Auth
+POST    /login                      index.login
+GET     /checkAuth                  index.checkAuth
 
 # Queue
 GET		/pushQueue						index.pushQueue
