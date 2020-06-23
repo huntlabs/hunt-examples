@@ -21,6 +21,7 @@ class HuntUserService : UserService {
         user.id = 1;
         user.fullName = "Hunt Admin";
         user.name = ADMIN_USER;
+        user.password = ADMIN_PASSWORD;
 
         user.roles = ["admin"];
         user.permissions = ["system:*", "user:*"];
@@ -33,6 +34,7 @@ class HuntUserService : UserService {
         user.id = 2;
         user.fullName = "Hunt Manager";
         user.name = MANAGER_USER;
+        user.password = MANAGER_PASSWORD;
 
         user.roles = ["manager"];
         user.permissions = ["user:add", "user:edit"];

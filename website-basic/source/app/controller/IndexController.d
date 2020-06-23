@@ -46,24 +46,10 @@ import hunt.framework.auth;
 version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
 
-// class TestQueueJob : Job {
-//     this(int a, int b) {
-//         _a = a;
-//         _b = b;
-//     }
-
-//     override void exec() {
-//         logDebug("taskid : ", this.id, ", do job ", _a, " + ", _b, " = ", _a + _b);
-//     }
-
-// private:
-//     int _a;
-//     int _b;
-// }
 
 class IpFilterMiddleware : MiddlewareInterface {
     string name() {
-        return IpFilterMiddleware.stringof;
+        return typeof(this).stringof;
     }
 
     override Response onProcess(Request req, Response res) {
@@ -90,6 +76,7 @@ class IndexController : Controller {
 
     this() {
         this.addMiddleware(new IpFilterMiddleware());
+        this.addMiddleware(new JwtAuthMiddleware());
 
         assert(serviceContainer.isRegistered!ApplicationConfig());
         assert(serviceContainer.isRegistered!BasicApplicationConfig());
@@ -150,40 +137,10 @@ class IndexController : Controller {
     }
 
     @Action Response login(LoginUser user) {
-        // Subject currentUser = SecurityUtils.getSubject();
-
-        // warningf("Checking at first: %s", currentUser.isAuthenticated());
-
-        // if(currentUser.isAuthenticated()) {
-        //     currentUser.logout();
-        // }
-
         string username = user.name;
         string password = user.password;
 
         Identity authUser = this.request.signIn(username, password);
-
-		// UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-		// token.setRememberMe(true);
-
-        Response r;
-
-		// try {
-		// 	currentUser.login(token);
-		// } catch (UnknownAccountException uae) {
-		// 	info("There is no user with username of " ~ token.getPrincipal());
-		// } catch (IncorrectCredentialsException ice) {
-		// 	info("Password for account " ~ token.getPrincipal() ~ " was incorrect!");
-		// } catch (LockedAccountException lae) {
-		// 	info("The account for username " ~ token.getPrincipal() ~ " is locked.  " ~
-		// 			"Please contact your administrator to unlock it.");
-		// } catch (AuthenticationException ex) {
-        //     errorf("Authentication failed: ", ex.msg);
-        //     error(ex);
-        // } catch (Exception ex) {
-        //     errorf("Authentication failed: ", ex.msg);
-        //     error(ex);
-        // }
         
         string msg;
         if(authUser.isAuthenticated()) {
@@ -193,27 +150,12 @@ class IndexController : Controller {
             if (authUser.hasRole("admin")) {
                 msg ~= "<br>Welcome Administrator!";
                 trace("Administrator logged");
-            } else {
-                
             }
-
-            // jwt token
-            // UserService userService = serviceContainer().resolve!UserService();
-            // string salt = userService.getSalt(username, password);
-            // string jwtToken = JwtUtil.sign(username, salt);
-            // Cookie tokenCookie = new Cookie("__auth_token__", jwtToken);
-
-            // msg ~= "<br>token: " ~ jwtToken;
-            // msg ~= "<br>salt: " ~ salt;
-            Cookie tokenCookie = this.request().authCookie();
-            r = new Response(msg);
-            r.withCookie(tokenCookie);
         } else {
             msg = "Login failed!";
-            r = new Response(msg);
         }
 
-        return r;
+        return new Response(msg);
     }
 
     // Response showAction() {

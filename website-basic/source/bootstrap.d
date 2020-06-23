@@ -60,6 +60,36 @@ void main(string[] args)
     app.register!HuntUserServiceProvider; 
 
 	app.run(args);
+
+    // testJwt();
+}
+
+import std.digest.sha;
+
+string getSalt(string name, string password) {
+    string userSalt = name;
+    auto sha256 = new SHA256Digest();
+    ubyte[] hash256 = sha256.digest(password~userSalt);
+    return toHexString(hash256);        
+}
+
+
+void testJwt() {
+    
+    string username = "admin";
+    string password = "admin";
+
+    string salt = getSalt(username, password);
+    // string jwtToken = JwtUtil.sign(username, salt);
+    // trace(jwtToken);
+    // info(salt);
+
+    string jwtToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTMzMTEzODgsImlhdCI6MTU5Mjg3OTM4OCwidXNlcm5hbWUiOiJhZG1pbiJ9.Csw9Ry6BI9vxiEEom4xt_nCtzYWjGPJIi5N2mS4Hbl2qhRwjBHlvjVTw81HGEJAS5tNBNxVpGnQKnHNTRIz2zA";
+
+    bool v = JwtUtil.verify(jwtToken, username, salt);
+
+    writeln(v);
+
 }
 
 void testConsole(string[] args) {
