@@ -12,4 +12,6 @@ class LoginUser : Form
     
 	@Length(4,8)
     string password;
+
+	bool rememeber = false;
 }

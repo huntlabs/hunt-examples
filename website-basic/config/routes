@@ -32,6 +32,7 @@ GET		/stop						index.stopTask
 # Auth
 POST    /login                      index.login
 GET     /checkAuth                  index.checkAuth
+GET     /logout                     index.logout
 
 # Queue
 GET		/pushQueue						index.pushQueue

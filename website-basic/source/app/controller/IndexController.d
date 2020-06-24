@@ -76,7 +76,22 @@ class IndexController : Controller {
 
     this() {
         this.addMiddleware(new IpFilterMiddleware());
-        this.addMiddleware(new JwtAuthMiddleware());
+
+        //tracef(url("index.login"));
+        //tracef(url("index.checkAuth")); // /checkAuth/
+
+        this.addMiddleware(new JwtAuthMiddleware((path) {
+            warningf("Checking path: %s", path);
+
+            string[] anonymousPaths = [url("index.login"), "/checkAuth"];
+
+            foreach(string p; anonymousPaths) {
+                if(path.startsWith(p)) // skipping
+                    return false;
+            }
+
+            return true;
+        }));
 
         assert(serviceContainer.isRegistered!ApplicationConfig());
         assert(serviceContainer.isRegistered!BasicApplicationConfig());
@@ -87,7 +102,6 @@ class IndexController : Controller {
         // trace(appConfig.github.appid);
 
         GithubConfig githubConfig = configManager().load!GithubConfig();
-
         // trace(githubConfig.accessTokenUrl);
     }
 
@@ -140,7 +154,7 @@ class IndexController : Controller {
         string username = user.name;
         string password = user.password;
 
-        Identity authUser = this.request.signIn(username, password);
+        Identity authUser = this.request.signIn(username, password, true);
         
         string msg;
         if(authUser.isAuthenticated()) {
@@ -156,6 +170,18 @@ class IndexController : Controller {
         }
 
         return new Response(msg);
+    }
+
+    @Action string logout() {
+
+        Identity currentUser = this.user();
+        if(currentUser.isAuthenticated()) {
+            string name = currentUser.name();
+            this.request().signOut();
+            return "The user [" ~ name ~ "] has logged out.";
+        } else {
+            return "No user logged in.";
+        }
     }
 
     // Response showAction() {
