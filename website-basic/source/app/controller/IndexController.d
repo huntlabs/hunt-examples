@@ -80,18 +80,9 @@ class IndexController : Controller {
         //tracef(url("index.login"));
         //tracef(url("index.checkAuth")); // /checkAuth/
 
-        this.addMiddleware(new JwtAuthMiddleware((path) {
-            warningf("Checking path: %s", path);
+        this.addMiddleware(new BasicAuthMiddleware(&checkRoute));
 
-            string[] anonymousPaths = [url("index.login"), "/checkAuth"];
-
-            foreach(string p; anonymousPaths) {
-                if(path.startsWith(p)) // skipping
-                    return false;
-            }
-
-            return true;
-        }));
+        // this.addMiddleware(new JwtAuthMiddleware(&checkRoute));
 
         assert(serviceContainer.isRegistered!ApplicationConfig());
         assert(serviceContainer.isRegistered!BasicApplicationConfig());
@@ -103,6 +94,23 @@ class IndexController : Controller {
 
         GithubConfig githubConfig = configManager().load!GithubConfig();
         // trace(githubConfig.accessTokenUrl);
+    }
+
+    private bool checkRoute(string path, string method) {
+
+        warningf("Checking path: %s, method: %s", path, method);
+
+        if(path[$-1] != '/')
+            path ~= "/";
+
+        string[] anonymousPaths = [url("index.login"), "/checkAuth"];
+
+        foreach(string p; anonymousPaths) {
+            if(path.startsWith(p)) // skipping
+                return false;
+        }
+
+        return true;        
     }
 
     override bool before() {
@@ -154,7 +162,8 @@ class IndexController : Controller {
         string username = user.name;
         string password = user.password;
 
-        Identity authUser = this.request.signIn(username, password, true);
+        Identity authUser = this.request.signIn(username, password, true, AuthenticationScheme.Basic);
+        // Identity authUser = this.request.signIn(username, password, true, AuthenticationScheme.Bearer);
         
         string msg;
         if(authUser.isAuthenticated()) {
