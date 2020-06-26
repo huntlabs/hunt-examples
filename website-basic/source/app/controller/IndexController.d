@@ -103,7 +103,7 @@ class IndexController : Controller {
         if(path[$-1] != '/')
             path ~= "/";
 
-        string[] anonymousPaths = [url("index.login"), "/checkAuth"];
+        string[] anonymousPaths = [url("index.login")]; // , "/checkAuth"
 
         foreach(string p; anonymousPaths) {
             if(path.startsWith(p)) // skipping
@@ -153,7 +153,7 @@ class IndexController : Controller {
     @Action string checkAuth() {
         // Subject currentUser = SecurityUtils.getSubject();
         // string content = format("Auth status: %s, who: %s", currentUser.isAuthenticated, currentUser.getPrincipal());
-        Identity currentUser = this.request.user();
+        Identity currentUser = this.request.auth().user();
         string content = format("Auth status: %s, who: %s", currentUser.isAuthenticated, currentUser.name);
         return content;
     }
@@ -162,7 +162,7 @@ class IndexController : Controller {
         string username = user.name;
         string password = user.password;
 
-        Identity authUser = this.request.signIn(username, password, true, AuthenticationScheme.Basic);
+        Identity authUser = this.request.auth().signIn(username, password, true, AuthenticationScheme.Basic);
         // Identity authUser = this.request.signIn(username, password, true, AuthenticationScheme.Bearer);
         
         string msg;

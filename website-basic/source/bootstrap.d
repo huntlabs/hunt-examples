@@ -57,7 +57,7 @@ void main(string[] args)
     // writeln(transWithLocale("zh-cn", "title", "Hunt"));
     app.register!BasicConfigProvider; 
     app.register!BreadcrumbProvider;
-    app.register!HuntUserServiceProvider; 
+    // app.register!HuntUserServiceProvider; 
 
 	app.run(args);
 
