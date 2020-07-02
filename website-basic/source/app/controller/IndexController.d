@@ -38,8 +38,10 @@ import std.array;
 import std.datetime;
 import std.format;
 import std.json;
+import std.meta;
 import std.stdio;
 import std.string;
+import std.traits;
 
 import hunt.framework.auth;
 
@@ -75,12 +77,12 @@ class IndexController : Controller {
     mixin MakeController;
 
     this() {
-        this.addMiddleware(new IpFilterMiddleware());
+        // this.addMiddleware(new IpFilterMiddleware());
 
         //tracef(url("index.login"));
         //tracef(url("index.checkAuth")); // /checkAuth/
 
-        this.addMiddleware(new BasicAuthMiddleware(&checkRoute));
+        this.addMiddleware(new BasicAuthMiddleware(&checkRoute, null));
 
         // this.addMiddleware(new JwtAuthMiddleware(&checkRoute));
 
@@ -103,14 +105,14 @@ class IndexController : Controller {
         if(path[$-1] != '/')
             path ~= "/";
 
-        string[] anonymousPaths = [url("index.login")]; // , "/checkAuth"
+        string[] anonymousPaths = [url("index.login")]; // All the paths can be visited by everyone
 
         foreach(string p; anonymousPaths) {
             if(path.startsWith(p)) // skipping
                 return false;
         }
 
-        return true;        
+        return true;
     }
 
     override bool before() {
@@ -145,9 +147,16 @@ class IndexController : Controller {
         this.response.setContent(view.render("home"), MimeType.TEXT_HTML_VALUE);
     }
 
+    @Middleware(fullyQualifiedName!(IpFilterMiddleware))
+    @SkippedMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
     @Action string about() {
         warning("index.about url: ", url("index.about") );
         return "Hunt examples 3.0";
+    }
+    
+    @Middleware(fullyQualifiedName!(IpFilterMiddleware), fullyQualifiedName!(BasicAuthMiddleware))
+    @Action string security() {
+        return "It's a security page.";
     }
 
     @Action string checkAuth() {
@@ -158,11 +167,13 @@ class IndexController : Controller {
         return content;
     }
 
+    @SkippedMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
     @Action Response login(LoginUser user) {
         string username = user.name;
         string password = user.password;
+        bool rememeber = user.rememeber;
 
-        Identity authUser = this.request.auth().signIn(username, password, true, AuthenticationScheme.Basic);
+        Identity authUser = this.request.auth().signIn(username, password, rememeber, AuthenticationScheme.Basic);
         // Identity authUser = this.request.signIn(username, password, true, AuthenticationScheme.Bearer);
         
         string msg;
@@ -174,6 +185,16 @@ class IndexController : Controller {
                 msg ~= "<br>Welcome Administrator!";
                 trace("Administrator logged");
             }
+
+            
+            if (authUser.hasAllRoles("admin", "manager")) {
+                // The user has all the roles
+            }
+
+            if(authUser.isPermitted(["user.add", "user.del"])) {
+                // The user is isPermitted
+            }
+
         } else {
             msg = "Login failed!";
         }
@@ -183,10 +204,10 @@ class IndexController : Controller {
 
     @Action string logout() {
 
-        Identity currentUser = this.user();
+        Identity currentUser = this.request.auth().user();
         if(currentUser.isAuthenticated()) {
             string name = currentUser.name();
-            this.request().signOut();
+            this.request().auth().signOut();
             return "The user [" ~ name ~ "] has logged out.";
         } else {
             return "No user logged in.";
