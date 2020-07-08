@@ -48,7 +48,10 @@ GET    /zh                  index.testMultitrans
 GET    /en                  index.testMultitrans
 
 
-
+# static resources
+GET		/attachments				    staticDir:attachments:true
+GET		/attachments1					staticDir:att-met:true
+GET		/attachments2					staticDir:att.met:true
 
 # GET		/						staticDir:wwwroot
 # access: http://127.0.0.1:8080/index.html
