@@ -11,12 +11,10 @@
 module app.controller.IndexController;
 
 import app.config;
+import app.middleware;
 import app.form.LoginUser;
 
-import hunt.framework.application;
-import hunt.framework.http;
-import hunt.framework.view;
-import hunt.framework.queue;
+import hunt.framework;
 import hunt.shiro;
 
 import hunt.amqp.client;
@@ -49,30 +47,10 @@ version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
 
 
-class IpFilterMiddleware : MiddlewareInterface {
-    string name() {
-        return typeof(this).stringof;
-    }
-
-    override Response onProcess(Request req, Response res) {
-        // writeln(req.session());
-        string path = req.path();
-        infof("path: %s, post name: %s", path, req.post("name"));
-        // FIXME: Needing refactor or cleanup -@zhangxueping at 2020-01-06T14:37:41+08:00
-        // 
-        // if(path == "/redirect1") {
-        // 	RedirectResponse r = new RedirectResponse(req, "https://www.putao.com/");
-        // 	return r;
-        // }
-        return null;
-    }
-}
-
-
-
 /**
  * 
  */
+// class IndexController : ControllerBase!(IndexController) {
 class IndexController : Controller {
     mixin MakeController;
 
@@ -82,7 +60,7 @@ class IndexController : Controller {
         //tracef(url("index.login"));
         //tracef(url("index.checkAuth")); // /checkAuth/
 
-        this.addMiddleware(new BasicAuthMiddleware(&checkRoute, null));
+        // this.addMiddleware(new BasicAuthMiddleware(&checkRoute, null));
 
         // this.addMiddleware(new JwtAuthMiddleware(&checkRoute));
 
@@ -147,14 +125,14 @@ class IndexController : Controller {
         this.response.setContent(view.render("home"), MimeType.TEXT_HTML_VALUE);
     }
 
-    @Middleware(fullyQualifiedName!(IpFilterMiddleware))
-    @SkippedMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
+    // @Middleware(fullyQualifiedName!(IpFilterMiddleware))
+    // @WithoutMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
     @Action string about() {
         warning("index.about url: ", url("index.about") );
         return "Hunt examples 3.0";
     }
     
-    @Middleware(fullyQualifiedName!(IpFilterMiddleware), fullyQualifiedName!(BasicAuthMiddleware))
+    // @Middleware(fullyQualifiedName!(IpFilterMiddleware), fullyQualifiedName!(BasicAuthMiddleware))
     @Action string security() {
         return "It's a security page.";
     }
@@ -167,7 +145,7 @@ class IndexController : Controller {
         return content;
     }
 
-    @SkippedMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
+    @WithoutMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
     @Action Response login(LoginUser user) {
         string username = user.name;
         string password = user.password;

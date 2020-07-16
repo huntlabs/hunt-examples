@@ -1,9 +1,7 @@
 module app.controller.api.IndexController;
 
 import hunt.logging;
-import hunt.framework.application;
-import hunt.framework.http;
-import hunt.framework.view;
+import hunt.framework;
 
 
 class IndexController : Controller {

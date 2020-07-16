@@ -22,6 +22,8 @@ import std.datetime;
 import std.stdio;
 import std.functional;
 
+import app.middleware;
+
 import hunt.io.channel.Common;
 
 void main(string[] args)
@@ -58,6 +60,14 @@ void main(string[] args)
     app.register!BasicConfigProvider; 
     app.register!BreadcrumbProvider;
     // app.register!HuntUserServiceProvider; 
+
+    app.onBooted(() {
+        app.route().get("index.about").withoutMiddleware!(JwtAuthMiddleware)();
+        app.route().get("index.security").withMiddleware!(JwtAuthMiddleware)();
+
+        app.route().group("admin").withMiddleware!(JwtAuthMiddleware)();
+        app.route().group("admin").get("index.test").withoutMiddleware!(JwtAuthMiddleware)();
+    });
 
 	app.run(args);
 

@@ -1,9 +1,7 @@
 module app.controller.admin.IndexController;
 
 import hunt.logging;
-import hunt.framework.application;
-import hunt.framework.http;
-import hunt.framework.view;
+import hunt.framework;
 
 class IndexController : Controller {
 	mixin MakeController;
@@ -15,5 +13,9 @@ class IndexController : Controller {
 
 	@Action string test() {
         return "Admin test.";
+    }
+
+    @Action string security() {
+        return "It's a security page in admin.";
     }
 }
