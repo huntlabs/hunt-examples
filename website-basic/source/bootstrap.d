@@ -62,11 +62,20 @@ void main(string[] args)
     // app.register!HuntUserServiceProvider; 
 
     app.onBooted(() {
-        app.route().get("index.about").withoutMiddleware!(JwtAuthMiddleware)();
-        app.route().get("index.security").withMiddleware!(JwtAuthMiddleware)();
 
-        app.route().group("admin").withMiddleware!(JwtAuthMiddleware)();
-        app.route().group("admin").get("index.test").withoutMiddleware!(JwtAuthMiddleware)();
+        TypeInfo_Class[string] all = MiddlewareInterface.all();
+        foreach(string key, TypeInfo_Class typeInfo; all) {
+            infof("Registed middleware: ", key, " =>  ",  typeInfo.toString());
+        }
+
+        // app.route().get("index.about").withoutMiddleware!(JwtAuthMiddleware)();
+        // app.route().get("index.security").withMiddleware!(JwtAuthMiddleware)();
+
+        // app.route().group("admin").withMiddleware!(JwtAuthMiddleware)();
+        // app.route().group("admin").get("index.test").withoutMiddleware!(JwtAuthMiddleware)();
+
+        app.route().group("admin").withMiddleware(JwtAuthMiddleware.stringof);
+        app.route().group("admin").get("index.test").withoutMiddleware(JwtAuthMiddleware.stringof);        
     });
 
 	app.run(args);

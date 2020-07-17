@@ -3,7 +3,7 @@ module app.middleware.IpFilterMiddleware;
 import hunt.framework;
 import hunt.logging.ConsoleLogger;
 
-class IpFilterMiddleware : AbstractMiddleware {
+class IpFilterMiddleware : AbstractMiddleware!(IpFilterMiddleware) {
 
     Response onProcess(Request req, Response res) {
         // writeln(req.session());

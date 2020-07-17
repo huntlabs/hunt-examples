@@ -133,10 +133,14 @@ class IndexController : Controller {
     }
     
     // @Middleware(fullyQualifiedName!(IpFilterMiddleware), fullyQualifiedName!(BasicAuthMiddleware))
+    @Middleware(IpFilterMiddleware.stringof)
+    @Middleware(BasicAuthMiddleware.stringof)
     @Action string security() {
         return "It's a security page.";
     }
 
+    // @WithoutMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
+    @WithoutMiddleware(BasicAuthMiddleware.stringof)
     @Action string checkAuth() {
         // Subject currentUser = SecurityUtils.getSubject();
         // string content = format("Auth status: %s, who: %s", currentUser.isAuthenticated, currentUser.getPrincipal());
