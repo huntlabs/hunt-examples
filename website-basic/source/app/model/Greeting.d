@@ -6,4 +6,8 @@ class Greeting {
     string content;
     SysTime creationTime;
     long currentTime;
+
+    override string toString() {
+        return "content: " ~ content;
+    }
 }

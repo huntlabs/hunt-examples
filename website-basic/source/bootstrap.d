@@ -65,7 +65,7 @@ void main(string[] args)
 
         TypeInfo_Class[string] all = MiddlewareInterface.all();
         foreach(string key, TypeInfo_Class typeInfo; all) {
-            infof("Registed middleware: ", key, " =>  ",  typeInfo.toString());
+            infof("Registed middleware: %s => %s", key, typeInfo.toString());
         }
 
         // app.route().get("index.about").withoutMiddleware!(JwtAuthMiddleware)();

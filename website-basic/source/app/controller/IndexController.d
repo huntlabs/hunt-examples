@@ -46,6 +46,9 @@ import hunt.framework.auth;
 version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
 
+import app.model.Greeting;
+
+
 
 /**
  * 
@@ -252,6 +255,15 @@ class IndexController : Controller {
             return 2020;
         }
 
+    }
+
+    @Action Greeting showObject() {
+        Greeting g = new Greeting();
+        g.content = "Wellcome Hunt!";
+        g.creationTime = Clock.currTime;
+        g.currentTime = Clock.currStdTime;
+        
+        return g;
     }
 
     @Action string testUDAs(int number, @Length(3, 6) string name) {

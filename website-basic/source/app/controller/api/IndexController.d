@@ -3,8 +3,10 @@ module app.controller.api.IndexController;
 import hunt.logging;
 import hunt.framework;
 
+import app.model.Greeting;
+import std.datetime;
 
-class IndexController : Controller {
+class IndexController : RestController {
 	mixin MakeController;
 
 	@Action string index() {
@@ -14,4 +16,13 @@ class IndexController : Controller {
 	@Action string test() {
         return "API test.";
     }
+
+    @Action Greeting showObject() {
+        Greeting g = new Greeting();
+        g.content = "Wellcome Hunt!";
+        g.creationTime = Clock.currTime;
+        g.currentTime = Clock.currStdTime;
+        
+        return g;
+    } 
 }

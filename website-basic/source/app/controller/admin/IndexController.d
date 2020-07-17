@@ -18,4 +18,5 @@ class IndexController : Controller {
     @Action string security() {
         return "It's a security page in admin.";
     }
+       
 }
