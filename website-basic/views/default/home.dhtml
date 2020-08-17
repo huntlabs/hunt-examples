@@ -90,7 +90,11 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <h1 class="mt-5">{{trans("title",app.name)}}</h1>
-                <p class="lead">The time now is {{ model.now }}</p>
+                {% if a==1 %}
+                    <p class="lead">The time now is {{ model.now }}</p>
+                {% else %}
+                    <p class="lead">The time now is unknown</p>
+                {% endif %}
                 <p class="lead">The DateFormat  is {{ date('Y-m-d H:i:s',model.stamp) }}</p>
 
             </div>

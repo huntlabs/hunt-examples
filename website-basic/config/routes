@@ -2,7 +2,7 @@
 # [GET,POST,PUT...]    path    controller.method
 #
 
-#*		/						index.index
+*		/						index.index
 *		/home						index.index
 *		/about						index.about
 *		/index						index.index
@@ -34,7 +34,7 @@ GET		/stop						index.stopTask
 POST    /login                      index.login
 GET     /checkAuth                  index.checkAuth
 GET     /logout                     index.logout
-GET     /security                   index.security
+GET     /secret                   index.secret
 
 # Queue
 GET		/pushQueue						index.pushQueue
@@ -43,7 +43,8 @@ GET		/queryQueue						index.queryQueue
 POST    /testpost                  index.testPost
 POST    /testForm1                  index.testForm1
 POST    /upload                     index.testUpload
-POST    /testValidForm                  index.testValidForm
+#POST    /testValidForm                  index.testValidForm
+*    /testValidForm/{id<\d+>}               index.testValidForm
 
 GET    /zh                  index.testMultitrans
 GET    /en                  index.testMultitrans

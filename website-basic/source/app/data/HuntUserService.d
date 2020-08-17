@@ -26,6 +26,8 @@ class HuntUserService : UserService {
         user.roles = ["admin"];
         user.permissions = ["system:*", "user:*"];
 
+        user.salt = generateSalt(ADMIN_USER, ADMIN_PASSWORD);
+
         return user;
     }
 
@@ -38,6 +40,8 @@ class HuntUserService : UserService {
 
         user.roles = ["manager"];
         user.permissions = ["user:add", "user:edit"];
+
+        user.salt = generateSalt(MANAGER_USER, MANAGER_PASSWORD);
 
         return user;
     }
@@ -56,6 +60,10 @@ class HuntUserService : UserService {
     }
 
     string getSalt(string name, string password) {
+        return generateSalt(name, password);
+    }
+
+    static string generateSalt(string name, string password) {
         auto sha256 = new SHA256Digest();
         ubyte[] hash256 = sha256.digest(password~name);
         return toHexString(hash256);        

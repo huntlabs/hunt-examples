@@ -26,6 +26,16 @@ import app.middleware;
 
 import hunt.io.channel.Common;
 
+import hunt.framework.util.uninode.Core;
+
+void main1(string[] args) {
+    uint a = 1;
+    UniNode n1 = UniNode(a);
+    UniNode n2 = UniNode(1);
+
+    warning(n1 == n2);
+}
+
 void main(string[] args)
 {
     // Application app = Application.getInstance();
@@ -57,6 +67,7 @@ void main(string[] args)
 
     // writeln(transWithLocale("zh-cn", "title"));
     // writeln(transWithLocale("zh-cn", "title", "Hunt"));
+    // app.register!BasicAuthServiceProvider; 
     app.register!BasicConfigProvider; 
     app.register!BreadcrumbProvider;
     // app.register!HuntUserServiceProvider; 
@@ -74,9 +85,10 @@ void main(string[] args)
         // app.route().group("admin").withMiddleware!(JwtAuthMiddleware)();
         // app.route().group("admin").get("index.test").withoutMiddleware!(JwtAuthMiddleware)();
 
-        app.route().group("admin").withMiddleware(JwtAuthMiddleware.stringof);
-        app.route().group("admin").get("index.test").withoutMiddleware(JwtAuthMiddleware.stringof);        
+        app.route().group("admin").withMiddleware(AuthMiddleware.stringof);
+        app.route().group("admin").get("index.test").withoutMiddleware(AuthMiddleware.stringof);
     });
+
 
 	app.run(args);
 

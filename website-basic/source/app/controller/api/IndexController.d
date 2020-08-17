@@ -1,6 +1,6 @@
 module app.controller.api.IndexController;
 
-import hunt.logging;
+import hunt.logging.ConsoleLogger;
 import hunt.framework;
 
 import app.model.Greeting;
@@ -14,7 +14,15 @@ class IndexController : RestController {
     }
 
 	@Action string test() {
+
+        // https://api.example.com/test/ 
+        warning("index.test url: ", url("index.test", null, request().routeGroup()));
+
         return "API test.";
+    }
+    
+    @Action string secret() {
+        return "It's a secret page in admin.";
     }
 
     @Action Greeting showObject() {

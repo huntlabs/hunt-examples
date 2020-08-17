@@ -61,10 +61,17 @@ class IndexController : Controller {
         // this.addMiddleware(new IpFilterMiddleware());
 
         //tracef(url("index.login"));
-        //tracef(url("index.checkAuth")); // /checkAuth/
+        tracef(url("index.checkAuth")); // /checkAuth/
+        warningf(url("index.test", null, "admin")); // /checkAuth/
 
-        // this.addMiddleware(new BasicAuthMiddleware(&checkRoute, null));
+        // AuthOptions options = new AuthOptions();
+        // options.tokenCookieName = ADMIN_JWT_TOKEN_NAME;
+        // options.scheme = AuthenticationScheme.Bearer;
+        // options.guardName = ADMIN_GUARD_NAME;
+        
+        // this.authOptions = options;        
 
+        // this.addMiddleware(new AuthMiddleware(&checkRoute, null));
         // this.addMiddleware(new JwtAuthMiddleware(&checkRoute));
 
         assert(serviceContainer.isRegistered!ApplicationConfig());
@@ -122,28 +129,29 @@ class IndexController : Controller {
         view.assign("model", model);
         view.assign("app", parseJSON(`{"name":"Hunt"}`));
         view.assign("breadcrumbs", Application.instance().breadcrumbs.generate("home"));
+
+        ulong a = 1;
+		view.assign("a", a);
         
         // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, view.render("home"));
         // this.response.setBody(hb);
         this.response.setContent(view.render("home"), MimeType.TEXT_HTML_VALUE);
     }
 
-    // @Middleware(fullyQualifiedName!(IpFilterMiddleware))
-    // @WithoutMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
+    @Middleware(IpFilterMiddleware.stringof)
     @Action string about() {
         warning("index.about url: ", url("index.about") );
+        infof("action id: %s", this.request().actionId());
         return "Hunt examples 3.0";
     }
     
-    // @Middleware(fullyQualifiedName!(IpFilterMiddleware), fullyQualifiedName!(BasicAuthMiddleware))
     @Middleware(IpFilterMiddleware.stringof)
-    @Middleware(BasicAuthMiddleware.stringof)
-    @Action string security() {
-        return "It's a security page.";
+    @Middleware(AuthMiddleware.stringof)
+    @Action string secret() {
+        return "It's a secret page.";
     }
 
-    // @WithoutMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
-    @WithoutMiddleware(BasicAuthMiddleware.stringof)
+    @WithoutMiddleware(AuthMiddleware.stringof)
     @Action string checkAuth() {
         // Subject currentUser = SecurityUtils.getSubject();
         // string content = format("Auth status: %s, who: %s", currentUser.isAuthenticated, currentUser.getPrincipal());
@@ -152,14 +160,18 @@ class IndexController : Controller {
         return content;
     }
 
-    @WithoutMiddleware(fullyQualifiedName!(BasicAuthMiddleware))
+    @WithoutMiddleware(AuthMiddleware.stringof)
     @Action Response login(LoginUser user) {
         string username = user.name;
         string password = user.password;
         bool rememeber = user.rememeber;
 
-        Identity authUser = this.request.auth().signIn(username, password, rememeber, AuthenticationScheme.Basic);
-        // Identity authUser = this.request.signIn(username, password, true, AuthenticationScheme.Bearer);
+        import app.data.HuntUserService;
+
+        // UserService us = new HuntUserService();
+        // string salt = us.getSalt(username, password);
+
+        Identity authUser = this.request.auth().signIn(username, password, rememeber);
         
         string msg;
         if(authUser.isAuthenticated()) {
@@ -266,10 +278,10 @@ class IndexController : Controller {
         return g;
     }
 
-    @Action string testUDAs(int number, @Length(3, 6) string name) {
+    @Action string testUDAs(@Range(1, 100) int number, @Length(3, 6) string name) {
         ConstraintValidatorContext context = validate();
         if(context.isValid()) {
-            return "OK";
+            return "Test passed";
         } else {
             return context.toString();
         }
@@ -316,6 +328,9 @@ version(WITH_HUNT_TRACE) {
 
     @Action string testRouting2(int id) {
         logDebug("---test Routing2----", this.request.queries);
+        
+        infof("action id: %s", this.request().actionId());
+        
         // request.get("id");
         Appender!string sb;
         sb.put("The router parameter(id) is: ");
@@ -451,6 +466,11 @@ version(WITH_HUNT_TRACE) {
 
 		view.setTemplateExt(".txt");
 		view.assign("model", data);
+
+        int a = 1;
+		view.assign("a", a);
+
+
         
 		return view.render("index");
 	}
@@ -629,26 +649,26 @@ version(WITH_HUNT_TRACE) {
 		return response;		
 	}
 
-// 	@Action Response testForm1() {
-// 		Response response = new Response(this.request);
-// 		import std.conv;
+	@Action Response testForm1() {
+		Response response = new Response();
+		import std.conv;
 
-// 		Appender!string stringBuilder;
-// 		stringBuilder.put("<p>Form data from xFormData:<p/>");
-// 		foreach (string key, string[] values; this.request.xFormData()) {
-// 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
-// 		}
+		Appender!string stringBuilder;
+		stringBuilder.put("<p>Form data from xFormData:<p/>");
+		foreach (string key, string[] values; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
+		}
 
-// 		stringBuilder.put("<p>Form data from post:<p/>");
-// 		foreach (string key, string[] values; this.request.xFormData()) {
-// 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ this.request.post(key) ~ "<br/>");
-// 		}
+		stringBuilder.put("<p>Form data from post:<p/>");
+		foreach (string key, string[] values; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ this.request.post(key) ~ "<br/>");
+		}
 
-// 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-// 		response.setContent(stringBuilder.data);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data);
 
-// 		return response;
-// 	}
+		return response;
+	}
 
 // 	@Action Response testUpload() {
 // 		Response response = new Response(this.request);
@@ -683,31 +703,31 @@ version(WITH_HUNT_TRACE) {
 // 		return response;
 // 	}
 
-	// @Action Response testValidForm(User user) {
+	@Action Response testValidForm(User user, int id) {
 
-// 		warning(request.post("name"));
+		warningf("id: %s, name: %s", id, request.post("name"));
 
-// 		auto result = user.valid();
-// 		logDebug(format("user(name = %s, age = %s, email = %s, friends = %s) ,isValid : %s , valid result : %s ",
-// 				user.name, user.age, user.email, user.friends, result.isValid, result.messages()));
-// 		Response response = new Response(this.request);
+		auto result = user.valid();
+		logDebug(format("user(name = %s, age = %s, email = %s, friends = %s) ,isValid : %s , valid result : %s ",
+				user.name, user.age, user.email, user.friends, result.isValid, result.messages()));
+		Response response = new Response();
 
-// 		Appender!string stringBuilder;
-// 		stringBuilder.put("<p>Form data:<p/>");
-// 		foreach (string key, string[] values; this.request.xFormData()) {
-// 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
-// 		}
+		Appender!string stringBuilder;
+		stringBuilder.put("<p>Form data:<p/>");
+		foreach (string key, string[] values; this.request.xFormData()) {
+			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
+		}
 
-// 		stringBuilder.put("<br/>");
-// 		stringBuilder.put("validation result:<br/>");
-// 		stringBuilder.put(format("isValid : %s , valid result : %s<br/>",
-// 				result.isValid, result.messages()));
+		stringBuilder.put("<br/>");
+		stringBuilder.put("validation result:<br/>");
+		stringBuilder.put(format("isValid : %s , valid result : %s<br/>",
+				result.isValid, result.messages()));
 
-// 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-// 		response.setContent(stringBuilder.data);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data);
 
-// 		return response;
-// 	}
+		return response;
+	}
 
 // 	@Action Response testMultitrans() {
 // 		logDebug("url : ", request.url);

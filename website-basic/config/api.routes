@@ -6,5 +6,6 @@
 *	/	index.index
 *	/test	index.test
 *	/index/test	index.test
+*	/secret	index.secret
 
 *		/showObject				    index.showObject

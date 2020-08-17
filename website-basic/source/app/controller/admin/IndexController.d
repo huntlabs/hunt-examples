@@ -12,11 +12,12 @@ class IndexController : Controller {
     }
 
 	@Action string test() {
+        warning("xxxx+", this.request.actionId);
         return "Admin test.";
     }
 
-    @Action string security() {
-        return "It's a security page in admin.";
+    @Action string secret() {
+        return "It's a secret page in admin.";
     }
        
 }
