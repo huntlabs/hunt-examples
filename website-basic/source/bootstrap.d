@@ -12,6 +12,7 @@
 module bootstrap;
 
 import app.providers;
+import app.middleware;
 
 import hunt.console;
 import hunt.framework;
@@ -22,7 +23,6 @@ import std.datetime;
 import std.stdio;
 import std.functional;
 
-import app.middleware;
 
 import hunt.io.channel.Common;
 
@@ -61,6 +61,14 @@ void main(string[] args)
     Application app = Application.instance();
     // app.enableLocale("./resources/translations");
 
+    // grpc start
+
+    // import service.MyService;
+    // auto server = app().grpc().server();
+    // server.register(MyService);
+
+    // grpc end
+
     // writeln(trans("title"));
     // writeln(trans("title%s"));
     // writeln(transf("title", "Hunt"));
@@ -72,21 +80,40 @@ void main(string[] args)
     app.register!BreadcrumbProvider;
     // app.register!HuntUserServiceProvider; 
 
-    app.onBooted(() {
+    app.booting(() {
+        import GreeterImpl;
+        app.grpc.server.register( new GreeterImpl());
+    });
+
+    app.booted(() {
 
         TypeInfo_Class[string] all = MiddlewareInterface.all();
         foreach(string key, TypeInfo_Class typeInfo; all) {
             infof("Registed middleware: %s => %s", key, typeInfo.toString());
         }
 
-        // app.route().get("index.about").withoutMiddleware!(JwtAuthMiddleware)();
-        // app.route().get("index.security").withMiddleware!(JwtAuthMiddleware)();
+        // RouteGroup apiGroup = app.route().group("api");
 
-        // app.route().group("admin").withMiddleware!(JwtAuthMiddleware)();
-        // app.route().group("admin").get("index.test").withoutMiddleware!(JwtAuthMiddleware)();
+        RouteGroup adminGroup = app.route().group("admin");
 
-        app.route().group("admin").withMiddleware(AuthMiddleware.stringof);
-        app.route().group("admin").get("index.test").withoutMiddleware(AuthMiddleware.stringof);
+        // app.route().get("index.about").withoutMiddleware!(AuthMiddleware)();
+        // app.route().get("index.security").withMiddleware!(AuthMiddleware)();
+
+        // adminGroup.withMiddleware!(AuthMiddleware)();
+        // adminGroup.get("index.test").withoutMiddleware!(AuthMiddleware)();
+
+        adminGroup.withMiddleware(AuthMiddleware.stringof);
+        adminGroup.get("index.test").withoutMiddleware(AuthMiddleware.stringof);
+
+        //
+        ApplicationConfig appConfig = app.config();
+        trace(appConfig.grpc.server.host);
+        trace(appConfig.grpc.clientChannels.length);
+
+        foreach(ref GrpcClientConf conf; appConfig.grpc.clientChannels) {
+            info(conf.name);
+        }
+
     });
 
 

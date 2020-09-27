@@ -41,7 +41,11 @@ import std.stdio;
 import std.string;
 import std.traits;
 
-import hunt.framework.auth;
+
+import hunt.concurrency.Executors;
+import hunt.concurrency.Scheduler;
+import hunt.concurrency.ScheduledThreadPoolExecutor;
+
 
 version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
@@ -82,7 +86,7 @@ class IndexController : Controller {
         // BasicApplicationConfig appConfig = cast(BasicApplicationConfig)config();
         // trace(appConfig.github.appid);
 
-        GithubConfig githubConfig = configManager().load!GithubConfig();
+        // GithubConfig githubConfig = configManager().load!GithubConfig();
         // trace(githubConfig.accessTokenUrl);
     }
 
@@ -142,6 +146,18 @@ class IndexController : Controller {
     @Action string about() {
         warning("index.about url: ", url("index.about") );
         infof("action id: %s", this.request().actionId());
+
+        // string data = `"abc`;
+
+        // try {
+        //     JSONValue jv = parseJSON(data);
+        // } catch(Throwable e) {
+        //     warning(e.msg);
+        //     warning(e);
+        // }
+
+
+
         return "Hunt examples 3.0";
     }
     
@@ -256,6 +272,8 @@ class IndexController : Controller {
 
     @Action int showInt() {
         logDebug("---test Routing1----", this.request.get("id"));
+
+        ulong t = this.request.get!ulong("id", 2);
 
         // string id = this.request.get("id");
         string id = this.request.id;
@@ -469,8 +487,6 @@ version(WITH_HUNT_TRACE) {
 
         int a = 1;
 		view.assign("a", a);
-
-
         
 		return view.render("index");
 	}
@@ -649,6 +665,19 @@ version(WITH_HUNT_TRACE) {
 		return response;		
 	}
 
+    @Action
+    string testGrpc() {
+        Application app = Application.instance();
+        import grpc;
+        try {
+            auto channel = app.grpc.getChannel("ch1");
+            return "passed";
+        } catch(Exception ex) {
+            warning(ex);
+            return ex.msg;
+        }
+    }
+
 	@Action Response testForm1() {
 		Response response = new Response();
 		import std.conv;
@@ -670,38 +699,38 @@ version(WITH_HUNT_TRACE) {
 		return response;
 	}
 
-// 	@Action Response testUpload() {
-// 		Response response = new Response(this.request);
-// 		import std.conv;
-// 		import hunt.framework.file.UploadedFile;
+	@Action Response testUpload() {
+		Response response = new Response();
+		import std.conv;
+		import hunt.framework.file.UploadedFile;
 
-// 		Appender!string stringBuilder;
+		Appender!string stringBuilder;
 
-// 		stringBuilder.put("<br/>Uploaded files:<br/>");
-// 		import hunt.http.codec.http.model.MultipartFormInputStream;
-// 		import std.format;
-// 		import hunt.text.StringUtils;
+		stringBuilder.put("<br/>Uploaded files:<br/>");
+		// import hunt.http.codec.http.model.MultipartFormInputStream;
+		import std.format;
+		import hunt.text.StringUtils;
 
-// 		foreach (UploadedFile p; request.allFiles()) {
-// 			// string content = cast(string) mp.getBytes();
-// 			p.move("Multipart file - " ~ StringUtils.randomId());
-// 			stringBuilder.put(format("File: fileName=%s, actualFile=%s<br/>",
-// 					p.originalName(), p.path()));
-// 			// stringBuilder.put("<br/>content:" ~ content);
-// 			stringBuilder.put("<br/><br/>");
-// 		}
+		foreach (UploadedFile p; request.allFiles()) {
+			// string content = cast(string) mp.getBytes();
+			p.move("Multipart file - " ~ StringUtils.randomId());
+			stringBuilder.put(format("File: fileName=%s, actualFile=%s<br/>",
+					p.originalName(), p.path()));
+			// stringBuilder.put("<br/>content:" ~ content);
+			stringBuilder.put("<br/><br/>");
+		}
 
-// 		foreach (string key, string[] values; request.xFormData) {
-// 			stringBuilder.put(format("Form data: key=%s, value=%s<br/>",
-// 					 key, values));
-// 			stringBuilder.put("<br/><br/>");
-// 		}
+		foreach (string key, string[] values; request.xFormData) {
+			stringBuilder.put(format("Form data: key=%s, value=%s<br/>",
+					 key, values));
+			stringBuilder.put("<br/><br/>");
+		}
 
-// 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-// 		response.setContent(stringBuilder.data);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(stringBuilder.data);
 
-// 		return response;
-// 	}
+		return response;
+	}
 
 	@Action Response testValidForm(User user, int id) {
 
@@ -755,4 +784,32 @@ version(WITH_HUNT_TRACE) {
 // 		return response.setContent(view.render("home"));
 
 // 	}
+
+    @Action string startScheduler() {
+        return "started";
+
+    }
+
+    @Action string checkScheduler() {
+        return "checking";
+    }
+
+
+    @Action string stopScheduler() {
+        if (executor !is null) {
+            executor.shutdown();
+        }
+
+        return "";
+
+    }
+
 }
+
+
+__gshared ScheduledThreadPoolExecutor executor;
+
+
+// shared static ~this() {
+//     stopScheduler();
+// }

@@ -6,7 +6,7 @@ import hunt.framework;
 import app.model.Greeting;
 import std.datetime;
 
-class IndexController : RestController {
+class IndexController : Controller {
 	mixin MakeController;
 
 	@Action string index() {

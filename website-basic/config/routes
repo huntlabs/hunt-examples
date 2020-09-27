@@ -40,6 +40,9 @@ GET     /secret                   index.secret
 GET		/pushQueue						index.pushQueue
 GET		/queryQueue						index.queryQueue
 
+# gRPC
+GET		/grpc						index.testGrpc
+
 POST    /testpost                  index.testPost
 POST    /testForm1                  index.testForm1
 POST    /upload                     index.testUpload
