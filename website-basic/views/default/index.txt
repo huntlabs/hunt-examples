@@ -1,10 +1,23 @@
 {% include "main.txt" %}
 
 
-<label>Users</label>
+<label><strong>Users</strong></label>
 {% for key, value in model.users %}
     <p><strong>{{ key }}</strong>: {{ value }}</p>
 {% endfor %}
 
+<br/>
+
+<label><strong>Retrieve the request input:</strong></label>
+    <p class="lead">input (name): {{ input("name") }}</p>
+    <p class="lead">input (name2): {{ input('name2', "This is a default value.") }}</p>
+    <p class="lead">input (12): {{ input(12) }}</p>
+
+<br/>
+
+<label><strong>All request inputs:</strong></label>
+{% for key, item in input() %}
+    <p class="lead">input[{{ key }}] = {{ item }}</p>
+{% endfor %}
 
 {% include "main.txt" %}

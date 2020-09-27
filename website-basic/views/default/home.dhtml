@@ -95,8 +95,6 @@
                 {% else %}
                     <p class="lead">The time now is unknown</p>
                 {% endif %}
-                <p class="lead">The DateFormat  is {{ date('Y-m-d H:i:s',model.stamp) }}</p>
-
             </div>
         </div>
 
@@ -115,7 +113,7 @@
                         <a href="/showBool">show bool</a>
                     </li>
                     <li>
-                        <a href="/showInt">show int</a>
+                        <a href="/showInt?id=12">show int</a>
                     </li>
                     <li>
                         <a href="/showInt/2018router">test router1</a>
@@ -124,7 +122,7 @@
                         <a href="/order/2020?action=test">test router2</a>
                     </li>
                     <li>
-                        <a href="/testView">test View</a>
+                        <a href="/testView?name=bob&age=23">test View</a>
                     </li>
                     <li>
                         <a href="/setCookie">write Cookie</a>
