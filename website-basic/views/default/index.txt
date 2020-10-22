@@ -20,4 +20,13 @@
     <p class="lead">input[{{ key }}] = {{ item }}</p>
 {% endfor %}
 
+
+<label><strong>Test split:</strong></label>
+
+{% for item in split(model.colors, ",") %}
+    <p class="lead">{{ item }}</p>
+{% endfor %}
+
+<p class="lead">-------------------</p>
+
 {% include "main.txt" %}

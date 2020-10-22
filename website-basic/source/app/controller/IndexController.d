@@ -87,8 +87,12 @@ class IndexController : Controller {
         // trace(appConfig.github.appid);
 
         // GithubConfig githubConfig = configManager().load!GithubConfig();
-        // trace(githubConfig.accessTokenUrl);
+        // warning(githubConfig.accessTokenUrl);
+
+        AppConfig githubConfig = configManager().load!AppConfig();
+        trace(githubConfig.qimen.url);
     }
+    
 
     private bool checkRoute(string path, string method) {
 
@@ -195,7 +199,7 @@ class IndexController : Controller {
             info(msg);
 
             if (authUser.hasRole("admin")) {
-                msg ~= "<br>Welcome Administrator!";
+                msg ~= "<br/>Welcome Administrator!";
                 trace("Administrator logged");
             }
 
@@ -225,6 +229,68 @@ class IndexController : Controller {
         } else {
             return "No user logged in.";
         }
+    }
+
+    @Action string resusage() {
+        import resusage;
+
+        enum ulong M = 1024*1024;
+        Appender!string sb;
+
+        sb.put("<b>[The system memory usage]</b>" ~ "<br/>\n");
+
+        SystemMemInfo sysMemInfo = systemMemInfo(); 
+        string text = format("<b>totalRAM</b>: %10d M<br/>\n" ~ 
+            "<b>usedRAM</b>: %10d M<br/>\n" ~ 
+            "<b>freeRAM</b>: %10d M<br/>\n", 
+            sysMemInfo.totalRAM/M, sysMemInfo.usedRAM/M, sysMemInfo.freeRAM/M);
+        sb.put(text);
+        sb.put("<br/>\n");
+
+        text = format("<b>totalVirtMem</b>: %10d M<br/>\n" ~ 
+                "<b>usedVirtMem</b>: %10d M<br/>\n" ~ 
+                "<b>freeVirtMem</b>: %10d M", 
+            sysMemInfo.totalVirtMem/M, sysMemInfo.usedVirtMem/M, sysMemInfo.freeVirtMem/M);
+        sb.put(text);
+        sb.put("<br/><br/>\n");
+        
+
+        sb.put("<b>[The memory usage of the current process]</b>" ~ "<br/>\n");
+        ProcessMemInfo procMemInfo = processMemInfo();
+        text = format("<b>Virtual memory used:</b> %10d M<br/>\n" ~ 
+            "<b>Physical memory used:</b> %10d M<br/>\n", 
+            procMemInfo.usedVirtMem/M, procMemInfo.usedRAM/M);
+        sb.put(text);
+        sb.put("<br/><br/>\n");
+
+        
+        sb.put("<b>[GC states]</b>" ~ "<br/>\n");
+
+        import core.memory;
+        GC.Stats  states = GC.stats();
+        text = format("<b>usedSize</b>: %d bytes<br/>\n" ~ 
+            "<b>freeSize</b>: %d bytes<br/>\n" ~ 
+            "<b>allocatedInCurrentThread</b>: %d bytes<br/>\n", 
+            states.usedSize, states.freeSize, states.allocatedInCurrentThread);
+        sb.put(text);
+
+        sb.put("<br/><br/>\n");
+
+        
+        sb.put("<b>[GC profileStates]</b>" ~ "<br/>\n");
+        GC.ProfileStats profileStates = GC.profileStats();
+
+        text = format("<b>numCollections:</b> %d<br/>\n" ~ 
+                "<b>totalCollectionTime</b>: %s<br/>\n" ~ 
+                "<b>totalPauseTime</b>: %s<br/>\n" ~ 
+                "<b>maxPauseTime</b>: %s<br/>\n" ~ 
+                "<b>maxCollectionTime</b>: %s <br/>\n", 
+            profileStates.numCollections, profileStates.totalCollectionTime, 
+            profileStates.totalPauseTime, profileStates.maxPauseTime, 
+            profileStates.maxCollectionTime);
+        sb.put(text);
+
+        return sb.data; 
     }
 
     // Response showAction() {
@@ -353,7 +419,7 @@ version(WITH_HUNT_TRACE) {
         Appender!string sb;
         sb.put("The router parameter(id) is: ");
         sb.put(id.to!string);
-        sb.put(". <br>");
+        sb.put(". <br/>");
         sb.put(" The query parameters are: ");
         sb.put(to!string(this.request.queries));
         return sb.data;
@@ -481,6 +547,7 @@ version(WITH_HUNT_TRACE) {
 		data["allow"] = false;
 		data["users"] = ["name" : "jeck", "age" : "18"];
 		data["nums"] = [3, 5, 2, 1];
+		data["colors"] = "red, black, blue";
 
 		view.setTemplateExt(".txt");
 		view.assign("model", data);
@@ -605,12 +672,12 @@ version(WITH_HUNT_TRACE) {
         try {
             string message = promise.get(25.seconds);
 
-            resultContent ~= "<br>\nThe received message: " ~ message;
+            resultContent ~= "<br/>\nThe received message: " ~ message;
         } catch(Exception ex) {
-            resultContent ~= "<br>\nThe error message: " ~ ex.msg;
+            resultContent ~= "<br/>\nThe error message: " ~ ex.msg;
         }
 
-        resultContent ~= "<br>\nThe end time: " ~ hunt.util.DateTime.DateTime.getTimeAsGMT();
+        resultContent ~= "<br/>\nThe end time: " ~ hunt.util.DateTime.DateTime.getTimeAsGMT();
 
         response.setContent(resultContent);
         return response;

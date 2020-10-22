@@ -52,6 +52,9 @@ POST    /upload                     index.testUpload
 GET    /zh                  index.testMultitrans
 GET    /en                  index.testMultitrans
 
+# Profile
+GET     /resusage       index.resusage
+
 
 # static resources
 GET		/attachments				    staticDir:attachments:true

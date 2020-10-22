@@ -13,11 +13,12 @@ module bootstrap;
 
 import app.providers;
 import app.middleware;
+import app.config.GithubConfig;
+
 
 import hunt.console;
 import hunt.framework;
 import hunt.logging;
-
 import core.thread;
 import std.datetime;
 import std.stdio;
@@ -82,10 +83,14 @@ void main(string[] args)
 
     app.booting(() {
         import GreeterImpl;
-        app.grpc.server.register( new GreeterImpl());
+        // app.grpc.server.register( new GreeterImpl());
     });
 
     app.booted(() {
+
+        AppConfig githubConfig = configManager().load!AppConfig();
+        warning(githubConfig.qimen.url);
+
 
         TypeInfo_Class[string] all = MiddlewareInterface.all();
         foreach(string key, TypeInfo_Class typeInfo; all) {

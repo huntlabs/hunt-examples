@@ -9,3 +9,17 @@ class GithubConfig {
     string accessTokenUrl = "TokenUrl";
     string userInfoUrl = "InfoUrl";
 }
+
+
+@ConfigurationFile("app")
+class AppConfig{
+    QimenConfig qimen;
+    string accessTokenUrl = "TokenUrl";
+}
+
+struct QimenConfig{
+    bool checksign;
+    string url;
+    string app_key;
+    string secret ;
+}
