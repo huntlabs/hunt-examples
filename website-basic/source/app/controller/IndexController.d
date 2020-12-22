@@ -51,8 +51,10 @@ version (USE_ENTITY) import app.model.index;
 import app.model.ValidForm;
 
 import app.model.Greeting;
+import app.model.UserInfo;
 
 
+enum string QueueChannelName = "my-queue";
 
 /**
  * 
@@ -549,8 +551,17 @@ version(WITH_HUNT_TRACE) {
 		data["nums"] = [3, 5, 2, 1];
 		data["colors"] = "red, black, blue";
 
-		view.setTemplateExt(".txt");
+		view.setTemplateExt(".dhtml");
 		view.assign("model", data);
+
+        EntityManager entityManager = Application.instance.entityManager();
+
+        string queryString = "select a from UserInfo a where a.id < :id";
+        EqlQuery!(UserInfo) query = entityManager.createQuery!(UserInfo)(queryString);
+        query.setParameter("id", 10);
+
+        UserInfo[] allUsers = query.getResultList();
+		view.assign("allUsers", allUsers);
 
         int a = 1;
 		view.assign("a", a);
@@ -631,35 +642,21 @@ version(WITH_HUNT_TRACE) {
 		return response;
 	}
 
-    @Action Response pushQueue() {        
-
-        std.datetime.DateTime dt = cast(std.datetime.DateTime)Clock.currTime();
-        string message = format("Say hello at %s", dt.toSimpleString());
-
-        // AbstractQueue queue  = messageQueue();
-        AbstractQueue queue  = Application.instance().queue();
-        queue.push("my-queue", message);
-
-        Response response = new Response();
-        response.setContent(message);
-        return response;
-    }
 
     @Action Response queryQueue() {
 
         // FIXME: Needing refactor or cleanup -@zhangxueping at 2020-04-07T11:20:43+08:00
         // More tests needed
 
-        enum string ChannelName = "my-queue";
         FuturePromise!string promise = new FuturePromise!string();
         string registTime = hunt.util.DateTime.DateTime.getTimeAsGMT();
         
         AbstractQueue queue  = messageQueue();
         scope(exit) {
-            queue.remove(ChannelName);
+            queue.remove(QueueChannelName);
         }
 
-        queue.addListener(ChannelName, (ubyte[] message) {
+        queue.addListener(QueueChannelName, (ubyte[] message) {
             string msg = cast(string)message;
             warningf("Received message: %s", msg);
             promise.succeeded(msg);
@@ -667,7 +664,7 @@ version(WITH_HUNT_TRACE) {
 
         string resultContent;
         Response response = new Response();
-        resultContent = format("Listener for channel %s registed at %s", ChannelName, registTime);
+        resultContent = format("Listener for channel %s registed at %s", QueueChannelName, registTime);
 
         try {
             string message = promise.get(25.seconds);
@@ -682,6 +679,21 @@ version(WITH_HUNT_TRACE) {
         response.setContent(resultContent);
         return response;
     }
+
+    @Action Response pushQueue() {        
+
+        std.datetime.DateTime dt = cast(std.datetime.DateTime)Clock.currTime();
+        string message = format("Say hello at %s", dt.toSimpleString());
+
+        // AbstractQueue queue  = messageQueue();
+        AbstractQueue queue  = Application.instance().queue();
+        queue.push("my-queue", message);
+
+        Response response = new Response();
+        response.setContent(message);
+        return response;
+    }
+
 
 	// @Action Response createTask() {
 	// 	string value1 = request.get("value1", "1");

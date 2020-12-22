@@ -27,15 +27,9 @@ import std.functional;
 
 import hunt.io.channel.Common;
 
-import hunt.framework.util.uninode.Core;
+import hunt.entity;
+import hunt.cache;
 
-void main1(string[] args) {
-    uint a = 1;
-    UniNode n1 = UniNode(a);
-    UniNode n2 = UniNode(1);
-
-    warning(n1 == n2);
-}
 
 void main(string[] args)
 {

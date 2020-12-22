@@ -8,6 +8,8 @@
 
 <br/>
 
+<p class="lead">-------------------</p>
+
 <label><strong>Retrieve the request input:</strong></label>
     <p class="lead">input (name): {{ input("name") }}</p>
     <p class="lead">input (name2): {{ input('name2', "This is a default value.") }}</p>
@@ -15,11 +17,13 @@
 
 <br/>
 
+<p class="lead">-------------------</p>
 <label><strong>All request inputs:</strong></label>
 {% for key, item in input() %}
     <p class="lead">input[{{ key }}] = {{ item }}</p>
 {% endfor %}
 
+<p class="lead">-------------------</p>
 
 <label><strong>Test split:</strong></label>
 
@@ -28,5 +32,30 @@
 {% endfor %}
 
 <p class="lead">-------------------</p>
+
+
+<label><strong>Test table binding</strong></label>
+
+<table>
+    <thead>
+    <tr>
+        <th data-toggle="true">ID</th>
+        <th>Nickname</th>
+        <th>Age</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for p in allUsers %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.nickName }}</td>
+            <td>{{ p.age }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<p class="lead">-------------------</p>
+
 
 {% include "main.txt" %}
