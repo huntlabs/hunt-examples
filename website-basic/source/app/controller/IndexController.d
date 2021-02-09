@@ -17,7 +17,6 @@ import app.form.LoginUser;
 import hunt.framework;
 import hunt.shiro;
 
-import hunt.amqp.client;
 import hunt.concurrency.Future;
 import hunt.concurrency.FuturePromise;
 import hunt.http.server;
@@ -67,8 +66,8 @@ class IndexController : Controller {
         // this.addMiddleware(new IpFilterMiddleware());
 
         //tracef(url("index.login"));
-        tracef(url("index.checkAuth")); // /checkAuth/
-        warningf(url("index.test", null, "admin")); // /checkAuth/
+        // tracef(url("index.checkAuth")); // /checkAuth/
+        // warningf(url("index.test", null, "admin")); // /checkAuth/
 
         // AuthOptions options = new AuthOptions();
         // options.tokenCookieName = ADMIN_JWT_TOKEN_NAME;
@@ -91,8 +90,8 @@ class IndexController : Controller {
         // GithubConfig githubConfig = configManager().load!GithubConfig();
         // warning(githubConfig.accessTokenUrl);
 
-        AppConfig githubConfig = configManager().load!AppConfig();
-        trace(githubConfig.qimen.url);
+        // AppConfig githubConfig = configManager().load!AppConfig();
+        // trace(githubConfig.qimen.url);
     }
     
 
@@ -114,7 +113,7 @@ class IndexController : Controller {
     }
 
     override bool before() {
-        logDebug("---running before----");
+        // logDebug("---running before----");
 
         if (toUpper(request.getMethod()) == HttpMethod.OPTIONS.asString())
             return false;
@@ -122,7 +121,7 @@ class IndexController : Controller {
     }
 
     override bool after() {
-        logDebug("---running after----");
+        // logDebug("---running after----");
         return true;
     }
 
@@ -152,6 +151,17 @@ class IndexController : Controller {
     @Action string about() {
         warning("index.about url: ", url("index.about") );
         infof("action id: %s", this.request().actionId());
+
+        import hunt.util.worker;
+        import hunt.util.TaskPool;
+        import hunt.net.NetServer;
+        import hunt.event.EventLoopGroup;
+
+        HttpServer httpServer = serviceContainer.resolve!(HttpServer);
+        NetServer netServer = httpServer.netServer();
+        EventLoopGroup loopGroup = netServer.eventLoopGroup();
+        // TaskPool worker = loopGroup.worker();
+        // worker.checkStatus();
 
         // string data = `"abc`;
 
@@ -329,7 +339,7 @@ class IndexController : Controller {
 // 
     // @Action string showString(error) {
     @Action string plaintext() {
-        logDebug("---show string----");
+        // logDebug("---show string----");
         return "Hello world. ";
     }
 
@@ -447,32 +457,6 @@ version(WITH_HUNT_TRACE) {
         return response;
     }
 
-    // @Action string testAmqp() {
-    //     AmqpConnection conn = amqpConnection();
-
-    //     logInfo("Connection succeeded");
-    //     conn.createSender("my-queue", new class hunt.amqp.client.Handler!AmqpSender {
-    //         void handle(AmqpSender sender)
-    //         {
-    //             if(sender is null)
-    //             {
-    //                 logWarning("Unable to create a sender");
-    //                 return;
-    //             }
-
-    //             sender.send(AmqpMessage.create().withBody("hello world").build());
-    //             trace("send completed");
-
-    //             //for (int i = 0 ; i < 100; ++i)
-    //             //{
-    //             //  sender.send(AmqpMessage.create().withBody("hello world").build());
-    //             //  logInfo("send complite");
-    //             //}
-    //         }
-    //     });
-
-    //     return "Ok";
-    // }
 
     @Action Response setCookie() {
         logDebug("---test Cookie ----");
@@ -554,7 +538,7 @@ version(WITH_HUNT_TRACE) {
 		view.setTemplateExt(".dhtml");
 		view.assign("model", data);
 
-        EntityManager entityManager = Application.instance.entityManager();
+        EntityManager entityManager = defaultEntityManager();
 
         string queryString = "select a from UserInfo a where a.id < :id";
         EqlQuery!(UserInfo) query = entityManager.createQuery!(UserInfo)(queryString);
@@ -648,26 +632,26 @@ version(WITH_HUNT_TRACE) {
         // FIXME: Needing refactor or cleanup -@zhangxueping at 2020-04-07T11:20:43+08:00
         // More tests needed
 
-        FuturePromise!string promise = new FuturePromise!string();
-        string registTime = hunt.util.DateTime.DateTime.getTimeAsGMT();
+        // FuturePromise!string promise = new FuturePromise!string();
+        // string registTime = hunt.util.DateTime.DateTime.getTimeAsGMT();
         
-        AbstractQueue queue  = messageQueue();
-        scope(exit) {
-            queue.remove(QueueChannelName);
-        }
+        // AbstractQueue queue  = messageQueue();
+        // scope(exit) {
+        //     queue.remove(QueueChannelName);
+        // }
 
-        queue.addListener(QueueChannelName, (ubyte[] message) {
-            string msg = cast(string)message;
-            warningf("Received message: %s", msg);
-            promise.succeeded(msg);
-        });
+        // queue.addListener(QueueChannelName, (ubyte[] message) {
+        //     string msg = cast(string)message;
+        //     warningf("Received message: %s", msg);
+        //     promise.succeeded(msg);
+        // });
 
         string resultContent;
         Response response = new Response();
-        resultContent = format("Listener for channel %s registed at %s", QueueChannelName, registTime);
+        // resultContent = format("Listener for channel %s registed at %s", QueueChannelName, registTime);
 
         try {
-            string message = promise.get(25.seconds);
+            string message = ""; //promise.get(25.seconds);
 
             resultContent ~= "<br/>\nThe received message: " ~ message;
         } catch(Exception ex) {
@@ -680,50 +664,82 @@ version(WITH_HUNT_TRACE) {
         return response;
     }
 
-    @Action Response pushQueue() {        
+    // @Action Response pushQueue() {        
 
-        std.datetime.DateTime dt = cast(std.datetime.DateTime)Clock.currTime();
-        string message = format("Say hello at %s", dt.toSimpleString());
+    //     std.datetime.DateTime dt = cast(std.datetime.DateTime)Clock.currTime();
+    //     string message = format("Say hello at %s", dt.toSimpleString());
 
-        // AbstractQueue queue  = messageQueue();
-        AbstractQueue queue  = Application.instance().queue();
-        queue.push("my-queue", message);
+    //     // AbstractQueue queue  = messageQueue();
+    //     AbstractQueue queue  = Application.instance().queue();
+    //     queue.push("my-queue", message);
 
-        Response response = new Response();
-        response.setContent(message);
-        return response;
-    }
+    //     Response response = new Response();
+    //     response.setContent(message);
+    //     return response;
+    // }
 
 
-	// @Action Response createTask() {
-	// 	string value1 = request.get("value1", "1");
-	// 	string value2 = request.get("value2", "2");
+	@Action Response createTask() {
+        import app.task.TestTask;
+		string value1 = request.get("value1", "1");
+		string value2 = request.get("value2", "2");
 
-	// 	auto t1 = new TestQueueJob(to!int(value1), to!int(value2));
+		TestTask t1 = new TestTask(to!int(value1), to!int(value2));
 
-	// 	queueWorker().push("test", t1);
+        Worker worker = Application.instance.task();
+		worker.put(t1);
 
-	// 	Response response = new Response();
-	// 	response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
-	// 	// response.setContent("the task id : " ~ to!string(t1.id()));
-	// 	return response;
-	// }
+		Response response = new Response();
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
+		response.setContent("the task id : " ~ to!string(t1.id));
+		return response;
+	}
 
-	// @Action Response stopTask() {
-	// 	string taskid = request.get("taskid");
-	// 	Response response = new Response(this.request);
+	@Action Response stopTask() {
+		string taskid = request.get("taskid");
+		Response response = new Response();
 
-	// 	if (taskid.empty()) {
-	// 		response.setContent("The task id is empty!");
-	// 	} else {
-	// 		auto ok = taskManager.del(to!size_t(taskid));
-	// 		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
-	// 		response.setContent("stop task (" ~ taskid ~ ") : " ~ to!string(ok));
+		if (taskid.empty()) {
+			response.setContent("The task id is empty!");
+		} else {
+			response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
 
-	// 	}
-	// 	return response;
-	// }
+            size_t id = to!size_t(taskid);
+            Worker worker = Application.instance.task();
+            
+            try {
+                Task task = worker.get(id);
+                task.stop();
+                worker.remove(id);
+			    response.setContent("task: " ~ task.toString());
+            } catch(Exception ex) {
+                response.setContent("Error: " ~ ex.msg);
+            }
+		}
+		return response;
+	}
 
+	@Action Response checkTask() {
+		string taskid = request.get("taskid");
+		Response response = new Response();
+
+		if (taskid.empty()) {
+			response.setContent("The task id is empty!");
+		} else {
+			response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8");
+
+            size_t id = to!size_t(taskid);
+            Worker worker = Application.instance.task();
+            try {
+                Task task = worker.get(id);
+                response.setContent("task status: " ~ task.toString());
+            } catch(Exception ex) {
+                response.setContent("Error: " ~ ex.msg);
+            }
+
+		}
+		return response;
+	}
 
 	@Action Response testPost() {
 
@@ -746,11 +762,44 @@ version(WITH_HUNT_TRACE) {
 
     @Action
     string testGrpc() {
-        Application app = Application.instance();
+        string[string] queryParameters = request.queries();
+        string channelName = "ch1";
+
+        if("channel" in  queryParameters) {
+            channelName = queryParameters["channel"];
+
+            if(channelName != "ch1" && channelName != "ch2")
+            return "Undefined channel: " ~ channelName;
+        }
+
+        // FIXME: Needing refactor or cleanup -@zhangxueping at 2021-02-07T11:43:01+08:00
+        // No exception thrown while connection failed.
+
         import grpc;
+        import helloworld.helloworld;
+        import helloworld.helloworldrpc;
+
+        Application app = Application.instance();
         try {
-            auto channel = app.grpc.getChannel("ch1");
-            return "passed";
+            Channel channel = app.grpc.getChannel(channelName);
+            scope(exit) {
+                channel.destroy();
+            }
+
+            // FIXME: Needing refactor or cleanup -@zhangxueping at 2021-02-07T15:08:54+08:00
+            // Not always successful
+
+            GreeterClient client = new GreeterClient(channel);
+            HelloRequest request = new HelloRequest();
+            request.name = "Hunt";   
+
+            HelloReply replyHello = client.SayHello(request);
+            tracef("++++++++++++++++%s", replyHello.message);
+
+            HelloReply replyBye = client.SayGoodBye(request);
+            tracef("++++++++++++++++%s", replyBye.message);
+
+            return channelName ~ " passed";
         } catch(Exception ex) {
             warning(ex);
             return ex.msg;
@@ -792,18 +841,32 @@ version(WITH_HUNT_TRACE) {
 
 		foreach (UploadedFile p; request.allFiles()) {
 			// string content = cast(string) mp.getBytes();
-			p.move("Multipart file - " ~ StringUtils.randomId());
+            // FIXME: Needing refactor or cleanup -@zhangxueping at 2020-12-29T14:45:06+08:00
+            // INSklmnrsv: Invalid cross-device link
+			// p.move("Multipart file - " ~ StringUtils.randomId());
+            
 			stringBuilder.put(format("File: fileName=%s, actualFile=%s<br/>",
 					p.originalName(), p.path()));
 			// stringBuilder.put("<br/>content:" ~ content);
 			stringBuilder.put("<br/><br/>");
 		}
 
-		foreach (string key, string[] values; request.xFormData) {
+        string[string] d = request.all();
+
+        foreach(string name, string value; d) {
+            warningf("name: %s, value: %s", name, value);
+
 			stringBuilder.put(format("Form data: key=%s, value=%s<br/>",
-					 key, values));
-			stringBuilder.put("<br/><br/>");
-		}
+					 name, value));
+        }
+
+		// foreach (string key, string[] values; request.xFormData) {
+        //     warningf("key: %s, values: %s", key, values);
+
+		// 	stringBuilder.put(format("Form data: key=%s, value=%s<br/>",
+		// 			 key, values));
+		// 	stringBuilder.put("<br/><br/>");
+		// }
 
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);

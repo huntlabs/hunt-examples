@@ -166,15 +166,26 @@
                         <a href="/get?key=company">get Cache & session</a>
                     </li>
                     <li>
+                        <a href="/grpc?channel=ch2" target="blank">Test GRPC</a>
+                    </li>
+                    <!-- <li>
                         <a href="/WebSocket.html" target="blank">Test WebSocket</a>
+                    </li> -->
+
+                    <li>
+                        <a href="/createTask?value1=1&value2=2&interval=2">Create Task</a>
                     </li>
 
                     <li>
-                        <a href="/create?value1=1&value2=2&interval=2">Create Timer Task</a>
+                        <form action="/checkTask">
+                            Input Task id :
+                            <input type="text" name="taskid" value="">
+                            <input type="submit" value="Check Task">
+                        </form>
                     </li>
-
+                    
                     <li>
-                        <form action="/stop">
+                        <form action="/stopTask">
                             Input Task id :
                             <input type="text" name="taskid" value="">
                             <input type="submit" value="Stop Task">

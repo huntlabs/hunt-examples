@@ -15,7 +15,6 @@ import app.providers;
 import app.middleware;
 import app.config.GithubConfig;
 
-
 import hunt.console;
 import hunt.framework;
 import hunt.logging;

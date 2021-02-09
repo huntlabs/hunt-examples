@@ -27,8 +27,10 @@ GET		/redirect2					index.testRedirect2
 GET		/testView					index.showView
 GET		/get						index.getCache
 *		/set						index.setCache
-# GET		/create						index.createTask
-GET		/stop						index.stopTask
+
+GET		/createTask						index.createTask
+*		/stopTask						index.stopTask
+*		/checkTask						index.checkTask
 
 # Auth
 POST    /login                      index.login
