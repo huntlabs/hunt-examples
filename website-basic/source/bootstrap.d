@@ -17,7 +17,7 @@ import app.config.GithubConfig;
 
 import hunt.console;
 import hunt.framework;
-import hunt.logging;
+import hunt.logging.Logger;
 import core.thread;
 import std.datetime;
 import std.stdio;
@@ -28,6 +28,8 @@ import hunt.io.channel.Common;
 
 import hunt.entity;
 import hunt.cache;
+
+import hunt.serialization.JsonSerializer;
 
 
 void main(string[] args)
@@ -111,6 +113,9 @@ void main(string[] args)
         foreach(ref GrpcClientConf conf; appConfig.grpc.clientChannels) {
             info(conf.name);
         }
+
+        app.logger().tracef("args: %s", "test");
+        filebeatLogger().tracef("args: %s", "just another test");
 
     });
 

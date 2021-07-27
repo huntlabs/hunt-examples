@@ -12,7 +12,9 @@ class IndexController : Controller {
     }
 
 	@Action string test() {
-        warning("xxxx=>", this.request.actionId);
+        warning("actionId=>", this.request.actionId);
+		HttpSession session = request.session(true);
+        tracef("all sessions: %s", session.all);
         return "Admin test.";
     }
 

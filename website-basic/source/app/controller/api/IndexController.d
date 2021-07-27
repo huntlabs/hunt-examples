@@ -17,6 +17,9 @@ class IndexController : Controller {
 
         // https://api.example.com/test/ 
         warning("index.test url: ", url("index.test", null, request().routeGroup()));
+        warning("index.test url: ", url("index.test", null, "api"));
+        trace("index.test url: ", url("api:index.test", null, "admin"));
+        warning("index.test url: ", url("api:index.test"));
 
         return "API test.";
     }

@@ -35,7 +35,7 @@ import std.array;
 import std.datetime;
 import std.format;
 import std.json;
-import std.meta;
+// import std.meta;
 import std.stdio;
 import std.string;
 import std.traits;
@@ -95,6 +95,8 @@ class IndexController : Controller {
 
         
         Application app = Application.instance;
+        filebeatLogger().tracef("method: %s", this.request.methodAsString());
+
         HostEnvironment env = app.environment;
         string str = format("Environment: %s, isDevelopment: %s", env.name, env.isDevelopment());
         warning(str);
@@ -200,6 +202,7 @@ class IndexController : Controller {
 
     @WithoutMiddleware(AuthMiddleware.stringof)
     @Action Response login(LoginUser user) {
+
         string username = user.name;
         string password = user.password;
         bool rememeber = user.rememeber;
@@ -383,7 +386,7 @@ class IndexController : Controller {
         return g;
     }
 
-    @Action string testUDAs(@Range(1, 100) int number, @Length(3, 6) string name) {
+    @Action string testUDAs(@Range(1, 100) int number, @Length(3, 6) @AliasField("e-mail") string email) {
         ConstraintValidatorContext context = validate();
         if(context.isValid()) {
             return "Test passed";
@@ -450,22 +453,35 @@ version(WITH_HUNT_TRACE) {
         // import hunt.redis.RedisCluster;
         // import hunt.redis.Redis;
 
-        Redis r = Application.instance().redis(); // getRedis();
-        // scope(exit) r.close();
+        Redis r = Application.instance().redis(); 
 
 		std.datetime.DateTime now = cast(std.datetime.DateTime)Clock.currTime ;
-        r.set("hunt_demo_redis", "Hunt redis test, " ~ now.toSimpleString());
+        r.set("hunt_demo_redis", "Test for redis, " ~ now.toSimpleString());
         string s = r.get("hunt_demo_redis");
         // trace(s);
 
-        // HttpBody hb = HttpBody.create(MimeType.TEXT_HTML_VALUE, "Redis result: " ~ s ~ "<br/>");
-        
         Response response = new Response();
         response.setContent("Redis result: " ~ s ~ "<br/>", MimeType.TEXT_HTML_VALUE);
 
         return response;
     }
 
+    @Action Response testRedisCluster() {
+        // import hunt.redis.RedisCluster;
+        // import hunt.redis.Redis;
+
+        RedisCluster r = Application.instance().redisCluster();
+
+		std.datetime.DateTime now = cast(std.datetime.DateTime)Clock.currTime ;
+        r.set("hunt_redis_cluster", "Test for RedisClust, " ~ now.toSimpleString());
+        string s = r.get("hunt_redis_cluster");
+        // trace(s);
+
+        Response response = new Response();
+        response.setContent("Redis result: " ~ s ~ "<br/>", MimeType.TEXT_HTML_VALUE);
+
+        return response;
+    }
 
     @Action Response setCookie() {
         logDebug("---test Cookie ----");
@@ -572,7 +588,7 @@ version(WITH_HUNT_TRACE) {
 	@Action RedirectResponse testRedirect1() {
 		HttpSession session = request.session(true);
 		session.set("test", "for RedirectResponse");
-    warningf("xxx=>%s", session.all);
+        tracef("all sessions: %s", session.all);
 		// RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
         string newUrl = url("admin:index.test");
         RedirectResponse r = new RedirectResponse(this.request, newUrl).withSession("hunt", "somthing");
@@ -764,8 +780,11 @@ version(WITH_HUNT_TRACE) {
 		stringBuilder.put(" MIME Type: " ~ this.request.header(HttpHeader.CONTENT_TYPE) ~ "<br/>");
 		stringBuilder.put(" Length: " ~ this.request.header(HttpHeader.CONTENT_LENGTH) ~ "<br/>");
 
+        warningf("name: %s", request.post("name"));
+        warningf("names: %s", request.posts("name"));
+
 		stringBuilder.put("body content: <br/>");
-		// stringBuilder.put( this.request.getBodyAsString() ~ "<br/>");
+		stringBuilder.put( this.request.getBodyAsString() ~ "<br/>");
 
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(stringBuilder.data);
@@ -824,13 +843,13 @@ version(WITH_HUNT_TRACE) {
 		import std.conv;
 
 		Appender!string stringBuilder;
-		stringBuilder.put("<p>Form data from xFormData:<p/>");
-		foreach (string key, string[] values; this.request.xFormData()) {
+		stringBuilder.put("<p>Form data from formData:<p/>");
+		foreach (string key, string[] values; this.request.formData()) {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
 		}
 
 		stringBuilder.put("<p>Form data from post:<p/>");
-		foreach (string key, string[] values; this.request.xFormData()) {
+		foreach (string key, string[] values; this.request.formData()) {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ this.request.post(key) ~ "<br/>");
 		}
 
@@ -873,7 +892,7 @@ version(WITH_HUNT_TRACE) {
 					 name, value));
         }
 
-		// foreach (string key, string[] values; request.xFormData) {
+		// foreach (string key, string[] values; request.formData) {
         //     warningf("key: %s, values: %s", key, values);
 
 		// 	stringBuilder.put(format("Form data: key=%s, value=%s<br/>",
@@ -887,9 +906,10 @@ version(WITH_HUNT_TRACE) {
 		return response;
 	}
 
-	@Action Response testValidForm(User user, int id) {
+	// @Action Response testValidForm(int id=12, string name="Alice") {
+    @Action Response testValidForm(User user, int id=12, string name="Alice") {
 
-		warningf("id: %s, name: %s", id, request.post("name"));
+		warningf("id: %s, name: %s, queryName: %s", id, request.post("name", "default post"), name);
 
 		auto result = user.valid();
 		logDebug(format("user(name = %s, age = %s, email = %s, friends = %s) ,isValid : %s , valid result : %s ",
@@ -898,7 +918,7 @@ version(WITH_HUNT_TRACE) {
 
 		Appender!string stringBuilder;
 		stringBuilder.put("<p>Form data:<p/>");
-		foreach (string key, string[] values; this.request.xFormData()) {
+		foreach (string key, string[] values; this.request.formData()) {
 			stringBuilder.put(" name: " ~ key ~ ", value: " ~ values.to!string() ~ "<br/>");
 		}
 
@@ -913,32 +933,32 @@ version(WITH_HUNT_TRACE) {
 		return response;
 	}
 
-// 	@Action Response testMultitrans() {
-// 		logDebug("url : ", request.url);
-// 		Cookie cookie;
-// 		Response response = new Response(this.request);
-// 		if (request.url == "/zh") {
-// 			cookie = new Cookie("Content-Language", "zh-cn");
-// 			view.setLocale("zh-cn");
-// 		} else {
-// 			cookie = new Cookie("Content-Language", "en-us");
-// 			view.setLocale("en-us");
-// 		}
+	@Action Response testMultitrans() {
+		logDebug("url : ", request.url);
+		Cookie cookie;
+		Response response = new Response();
+		if (request.url == "/zh") {
+			cookie = new Cookie("Content-Language", "zh-cn");
+			view.setLocale("zh-cn");
+		} else {
+			cookie = new Cookie("Content-Language", "en-us");
+			view.setLocale("en-us");
+		}
 
-// 		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8").withCookie(cookie);
+		response.setHeader(HttpHeader.CONTENT_TYPE, "text/html;charset=utf-8").withCookie(cookie);
 
-// 		JSONValue model;
-// 		import hunt.util.DateTime;
+		JSONValue model;
+		import hunt.util.DateTime;
 
-// 		model["stamp"] = time();
-// 		model["now"] = Clock.currTime.toString();
-// 		view.setTemplateExt(".dhtml");
-// 		view.assign("model", model);
-// 		view.assign("app",parseJSON(`{"name":"hunt"}`));
-// 		view.assign("breadcrumbs", breadcrumbsManager.generate("home"));
-// 		return response.setContent(view.render("home"));
+		model["stamp"] = time();
+		model["now"] = Clock.currTime.toString();
+		view.setTemplateExt(".dhtml");
+		view.assign("model", model);
+		view.assign("app",parseJSON(`{"name":"hunt"}`));
+		view.assign("breadcrumbs", Application.instance.breadcrumbs.generate("home"));
+		return response.setContent(view.render("home"));
 
-// 	}
+	}
 
     @Action string startScheduler() {
         return "started";
