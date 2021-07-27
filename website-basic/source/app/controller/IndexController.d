@@ -92,6 +92,12 @@ class IndexController : Controller {
 
         // AppConfig githubConfig = configManager().load!AppConfig();
         // trace(githubConfig.qimen.url);
+
+        
+        Application app = Application.instance;
+        HostEnvironment env = app.environment;
+        string str = format("Environment: %s, isDevelopment: %s", env.name, env.isDevelopment());
+        warning(str);
     }
     
 
@@ -180,7 +186,7 @@ class IndexController : Controller {
     @Middleware(IpFilterMiddleware.stringof)
     @Middleware(AuthMiddleware.stringof)
     @Action string secret() {
-        return "It's a secret page.";
+        return "OK. It's a secret page.";
     }
 
     @WithoutMiddleware(AuthMiddleware.stringof)
@@ -340,6 +346,9 @@ class IndexController : Controller {
     // @Action string showString(error) {
     @Action string plaintext() {
         // logDebug("---show string----");
+
+        warning(session().all);
+
         return "Hello world. ";
     }
 
@@ -391,7 +400,7 @@ version(WITH_HUNT_TRACE) {
 
 		ApplicationConfig conf = config();
         
-		string url = "http://10.1.222.110/index.html";
+		string url = "http://10.1.23.222/index.html";
 		HttpClient client = new HttpClient();
 
 		RequestBuilder requestBuilder = new RequestBuilder()
@@ -563,7 +572,11 @@ version(WITH_HUNT_TRACE) {
 	@Action RedirectResponse testRedirect1() {
 		HttpSession session = request.session(true);
 		session.set("test", "for RedirectResponse");
-		RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
+    warningf("xxx=>%s", session.all);
+		// RedirectResponse r = new RedirectResponse(this.request, "https://www.putao.com/");
+        string newUrl = url("admin:index.test");
+        RedirectResponse r = new RedirectResponse(this.request, newUrl).withSession("hunt", "somthing");
+
 		return r;
 	}
 

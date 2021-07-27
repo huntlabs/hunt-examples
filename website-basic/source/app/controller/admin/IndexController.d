@@ -12,7 +12,7 @@ class IndexController : Controller {
     }
 
 	@Action string test() {
-        warning("xxxx+", this.request.actionId);
+        warning("xxxx=>", this.request.actionId);
         return "Admin test.";
     }
 

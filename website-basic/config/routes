@@ -48,7 +48,7 @@ GET		/grpc						index.testGrpc
 POST    /testpost                  index.testPost
 POST    /testForm1                  index.testForm1
 POST    /upload                     index.testUpload
-#POST    /testValidForm                  index.testValidForm
+POST    /testValidForm                  index.testValidForm
 *    /testValidForm/{id<\d+>}               index.testValidForm
 
 GET    /zh                  index.testMultitrans

@@ -2,6 +2,7 @@ module app.model.ValidForm;
 
 import hunt.validation;
 import hunt.framework.http.Form;
+import hunt.serialization.JsonSerializer;
 
 class User : Form
 {
@@ -14,7 +15,13 @@ class User : Form
 	string name;
 
     @Email
+	// @FormProperty("e-mail")
+	@JsonProperty("e-mail")
     string email;
 
 	string[] friends;
+
+	this() {
+		name = "test";
+	}
 }
