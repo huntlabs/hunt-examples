@@ -119,10 +119,7 @@ void main(string[] args)
 
     });
 
-
 	app.run(args);
-
-    // testJwt();
 }
 
 import std.digest.sha;

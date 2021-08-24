@@ -95,7 +95,8 @@ class IndexController : Controller {
 
         
         Application app = Application.instance;
-        filebeatLogger().tracef("method: %s", this.request.methodAsString());
+        string filename = filebeatLogger().conf.fileName;
+        filebeatLogger().tracef("controller: ", typeof(this).stringof);
 
         HostEnvironment env = app.environment;
         string str = format("Environment: %s, isDevelopment: %s", env.name, env.isDevelopment());
@@ -349,6 +350,8 @@ class IndexController : Controller {
     // @Action string showString(error) {
     @Action string plaintext() {
         // logDebug("---show string----");
+
+        filebeatLogger().tracef("args: %s", "just another test");
 
         warning(session().all);
 

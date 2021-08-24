@@ -13,8 +13,9 @@
 *		/showObject				    index.showObject
 *		/testUDA					index.testUDAs
 #*		/order       				index.testRouting2
-*		/order/{id<\d+>}			index.testRouting2
+*		/order/{id<\d+>}			index.testRouting2`
 GET		/testRedis					index.testRedis
+GET		/redisCluster		    index.testRedisCluster
 GET		/testAmqp					index.testAmqp
 *		/setCookie					index.setCookie
 *		/getCookie					index.getCookie

@@ -36,7 +36,7 @@ class BasicConfigProvider : ConfigServiceProvider {
     // }
 
     override void registerApplicationConfig() {
-        container.register!(ApplicationConfig, BasicApplicationConfig)(() {
+        container.register!(ApplicationConfig, BasicApplicationConfig).initializedBy(() {
             ConfigManager configManager = container.resolve!(ConfigManager)();
             return configManager.load!(BasicApplicationConfig);
         }).singleInstance();
