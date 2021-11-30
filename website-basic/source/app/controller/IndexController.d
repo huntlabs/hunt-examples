@@ -351,10 +351,9 @@ class IndexController : Controller {
     @Action string plaintext() {
         // logDebug("---show string----");
 
-        filebeatLogger().tracef("args: %s", "just another test");
+        // filebeatLogger().tracef("args: %s", "just another test");
 
-        warning(session().all);
-
+        // warning(session().all);
         return "Hello world. ";
     }
 

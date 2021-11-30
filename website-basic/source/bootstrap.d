@@ -71,7 +71,7 @@ void main(string[] args)
 
     // writeln(transWithLocale("zh-cn", "title"));
     // writeln(transWithLocale("zh-cn", "title", "Hunt"));
-    // app.register!BasicAuthServiceProvider; 
+    app.register!BasicAuthServiceProvider; 
     app.register!BasicConfigProvider; 
     app.register!BreadcrumbProvider;
     // app.register!HuntUserServiceProvider; 
@@ -95,6 +95,8 @@ void main(string[] args)
         // RouteGroup apiGroup = app.route().group("api");
 
         RouteGroup adminGroup = app.route().group("admin");
+        tracef("admin guard: %s", adminGroup.guardName);
+        adminGroup.guardName = DEFAULT_GURAD_NAME;
 
         // app.route().get("index.about").withoutMiddleware!(AuthMiddleware)();
         // app.route().get("index.security").withMiddleware!(AuthMiddleware)();
