@@ -2,7 +2,7 @@ module app.data.HuntUserService;
 
 import hunt.framework;
 
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 import std.digest.sha;
 
 /**

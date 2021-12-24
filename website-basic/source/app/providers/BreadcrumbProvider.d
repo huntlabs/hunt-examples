@@ -6,7 +6,7 @@ import hunt.framework.application;
 import hunt.framework.breadcrumb;
 import hunt.framework.Simplify;
 
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 
 /**
  * 

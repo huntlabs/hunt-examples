@@ -1,6 +1,6 @@
 module app.task.TestTask;
 
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 import hunt.util.worker;
 
 import std.random;

@@ -1,7 +1,7 @@
 module app.middleware.IpFilterMiddleware;
 
 import hunt.framework;
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 
 class IpFilterMiddleware : AbstractMiddleware {
 

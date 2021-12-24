@@ -5,7 +5,7 @@ import app.data.HuntUserService;
 import hunt.framework.provider.UserServiceProvider;
 import hunt.framework.auth.UserService;
 
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 import poodinis;
 
 

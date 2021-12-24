@@ -1,6 +1,6 @@
 module app.controller.api.IndexController;
 
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 import hunt.framework;
 
 import app.model.Greeting;

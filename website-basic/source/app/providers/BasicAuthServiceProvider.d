@@ -7,7 +7,7 @@ import hunt.framework.provider;
 import hunt.framework.auth;
 import hunt.shiro;
 
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 import poodinis;
 
 class BasicAuthServiceProvider : AuthServiceProvider {

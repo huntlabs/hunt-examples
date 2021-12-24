@@ -32,6 +32,17 @@ import hunt.cache;
 import hunt.serialization.JsonSerializer;
 
 
+import hunt.serialization;
+
+void main1(string[] args) {
+    // UserDetails ud = new UserDetails();
+    // ud.name = "test";
+
+    // string js = toJson(ud);
+
+    // trace(js);
+}
+
 void main(string[] args)
 {
     // Application app = Application.getInstance();

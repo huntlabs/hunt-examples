@@ -4,7 +4,7 @@ import helloworld.helloworld;
 import helloworld.helloworldrpc;
 import grpc;
 
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 
 /**
  * 

@@ -8,7 +8,7 @@ import hunt.framework.application;
 import hunt.framework.config;
 import hunt.framework.routing;
 
-import hunt.logging.ConsoleLogger;
+import hunt.logging;
 import poodinis;
 
 
